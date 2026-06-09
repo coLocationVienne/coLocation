@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Messages - ENVOI_MESSAGE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 25px 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        /* Stats Cards */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        /* Main Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 25px;
+        }
+
+        /* Form Section */
+        .form-section, .messages-section, .sql-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+
+        .form-section h2, .messages-section h2, .sql-section h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+            width: 100%;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        /* Messages Table */
+        .messages-table {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f8f9fa;
+            color: #667eea;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .message-preview {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* SQL Query Box */
+        .sql-box {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        .sql-keyword {
+            color: #569cd6;
+        }
+
+        .sql-string {
+            color: #ce9178;
+        }
+
+        /* Alert */
+        .alert {
+            background: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📬 Gestion des Messages - ENVOI_MESSAGE</h1>
+            <p>Base de données de messagerie entre utilisateurs pour les annonces</p>
+            <span class="badge">✅ Structure corrigée : PRIMARY KEY inclut date_</span>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats">
+            <div class="stat-card">
+                <h3>💬 Messages envoyés</h3>
+                <div class="number" id="totalMessages">3</div>
+            </div>
+            <div class="stat-card">
+                <h3>👥 Utilisateurs actifs</h3>
+                <div class="number" id="totalUsers">2</div>
+            </div>
+            <div class="stat-card">
+                <h3>📢 Annonces concernées</h3>
+                <div class="number" id="totalAnnonces">1</div>
+            </div>
+            <div class="stat-card">
+                <h3>📅 Dernier message</h3>
+                <div class="number" id="lastMessage">-5j</div>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="grid">
+            <!-- Left Column: Form -->
+            <div class="form-section">
+                <h2>✏️ Nouveau message</h2>
+                <form id="messageForm">
+                    <div class="form-group">
+                        <label>👤 Expéditeur (ID)</label>
+                        <input type="number" id="senderId" placeholder="Ex: 3" required>
+                    </div>
+                    <div class="form-group">
+                        <label>👤 Destinataire (ID)</label>
+                        <input type="number" id="receiverId" placeholder="Ex: 4" required>
+                    </div>
+                    <div class="form-group">
+                        <label>🏠 Annonce (ID)</label>
+                        <input type="number" id="annonceId" placeholder="Ex: 1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>📅 Date</label>
+                        <input type="date" id="dateMsg" required>
+                    </div>
+                    <div class="form-group">
+                        <label>💬 Contenu</label>
+                        <textarea id="contenu" placeholder="Votre message..." required></textarea>
+                    </div>
+                    <button type="submit">📤 Envoyer le message</button>
+                </form>
+                <div class="alert" id="formAlert"></div>
+            </div>
+
+            <!-- Right Column: Messages -->
+            <div class="messages-section">
+                <h2>📋 Historique des messages</h2>
+                <div class="messages-table">
+                    <table id="messagesTable">
+                        <thead>
+                            <tr>
+                                <th>Expéditeur</th>
+                                <th>Destinataire</th>
+                                <th>Annonce</th>
+                                <th>Date</th>
+                                <th>Message</th>
+                            </tr>
+                        </thead>
+                        <tbody id="messagesBody">
+                            <!-- Messages will appear here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SQL Section -->
+        <div class="sql-section">
+            <h2>🛠️ Requêtes SQL générées</h2>
+            <div class="sql-box" id="sqlQuery">
+                -- Les requêtes SQL apparaîtront ici automatiquement
+            </div>
+            <div class="alert">
+                💡 <strong>Note :</strong> Cette interface simule les interactions avec la base de données.<br>
+                Pour une intégration réelle, connectez ces formulaires à votre backend PHP/Node.js.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data matching your INSERT statement
+        let messages = [
+            { sender: 3, receiver: 4, annonce: 1, date: getDateOffset(-7), content: "Salut Julie, j'ai vu que tu cherchais une colocation. Cette annonce à Lyon est vraiment bien ! Qu'en penses-tu ?" },
+            { sender: 4, receiver: 3, annonce: 1, date: getDateOffset(-6), content: "Merci Thomas ! Oui elle a l'air super. Je vais contacter la propriétaire pour visiter cette semaine." },
+            { sender: 3, receiver: 4, annonce: 1, date: getDateOffset(-5), content: "Super ! N'hésite pas si tu as besoin d'infos, j'ai déjà visité l'appartement." }
+        ];
+
+        function getDateOffset(days) {
+            let date = new Date();
+            date.setDate(date.getDate() + days);
+            return date.toISOString().split('T')[0];
+        }
+
+        function formatDate(dateStr) {
+            let date = new Date(dateStr);
+            return date.toLocaleDateString('fr-FR');
+        }
+
+        function updateStats() {
+            document.getElementById('totalMessages').textContent = messages.length;
+            let uniqueUsers = new Set([...messages.map(m => m.sender), ...messages.map(m => m.receiver)]);
+            document.getElementById('totalUsers').textContent = uniqueUsers.size;
+            let uniqueAnnonces = new Set(messages.map(m => m.annonce));
+            document.getElementById('totalAnnonces').textContent = uniqueAnnonces.size;
+            
+            if (messages.length > 0) {
+                let lastDate = new Date(messages[messages.length-1].date);
+                let today = new Date();
+                let diffDays = Math.round((today - lastDate) / (1000 * 60 * 60 * 24));
+                document.getElementById('lastMessage').textContent = diffDays === 0 ? "Aujourd'hui" : `-${diffDays}j`;
+            }
+        }
+
+        function renderMessages() {
+            let tbody = document.getElementById('messagesBody');
+            tbody.innerHTML = '';
+            messages.slice().reverse().forEach(msg => {
+                let row = tbody.insertRow();
+                row.insertCell(0).textContent = msg.sender;
+                row.insertCell(1).textContent = msg.receiver;
+                row.insertCell(2).textContent = msg.annonce;
+                row.insertCell(3).textContent = formatDate(msg.date);
+                let contentCell = row.insertCell(4);
+                contentCell.textContent = msg.content.length > 50 ? msg.content.substring(0, 50) + '...' : msg.content;
+                contentCell.className = 'message-preview';
+                contentCell.title = msg.content;
+            });
+            updateStats();
+        }
+
+        function generateSQL(msg) {
+            return `INSERT INTO ENVOI_MESSAGE (id_utilisateur, id_utilisateur_1, id_annonce, date_, contenu) VALUES (${msg.sender}, ${msg.receiver}, ${msg.annonce}, '${msg.date}', '${msg.content.replace(/'/g, "''")}');`;
+        }
+
+        function updateSQLBox() {
+            let sqlBox = document.getElementById('sqlQuery');
+            if (messages.length === 0) {
+                sqlBox.innerHTML = '-- Aucun message à afficher';
+                return;
+            }
+            let sql = '-- Derniers messages insérés :\n\n';
+            sql += messages.slice(-3).reverse().map(m => generateSQL(m)).join('\n\n');
+            sql += '\n\n-- Schéma de la table :\n';
+            sql += `CREATE TABLE ENVOI_MESSAGE(\n   id_utilisateur INT,\n   id_utilisateur_1 INT,\n   id_annonce INT,\n   date_ DATE NOT NULL,\n   contenu VARCHAR(250) NOT NULL,\n   PRIMARY KEY(id_utilisateur, id_utilisateur_1, id_annonce, date_),\n   FOREIGN KEY(id_utilisateur) REFERENCES UTILISATEUR(id_utilisateur),\n   FOREIGN KEY(id_utilisateur_1) REFERENCES UTILISATEUR(id_utilisateur),\n   FOREIGN KEY(id_annonce) REFERENCES ANNONCE(id_annonce)\n);`;
+            sqlBox.innerHTML = sql.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        document.getElementById('messageForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let sender = parseInt(document.getElementById('senderId').value);
+            let receiver = parseInt(document.getElementById('receiverId').value);
+            let annonce = parseInt(document.getElementById('annonceId').value);
+            let date = document.getElementById('dateMsg').value;
+            let content = document.getElementById('contenu').value;
+            
+            if (!date) {
+                date = new Date().toISOString().split('T')[0];
+            }
+            
+            // Check for duplicate (same sender, receiver, annonce, date)
+            let isDuplicate = messages.some(m => 
+                m.sender === sender && 
+                m.receiver === receiver && 
+                m.annonce === annonce && 
+                m.date === date
+            );
+            
+            if (isDuplicate) {
+                document.getElementById('formAlert').innerHTML = '❌ Erreur #1062 : Duplicate entry - Une combinaison identique (expéditeur, destinataire, annonce, date) existe déjà. La clé PRIMARY KEY l\'interdit.';
+                document.getElementById('formAlert').style.background = '#ffebee';
+                document.getElementById('formAlert').style.borderLeftColor = '#f44336';
+                return;
+            }
+            
+            let newMessage = { sender, receiver, annonce, date, content };
+            messages.push(newMessage);
+            renderMessages();
+            updateSQLBox();
+            
+            document.getElementById('formAlert').innerHTML = '✅ Message ajouté avec succès ! Vérifiez l\'onglet SQL pour la requête.';
+            document.getElementById('formAlert').style.background = '#e8f5e9';
+            document.getElementById('formAlert').style.borderLeftColor = '#4CAF50';
+            
+            this.reset();
+            setTimeout(() => {
+                document.getElementById('formAlert').innerHTML = '';
+            }, 3000);
+        });
+        
+        // Initialize
+        renderMessages();
+        updateSQLBox();
+        
+        // Set today's date as default
+        document.getElementById('dateMsg').valueAsDate = new Date();
+    </script>
+</body>
+</html>
