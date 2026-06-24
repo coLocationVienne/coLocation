@@ -1,0 +1,21 @@
+
+body{
+    background-color: #eaebe4;
+}
+
+
+h1,h3,h4{
+    font-family:"EB Garamond";
+}
+
+a{
+    font-size:15px !important;
+}
+
+section{
+    padding: 50px;
+}
+
+footer{
+    padding: 30px;
+}
