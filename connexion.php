@@ -5,7 +5,7 @@ include("includes/header.php");
 ?>
  
  <main>
-       <form>
+       <form class="mt">
            <legend>connexion</legend>
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">email/nom utilisateur</label>

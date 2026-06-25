@@ -1,6 +1,7 @@
 
 body{
     background-color: #eaebe4;
+    height: 100%;
 }
 
 
@@ -18,4 +19,24 @@ section{
 
 footer{
     padding: 30px;
+}
+
+.mt{
+    margin-top:10%;
+}
+
+
+/*MON FOOTER*/
+/* .ft{ 
+   
+
+} */
+
+/*section image */
+
+.section{
+    height: 50vh;
+}
+.figure-img {
+    width:650px;
 }

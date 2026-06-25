@@ -1,6 +1,6 @@
 
 
-<footer class="d-flex justify-content-between">
+<footer class="d-flex justify-content-between ft">
   <nav class="navbar navbar-expand-lg">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">Colocation Vienne</a>
