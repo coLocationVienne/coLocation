@@ -1,7 +1,6 @@
 
 body{
     background-color: #eaebe4;
-    height: 100%;
 }
 
 
@@ -22,21 +21,18 @@ footer{
 }
 
 .mt{
-    margin-top:10%;
+    margin-top: 10%;
+}
+
+.formu{
+    display: flex;
+    gap: 10px;
+  
+
 }
 
 
-/*MON FOOTER*/
-/* .ft{ 
-   
+.figure-img{
 
-} */
-
-/*section image */
-
-.section{
-    height: 50vh;
-}
-.figure-img {
-    width:650px;
+    width: 550px;
 }

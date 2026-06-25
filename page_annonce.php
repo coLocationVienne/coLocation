@@ -6,10 +6,10 @@ include("includes/header.php");
 <main class="container-xl">
 
 
-<nav class="navbar bg-body-tertiary p-3 mt ft">
+<nav class="navbar bg-body-tertiary mt ft">
   <div class="container-fluid">
     
-  <form class="d-flex flex-column " role="search">
+  <form class="d-flex flex-column formu" role="search">
       <legend>Explorer</legend>
       <input class="form-control me-2" type="search" placeholder="localisation" aria-label="localisation"/>
       <input class="form-control me-2" type="search" placeholder="votre prix min/max" aria-label="prix"/>

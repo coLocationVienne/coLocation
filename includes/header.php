@@ -26,7 +26,7 @@
           <a class="nav-link " href="#">Rechercher une colocation</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="#">Publier une annonce</a>
+          <a class="nav-link " href=page_annonce.php">les annonces</a>
         </li>
          <li class="nav-item">
           <a class="nav-link " href="#">Rechercher une colocation</a>
