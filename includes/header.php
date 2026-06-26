@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>colocation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="style/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,19 +21,19 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">acceuil</a>
+          <a class="nav-link active" aria-current="page" href="#">Acceuil</a>
         </li>
         <li class="nav-item">
           <a class="nav-link " href="#">Rechercher une colocation</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href=page_annonce.php">les annonces</a>
+          <a class="nav-link " href="">les annonces</a>
         </li>
          <li class="nav-item">
-          <a class="nav-link " href="#">Rechercher une colocation</a>
+          <a class="nav-link " href="#">Inscription</a>
         </li>
          <li class="nav-item">
-          <a class="nav-link " href="#">connexion</a>
+          <a class="nav-link " href="#">Connexion</a>
         </li>
       </ul>
     </div>

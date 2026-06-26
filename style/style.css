@@ -24,6 +24,9 @@ footer{
     margin-top: 10%;
 }
 
+.mt1{
+    margin-top: 7%;
+}
 .formu{
     display: flex;
     gap: 10px;
@@ -35,4 +38,19 @@ footer{
 .figure-img{
 
     width: 550px;
+}
+
+
+/*cercle autour des nombre dans la page index*/
+.nombre-cercle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ffffff; 
+    border-radius: 50%;        
+    color: #ffffff; 
+    font-weight: bold;
+    font-size: 10px;
 }
