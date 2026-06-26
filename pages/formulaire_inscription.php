@@ -1,5 +1,5 @@
 <?php 
-include("includes/header.php");
+include("../includes/header.php");
 
 ?>
 
@@ -8,6 +8,10 @@ include("includes/header.php");
 <form action="" method="POST" class="container mt1">
     <h2 class="text-center">Inscription</h2>
     <hr>
+
+    <div>
+        
+    </div>
 
     <div class="row mb-3">
         <div class="col-md-6">
@@ -150,6 +154,6 @@ include("includes/header.php");
 </main>
 
 <?php 
-include("includes/footer.php");
+include("../includes/footer.php");
 
 ?>

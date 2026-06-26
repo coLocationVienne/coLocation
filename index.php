@@ -4,6 +4,7 @@ include("includes/header.php");
 ?>
     
     <main class="container-fluid">
+    
   <div class="mt">
     <h1>VIVEZ MIEUX, ENSEMBLE</h1>
     <div><p>l'application de colocation qui privilégie les affinités
