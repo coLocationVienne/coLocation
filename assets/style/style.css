@@ -1,4 +1,62 @@
 
+body{
+    background-color: #eaebe4;
+}
+
+
+h1,h3,h4{
+    font-family:"EB Garamond";
+}
+
+a{
+    font-size:15px !important;
+}
+
+section{
+    padding: 50px;
+}
+
+footer{
+    padding: 30px;
+}
+
+.mt{
+    margin-top: 10%;
+}
+
+.mt1{
+    margin-top: 7%;
+}
+.formu{
+    display: flex;
+    gap: 10px;
+  
+
+}
+
+
+.figure-img{
+
+    width: 550px;
+}
+
+
+/*cercle autour des nombre dans la page index*/
+.nombre-cercle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ffffff; 
+    border-radius: 50%;        
+    color: #ffffff; 
+    font-weight: bold;
+    font-size: 10px;
+}
+
+
+
 .login-page {
     min-height: 70vh;
     display: flex;
