@@ -170,6 +170,33 @@ footer{
     text-align: center;
 }
 
+.register-card {
+    max-width: 720px;
+}
+
+.register-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.form-group select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border: 1px solid #cfd8e6;
+    border-radius: 6px;
+    color: #172033;
+    background: #ffffff;
+    font-size: 15px;
+}
+
+.form-group select:focus {
+    outline: none;
+    border-color: #2364d2;
+    box-shadow: 0 0 0 3px rgba(35, 100, 210, 0.14);
+}
+
 @media (max-width: 480px) {
     .login-card {
         padding: 24px;
@@ -178,6 +205,10 @@ footer{
     .login-options {
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    .register-grid {
+        grid-template-columns: 1fr;
     }
 }
 
