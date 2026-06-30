@@ -43,7 +43,9 @@
         <li class="nav-item">
           <a class="nav-link nl" href="<?php echo $baseURL; ?>/pages/creer_annonce.php">creer et publier des annonces</a>
         </li>
-
+       <li class="nav-item">
+          <a class="nav-link nl" href="<?php echo $baseURL; ?>/pages/be/deconnexion.php">se deconnecter</a>
+        </li>
       </ul>
     </div>
     </div>
