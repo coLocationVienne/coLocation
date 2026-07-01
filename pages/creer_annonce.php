@@ -1,7 +1,18 @@
 <?php
 include("../includes/header.php");
 
+require("../includes/dbConnection.php");
+$dbConn = getDbConnection();
 $annoncePubliee = $_SERVER["REQUEST_METHOD"] === "POST";
+
+$registererror = $_GET['error'] ?? '';
+$registerErromessages = [
+    'missing_fields' => 'Veuillez remplir tous les champs obligatoires.',
+    'password_mismatch' => 'Les mots de passe ne correspondent pas.',
+    'email_exists' => 'Un compte existe deja avec cette adresse email.',
+    'invalid_email' => 'Veuillez saisir une adresse email valide.',
+    'server_error' => 'Une erreur est survenue pendant la creation du compte.',
+];
 ?>
 
 <main class="creer-annonce-page">
@@ -28,19 +39,66 @@ $annoncePubliee = $_SERVER["REQUEST_METHOD"] === "POST";
             </div>
         <?php endif; ?>
 
-        <form action="" method="POST" class="annonce-form">
+        <form action="ajouter_annonce.php" method="POST" class="annonce-form">
             <fieldset>
                 <legend>Informations du logement</legend>
 
                 <div class="annonce-form-grid deux-colonnes">
+
                     <div class="annonce-field">
                         <label for="titre">Titre de l'annonce</label>
                         <input type="text" id="titre" name="titre" placeholder="Chambre lumineuse proche du centre" required>
                     </div>
 
                     <div class="annonce-field">
-                        <label for="ville">Ville ou quartier</label>
-                        <input type="text" id="ville" name="ville" placeholder="Vienne centre" required>
+                        <label for="rue_nom">N° de rue et nom de rue</label>
+                        <input type="text" id="rue_nom" name="rue_nom" placeholder="60 rue Joyce Avenue" required>
+                    </div>
+                </div>
+
+                <div class="annonce-field">
+                        <label for="appartement">n° appartement</label>
+                        <input type="text" id="appartement" name="appartement" placeholder=" app 5" >
+                    </div>
+                </div>
+
+                <div class="annonce-field">
+                        <label for="batiment">n° batiment</label>
+                        <input type="text" id="batiment" name="batiment" placeholder="Vienne bat n°3">
+                    </div>
+                </div>
+
+                <div class="annonce-field">
+                        <label for="infocomplementaire">information complementaire</label>
+                        <input type="text" id="infocomplementaire" name="infocomplementaire" placeholder="a savoir...">
+                    </div>
+                </div>
+                            <div class="mb-4">
+                                <label for="situation_pro" class="form-label">Ville</label>
+                                <select id="situation_pro" name="situation_pro" class="form-select" required>
+                                    <option value="" selected disabled hidden>Choisissez votre situation...</option>
+                                    <option value="Châtellerault">Châtellerault </option>
+                                    <option value="Buxerolles">Buxerolles</option>
+                                    <option value="Jaunay-Marign">Jaunay-Marigny</option>
+                                    <option value="Chauvigny">Chauvigny</option>
+                                    <option value="Luchapt ">Luchapt </option>
+                                    <option value="Naintré ">Naintré </option>
+                                    <option value="Adriers">Adriers</option>
+                                    <option value="Charroux">Charroux</option>
+                                    <option value="Monts-sur-Guesnes">Monts-sur-Guesnes</option>
+                                    <option value="Château-Larcher">Château-Larcher</option>
+                                    <option value="Lusignan">Lusignan</option>
+                                    <option value="Chasseneuil-du-Poitou">Chasseneuil-du-Poitou</option>
+                                    <option value="Lussac-les-Châteaux">Lussac-les-Châteaux</option>
+                                    <option value="Arçay ">Arçay </option>
+                                    <option value="Anché">Anché</option>
+                                    <option value="Amberre ">Amberre </option>
+                                </select>
+                            </div>
+
+                <div class="annonce-field">
+                        <label for="codePostal">Code Postal</label>
+                        <input type="number" id="codePostal" name="codePostal" placeholder="ex:86100" required>
                     </div>
                 </div>
 
@@ -51,8 +109,13 @@ $annoncePubliee = $_SERVER["REQUEST_METHOD"] === "POST";
                     </div>
 
                     <div class="annonce-field">
-                        <label for="surface">Surface en m²</label>
-                        <input type="number" id="surface" name="surface" min="1" placeholder="18" required>
+                        <label for="surface">Surface en logement en m²</label>
+                        <input type="number" id="surface_logement" name="surface_logement" min="1" placeholder="18" required>
+                    </div>
+
+                     <div class="annonce-field">
+                        <label for="surface">Surface des chambres en m²</label>
+                        <input type="number" id="surface_chambres" name="surface_chambres" min="1" placeholder="18" required>
                     </div>
 
                     <div class="annonce-field">
@@ -62,9 +125,21 @@ $annoncePubliee = $_SERVER["REQUEST_METHOD"] === "POST";
                 </div>
 
                 <div class="annonce-field">
-                    <label for="description">Description</label>
-                    <textarea id="description" name="description" rows="5" placeholder="Décrivez la chambre, les espaces communs, les transports, l'ambiance..." required></textarea>
+                        <label for="disponibilite">date expiration</label>
+                        <input type="date" id="date_expiration" name="date_expiration" required>
+                    </div>
+
+                <div class="annonce-field">
+                    <label for="descriptions">Description</label>
+                    <textarea id="descriptions" name="descriptions" rows="2" placeholder="Décrivez la chambre, les espaces communs, les transports, l'ambiance..." required></textarea>
                 </div>
+                     
+                
+
+
+
+                </div>
+
             </fieldset>
 
             <fieldset>
@@ -76,7 +151,13 @@ $annoncePubliee = $_SERVER["REQUEST_METHOD"] === "POST";
                     <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="teletravail"><span>Télétravail accepté</span></label>
                     <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="soirees"><span>Soirées occasionnelles</span></label>
                     <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="menage"><span>Ménage partagé</span></label>
-                    <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="animaux"><span>Animaux acceptés</span></label>
+                    <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="animaux"><span>fumeur</span></label>
+                     <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="animaux"><span>non-fumeur</span></label>
+                      <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="animaux"><span>sportif</span></label>
+                     <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="animaux"><span>fetard</span></label> 
+                     <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="animaux"><span>gamer</span></label>
+                      <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="animaux"><span>ecolo</span></label>
+                       <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="animaux"><span>casanier</span></label>
                 </div>
             </fieldset>
 
@@ -102,12 +183,6 @@ $annoncePubliee = $_SERVER["REQUEST_METHOD"] === "POST";
                         <input type="email" id="contact" name="contact" placeholder="email@exemple.com" required>
                     </div>
 
-                    <div class="annonce-field">
-                        <label for="photo">Lien d'une photo</label>
-                        <input type="url" id="photo" name="photo" placeholder="https://...">
-                    </div>
-                </div>
-
                 <div class="annonce-field">
                     <label for="message">Message aux futurs colocataires</label>
                     <textarea id="message" name="message" rows="4" placeholder="Expliquez le profil recherché et les habitudes importantes."></textarea>
@@ -125,3 +200,5 @@ $annoncePubliee = $_SERVER["REQUEST_METHOD"] === "POST";
 <?php
 include("../includes/footer.php");
 ?>
+
+
