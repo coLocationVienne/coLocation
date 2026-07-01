@@ -34,6 +34,15 @@ footer{
 
 }
 
+/*avatar navbar*/
+.avatar{
+    display: flex;
+    width: 35px;
+    margin-left: 800px;
+}
+
+
+
 
 .figure-img{
 
@@ -565,7 +574,7 @@ footer{
 .steps-section {
     display: grid;
     grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.2fr);
-    gap: 34px;
+    gap: 34px;}
 
 .creer-annonce-page {
     min-height: 100vh;
