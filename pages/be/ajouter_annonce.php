@@ -1,153 +1,158 @@
-<?php 
+<?php
 
-if($_SERVER['$_REQUEST_METHOD'] !== 'POST'){
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ../creer_annonce.php');
     exit();
 }
 
-$myFields= ["titre","ville","loyer","surface","disponibilite","description","contact","message"]
-foreach ($myFields as $fields) {
-    if(empty($_POST[$fields])){
-        header("location: ../creer_annonce.php?error=missing_fields");
+$requiredFields = [
+    'titre',
+    'rue_nom',
+    'ville',
+    'codePostal',
+    'loyer',
+    'surface_logement',
+    'surface_chambres',
+    'disponibilite',
+    'date_expiration',
+    'descriptions',
+    'contact'
+];
+
+foreach ($requiredFields as $field) {
+    if (empty($_POST[$field])) {
+        header('Location: ../creer_annonce.php?error=missing_fields');
         exit();
     }
 }
 
+$titre = trim(htmlspecialchars($_POST['titre']));
+$adresse1 = trim(htmlspecialchars($_POST['rue_nom']));
+$adresse2 = trim(htmlspecialchars($_POST['appartement'] ?? ''));
+$adresse3 = trim(htmlspecialchars($_POST['batiment'] ?? ''));
+$adresse4 = trim(htmlspecialchars($_POST['infocomplementaire'] ?? ''));
+$ville = trim(htmlspecialchars($_POST['ville']));
+$codePostal = (int) $_POST['codePostal'];
+$loyer = (float) $_POST['loyer'];
+$description = trim(htmlspecialchars($_POST['descriptions']));
+$surfaceLogement = (float) $_POST['surface_logement'];
+$surfaceChambres = (float) $_POST['surface_chambres'];
+$dateExpiration = $_POST['date_expiration'];
+$datePublication = date('Y-m-d');
+$dateModification = date('Y-m-d');
+$dateCloture = $dateExpiration;
+$contact = trim($_POST['contact']);
+$loyerColocation = $loyer;
+$nombreChambre = !empty($_POST['nombre_chambre']) ? (int) $_POST['nombre_chambre'] : 1;
+$carteCoordonneeGps = trim(htmlspecialchars($_POST['carte_coordonnee_GPS'] ?? ''));
+$modesVie = $_POST['mode_vie'] ?? [];
 
-$titre=trim(htmlspecialchars($_POST["titre"]));
-$adresse_1=trim(htmlspecialchars($_POST["rue_nom"]));
-$adresse_2=trim(htmlspecialchars($_POST["appartement"]));
-$adresse_3=trim(htmlspecialchars($_POST["batiment"]));
-$adresse_4=trim(htmlspecialchars($_POST["infocomplementaire"]));
-$ville=trim(htmlspecialchars($_POST["ville"]));
-$code_postal=$_POST["codePostal"];
-$loyer= $_POST["loyer"] !== '' ? (float) $_POST["loyer"] : 0;
-$description=trim(htmlspecialchars($_POST["descriptions"]));
-$surface_logement=$_POST["surface_logement"];
-$surface_chambres=$_POST["surface_chambres"];
-$disponibilité=$_POST["disponibilite"];
-$contact=trim(htmlspecialchars($_POST["contact"]));
-$date_expiration=trim(htmlspecialchars($_POST["date_expiration"]));
-$date_modification=$_POST["date_modification"]; --on reprend ici
-$carte_coordonnee_GPS=$_POST["carte_coordonnee_GPS"];
-$mode_vie=array($_POST["mode_vie[]"]);
-$regime=array($_POST["regime[]"])
-$message=trim(htmlspecialchars($_POST["message"]));
+$estFumeur = in_array('fumeur', $modesVie, true) ? 1 : 0;
+$aAnimaux = in_array('animaux', $modesVie, true) ? 1 : 0;
+$aEnfant = !empty($_POST['a_enfant']) ? 1 : 0;
 
-//ici on fait les test pour vour si mes donee sont bien correcte
-
-if(!filter_var($contact, FILTER_VALIDATE_EMAIL)){
-    header("Location: ../creer_annonce.php?error=invalid_email");
+if (!filter_var($contact, FILTER_VALIDATE_EMAIL)) {
+    header('Location: ../creer_annonce.php?error=invalid_email');
     exit();
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 try {
-    require("../../includes/dbConnection.php");
-    $dbconn= getDbConnection();
+    require('../../includes/dbConnection.php');
+    $dbConn = getDbConnection();
 
-    if(!$dbconn){
-        header("location: ../creer_annonce.php?error=server_error");
+    if (!$dbConn) {
+        header('Location: ../creer_annonce.php?error=server_error');
         exit();
     }
 
- 
-    
-$mesAjouts = $dbconn->prepare(" INSERT INTO annonce(
-titre,
-adresse_1,
-adresse_2,
-adresse_3,
-adresse_4,
-ville,
-code_postale,
-loyer_location_chez_habitant,
-description,
-surface_logement,
-surface_chambres,
-nombres_chambres, --ici a faire en html
-date_expiration,
-date_publication,
-date_modification,
-carte_coordonnee_GPS,
-date_cloture,
-loyer_colocation,
-est_fumeur,
-a_enfant,
-a_animaux
+    $stmt = $dbConn->prepare("
+        INSERT INTO annonce (
+            titre,
+            adresse_1,
+            adresse_2,
+            adresse_3,
+            adresse_4,
+            ville,
+            code_postal,
+            loyer_location_chez_habitant,
+            description,
+            surface_logement,
+            surface_chambres,
+            nombre_chambre,
+            date_expiration,
+            date_publication,
+            date_modification,
+            carte_coordonnee_GPS,
+            date_cloture,
+            loyer_colocation,
+            est_fumeur,
+            a_enfant,
+            a_animaux
+        ) VALUES (
+            :titre,
+            :adresse_1,
+            :adresse_2,
+            :adresse_3,
+            :adresse_4,
+            :ville,
+            :code_postal,
+            :loyer_location_chez_habitant,
+            :description,
+            :surface_logement,
+            :surface_chambres,
+            :nombre_chambre,
+            :date_expiration,
+            :date_publication,
+            :date_modification,
+            :carte_coordonnee_GPS,
+            :date_cloture,
+            :loyer_colocation,
+            :est_fumeur,
+            :a_enfant,
+            :a_animaux
+        )
+    ");
 
-) VALUES (
- 
-:titre,
-:adresse_1,
-:adresse_2,
-:adresse_3,
-:adresse_4,
-:ville,
-:code_postale,
-:loyer_location_chez_habitant,
-:description,
-:surface_logement,
-:surface_chambres,
-:nombres_chambres,
-:date_expiration,
-:date_publication,
-:date_modification,
-:carte_coordonnee_GPS,
-:date_cloture,
-:loyer_colocation,
-:est_fumeur,
-:a_enfant,
-:a_animaux
+    $stmt->execute([
+        ':titre' => $titre,
+        ':adresse_1' => $adresse1,
+        ':adresse_2' => $adresse2,
+        ':adresse_3' => $adresse3,
+        ':adresse_4' => $adresse4,
+        ':ville' => $ville,
+        ':code_postal' => $codePostal,
+        ':loyer_location_chez_habitant' => $loyer,
+        ':description' => $description,
+        ':surface_logement' => $surfaceLogement,
+        ':surface_chambres' => $surfaceChambres,
+        ':nombre_chambre' => $nombreChambre,
+        ':date_expiration' => $dateExpiration,
+        ':date_publication' => $datePublication,
+        ':date_modification' => $dateModification,
+        ':carte_coordonnee_GPS' => $carteCoordonneeGps,
+        ':date_cloture' => $dateCloture,
+        ':loyer_colocation' => $loyerColocation,
+        ':est_fumeur' => $estFumeur,
+        ':a_enfant' => $aEnfant,
+        ':a_animaux' => $aAnimaux
+    ]);
 
-  )" 
-  
-);
+    session_start();
+    if (!empty($_SESSION['user_id'])) {
+        $idAnnonce = $dbConn->lastInsertId();
+        $linkStmt = $dbConn->prepare("
+            INSERT INTO annonce_utilisateur (id_utilisateur, id_annonce)
+            VALUES (:id_utilisateur, :id_annonce)
+        ");
+        $linkStmt->execute([
+            ':id_utilisateur' => $_SESSION['user_id'],
+            ':id_annonce' => $idAnnonce
+        ]);
+    }
 
-$mesAjouts->bindParam(':titre', $titre);
-$mesAjouts->bindParam(':adresse_1', $adresse_1);
-$mesAjouts->bindParam(':adresse_2', $adresse_2);
-$mesAjouts->bindParam(':adresse_3', $adresse_3);
-$mesAjouts->bindParam(':adresse_4', $adresse_4);
-$mesAjouts->bindParam(':ville', $ville);
-$mesAjouts->bindParam(':code_postale', $code_postal);
-$mesAjouts->bindParam(':loyer_location_chez_habitant', $loyer);
-$mesAjouts->bindParam(':description', $description);
-$mesAjouts->bindParam(':surface_logement', $surface_logement);
-$mesAjouts->bindParam(':surface_chambres',$surface_chambres);
-$mesAjouts->bindParam(':disponibilité', $disponibilité);
-$mesAjouts->bindParam(':contact', $contact);
-$mesAjouts->bindParam(':date_expiration', $date_expiration);
-$mesAjouts->bindParam(':date_modification', $date_modification);
-$mesAjouts->bindParam(':carte_coordonnee_GPS', $carte_coordonnee_GPS);
-$mesAjouts->bindParam(':message', $message);
-$mesAjouts->bindParam(':date_expiration', $date_expiration);
-$mesAjouts->bindParam(':date_expiration', $date_expiration);
-$mesAjouts->bindParam(':date_expiration', $date_expiration);
-
-} catch (Exception $e) {
-    //throw $th;
+    header('Location: ../creer_annonce.php?success=1');
+    exit();
+} catch (PDOException $e) {
+    header('Location: ../creer_annonce.php?error=server_error');
+    exit();
 }
-
-
-
-
-?>

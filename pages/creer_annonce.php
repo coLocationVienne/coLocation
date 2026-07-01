@@ -1,17 +1,12 @@
 <?php
 include("../includes/header.php");
 
-require("../includes/dbConnection.php");
-$dbConn = getDbConnection();
-$annoncePubliee = $_SERVER["REQUEST_METHOD"] === "POST";
-
-$registererror = $_GET['error'] ?? '';
-$registerErromessages = [
+$message = $_GET['success'] ?? '';
+$error = $_GET['error'] ?? '';
+$errorMessages = [
     'missing_fields' => 'Veuillez remplir tous les champs obligatoires.',
-    'password_mismatch' => 'Les mots de passe ne correspondent pas.',
-    'email_exists' => 'Un compte existe deja avec cette adresse email.',
     'invalid_email' => 'Veuillez saisir une adresse email valide.',
-    'server_error' => 'Une erreur est survenue pendant la creation du compte.',
+    'server_error' => 'Une erreur est survenue pendant la publication de l’annonce.',
 ];
 ?>
 
@@ -33,73 +28,77 @@ $registerErromessages = [
     </section>
 
     <section class="annonce-form-section">
-        <?php if ($annoncePubliee): ?>
+        <?php if ($message === '1'): ?>
             <div class="annonce-message" role="status">
-                Votre annonce est prête à être publiée.
+                Votre annonce a bien été publiée.
             </div>
         <?php endif; ?>
 
-        <form action="ajouter_annonce.php" method="POST" class="annonce-form">
+        <?php if (!empty($error) && isset($errorMessages[$error])): ?>
+            <div class="annonce-message" role="alert">
+                <?php echo $errorMessages[$error]; ?>
+            </div>
+        <?php endif; ?>
+
+        <form action="be/ajouter_annonce.php" method="POST" class="annonce-form">
             <fieldset>
                 <legend>Informations du logement</legend>
 
                 <div class="annonce-form-grid deux-colonnes">
-
                     <div class="annonce-field">
                         <label for="titre">Titre de l'annonce</label>
                         <input type="text" id="titre" name="titre" placeholder="Chambre lumineuse proche du centre" required>
                     </div>
 
                     <div class="annonce-field">
-                        <label for="rue_nom">N° de rue et nom de rue</label>
+                        <label for="rue_nom">Numéro et nom de rue</label>
                         <input type="text" id="rue_nom" name="rue_nom" placeholder="60 rue Joyce Avenue" required>
                     </div>
                 </div>
 
-                <div class="annonce-field">
-                        <label for="appartement">n° appartement</label>
-                        <input type="text" id="appartement" name="appartement" placeholder=" app 5" >
+                <div class="annonce-form-grid trois-colonnes">
+                    <div class="annonce-field">
+                        <label for="appartement">Numéro appartement</label>
+                        <input type="text" id="appartement" name="appartement" placeholder="Appartement 5">
+                    </div>
+
+                    <div class="annonce-field">
+                        <label for="batiment">Numéro bâtiment</label>
+                        <input type="text" id="batiment" name="batiment" placeholder="Bâtiment 3">
+                    </div>
+
+                    <div class="annonce-field">
+                        <label for="codePostal">Code postal</label>
+                        <input type="number" id="codePostal" name="codePostal" placeholder="86100" required>
                     </div>
                 </div>
 
                 <div class="annonce-field">
-                        <label for="batiment">n° batiment</label>
-                        <input type="text" id="batiment" name="batiment" placeholder="Vienne bat n°3">
-                    </div>
+                    <label for="infocomplementaire">Information complémentaire</label>
+                    <input type="text" id="infocomplementaire" name="infocomplementaire" placeholder="Étage, résidence, accès...">
                 </div>
 
                 <div class="annonce-field">
-                        <label for="infocomplementaire">information complementaire</label>
-                        <input type="text" id="infocomplementaire" name="infocomplementaire" placeholder="a savoir...">
-                    </div>
-                </div>
-                            <div class="mb-4">
-                                <label for="situation_pro" class="form-label">Ville</label>
-                                <select id="situation_pro" name="situation_pro" class="form-select" required>
-                                    <option value="" selected disabled hidden>Choisissez votre situation...</option>
-                                    <option value="Châtellerault">Châtellerault </option>
-                                    <option value="Buxerolles">Buxerolles</option>
-                                    <option value="Jaunay-Marign">Jaunay-Marigny</option>
-                                    <option value="Chauvigny">Chauvigny</option>
-                                    <option value="Luchapt ">Luchapt </option>
-                                    <option value="Naintré ">Naintré </option>
-                                    <option value="Adriers">Adriers</option>
-                                    <option value="Charroux">Charroux</option>
-                                    <option value="Monts-sur-Guesnes">Monts-sur-Guesnes</option>
-                                    <option value="Château-Larcher">Château-Larcher</option>
-                                    <option value="Lusignan">Lusignan</option>
-                                    <option value="Chasseneuil-du-Poitou">Chasseneuil-du-Poitou</option>
-                                    <option value="Lussac-les-Châteaux">Lussac-les-Châteaux</option>
-                                    <option value="Arçay ">Arçay </option>
-                                    <option value="Anché">Anché</option>
-                                    <option value="Amberre ">Amberre </option>
-                                </select>
-                            </div>
-
-                <div class="annonce-field">
-                        <label for="codePostal">Code Postal</label>
-                        <input type="number" id="codePostal" name="codePostal" placeholder="ex:86100" required>
-                    </div>
+                    <label for="ville">Ville</label>
+                    <select id="ville" name="ville" required>
+                        <option value="" selected disabled hidden>Choisissez une ville</option>
+                        <option value="Châtellerault">Châtellerault</option>
+                        <option value="Buxerolles">Buxerolles</option>
+                        <option value="Jaunay-Marigny">Jaunay-Marigny</option>
+                        <option value="Chauvigny">Chauvigny</option>
+                        <option value="Luchapt">Luchapt</option>
+                        <option value="Naintré">Naintré</option>
+                        <option value="Adriers">Adriers</option>
+                        <option value="Charroux">Charroux</option>
+                        <option value="Monts-sur-Guesnes">Monts-sur-Guesnes</option>
+                        <option value="Château-Larcher">Château-Larcher</option>
+                        <option value="Lusignan">Lusignan</option>
+                        <option value="Chasseneuil-du-Poitou">Chasseneuil-du-Poitou</option>
+                        <option value="Lussac-les-Châteaux">Lussac-les-Châteaux</option>
+                        <option value="Arçay">Arçay</option>
+                        <option value="Anché">Anché</option>
+                        <option value="Amberre">Amberre</option>
+                    </select>
                 </div>
 
                 <div class="annonce-form-grid trois-colonnes">
@@ -109,40 +108,45 @@ $registerErromessages = [
                     </div>
 
                     <div class="annonce-field">
-                        <label for="surface">Surface en logement en m²</label>
-                        <input type="number" id="surface_logement" name="surface_logement" min="1" placeholder="18" required>
+                        <label for="surface_logement">Surface du logement en m²</label>
+                        <input type="number" id="surface_logement" name="surface_logement" min="1" placeholder="80" required>
                     </div>
 
-                     <div class="annonce-field">
-                        <label for="surface">Surface des chambres en m²</label>
+                    <div class="annonce-field">
+                        <label for="surface_chambres">Surface des chambres en m²</label>
                         <input type="number" id="surface_chambres" name="surface_chambres" min="1" placeholder="18" required>
+                    </div>
+                </div>
+
+                <div class="annonce-form-grid trois-colonnes">
+                    <div class="annonce-field">
+                        <label for="nombre_chambre">Nombre de chambres</label>
+                        <input type="number" id="nombre_chambre" name="nombre_chambre" min="1" placeholder="1" required>
                     </div>
 
                     <div class="annonce-field">
                         <label for="disponibilite">Disponible à partir du</label>
                         <input type="date" id="disponibilite" name="disponibilite" required>
                     </div>
+
+                    <div class="annonce-field">
+                        <label for="date_expiration">Date expiration</label>
+                        <input type="date" id="date_expiration" name="date_expiration" required>
+                    </div>
                 </div>
 
                 <div class="annonce-field">
-                        <label for="disponibilite">date expiration</label>
-                        <input type="date" id="date_expiration" name="date_expiration" required>
-                    </div>
+                    <label for="contact">Email de contact</label>
+                    <input type="email" id="contact" name="contact" placeholder="email@exemple.com" required>
+                </div>
 
                 <div class="annonce-field">
                     <label for="descriptions">Description</label>
-                    <textarea id="descriptions" name="descriptions" rows="2" placeholder="Décrivez la chambre, les espaces communs, les transports, l'ambiance..." required></textarea>
+                    <textarea id="descriptions" name="descriptions" rows="4" placeholder="Décrivez la chambre, les espaces communs, les transports, l'ambiance..." required></textarea>
                 </div>
-                     
-                
-
-
-
-                </div>
-
             </fieldset>
 
-            <fieldset>
+            <fieldset class="form-cache">
                 <legend>Modes de vie</legend>
 
                 <div class="annonce-choice-grid">
@@ -151,17 +155,18 @@ $registerErromessages = [
                     <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="teletravail"><span>Télétravail accepté</span></label>
                     <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="soirees"><span>Soirées occasionnelles</span></label>
                     <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="menage"><span>Ménage partagé</span></label>
-                    <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="animaux"><span>fumeur</span></label>
-                     <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="animaux"><span>non-fumeur</span></label>
-                      <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="animaux"><span>sportif</span></label>
-                     <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="animaux"><span>fetard</span></label> 
-                     <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="animaux"><span>gamer</span></label>
-                      <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="animaux"><span>ecolo</span></label>
-                       <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="animaux"><span>casanier</span></label>
+                    <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="fumeur"><span>Fumeur</span></label>
+                    <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="non_fumeur"><span>Non-fumeur</span></label>
+                    <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="sportif"><span>Sportif</span></label>
+                    <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="fetard"><span>Fêtard</span></label>
+                    <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="gamer"><span>Gamer</span></label>
+                    <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="ecolo"><span>Écolo</span></label>
+                    <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="casanier"><span>Casanier</span></label>
+                    <label class="annonce-choice"><input type="checkbox" name="mode_vie[]" value="animaux"><span>Animaux acceptés</span></label>
                 </div>
             </fieldset>
 
-            <fieldset>
+            <fieldset class="form-cache">
                 <legend>Régime alimentaire</legend>
 
                 <div class="annonce-choice-grid">
@@ -174,18 +179,12 @@ $registerErromessages = [
                 </div>
             </fieldset>
 
-            <fieldset>
-                <legend>Publication</legend>
+            <fieldset class="form-cache">
+                <legend>Garant</legend>
 
-                <div class="annonce-form-grid deux-colonnes">
-                    <div class="annonce-field">
-                        <label for="contact">Email de contact</label>
-                        <input type="email" id="contact" name="contact" placeholder="email@exemple.com" required>
-                    </div>
-
-                <div class="annonce-field">
-                    <label for="message">Message aux futurs colocataires</label>
-                    <textarea id="message" name="message" rows="4" placeholder="Expliquez le profil recherché et les habitudes importantes."></textarea>
+                <div class="annonce-choice-grid">
+                    <label class="annonce-choice"><input type="radio" name="garant" value="oui"><span>Garant demandé</span></label>
+                    <label class="annonce-choice"><input type="radio" name="garant" value="non"><span>Pas de garant demandé</span></label>
                 </div>
             </fieldset>
 
@@ -200,5 +199,3 @@ $registerErromessages = [
 <?php
 include("../includes/footer.php");
 ?>
-
-
