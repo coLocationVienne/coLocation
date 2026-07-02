@@ -9,6 +9,7 @@ $registered = $_GET['registered'] ?? '';
 $loginErrorMessages = [
     'invalid_credentials' => 'Email ou mot de passe incorrect. Veuillez reessayer.',
     'missing_fields' => 'Veuillez remplir votre email et votre mot de passe.',
+    'error_connexion' =>'vous devez vous connecter pour creer une annonce'
 ];
 
 print_r($_SESSION['isLoggedin'] . "\n fdf"); 

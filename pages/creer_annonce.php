@@ -1,4 +1,13 @@
 <?php
+
+if(session_status() === PHP_SESSION_NONE){
+    session_start();
+}
+if(!isset($_SESSION['user_id'])){
+    header("Location: connexion.php?error=error_connexion");
+    exit();
+}
+
 include("../includes/header.php");
 
 $message = $_GET['success'] ?? '';
