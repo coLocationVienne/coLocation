@@ -28,7 +28,7 @@ $baseURL = "http://localhost/coLocation";
 
 </head>
 <body>
-   <nav class="navbar navbar-expand-lg fixed-top bg-body-tertiary">
+   <nav class="navbar navbar-expand-lg fixed-top bg-body-tertiary navnav">
      <div class="container-fluid">
       <a class="navbar-brand " href="<?php echo $baseURL; ?>/index.php">Colocation Vienne</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,27 +37,31 @@ $baseURL = "http://localhost/coLocation";
       <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="<?php echo $baseURL; ?>/index.php">Acceuil</a>
+          <a class="nav-link active fst-italic" aria-current="page" href="<?php echo $baseURL; ?>/index.php">Acceuil</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="<?php echo $baseURL; ?>/pages/recherche.php">Rechercher une colocation</a>
+          <a class="nav-link fst-italic" href="<?php echo $baseURL; ?>/pages/recherche.php">Rechercher une colocation</a>
         </li>
          <li class="nav-item">
-          <a class="nav-link " href="<?php echo $baseURL; ?>/pages/formulaire_inscription.php">Inscription</a>
+          <a class="nav-link fst-italic" href="<?php echo $baseURL; ?>/pages/formulaire_inscription.php">Inscription</a>
         </li>
          <li class="nav-item">
-          <a class="nav-link " href="<?php echo $baseURL; ?>/pages/connexion.php">Connexion</a>
+          <a class="nav-link fst-italic" href="<?php echo $baseURL; ?>/pages/connexion.php">Connexion</a>
         </li>
+           <li class="nav-item">
+          <a class="nav-link fst-italic" href="<?php echo $baseURL; ?>/pages/page_annonce.php">Annonces</a>
+        </li>
+
         <?php if (!empty($_SESSION['isLoggedin'])): ?>
           <li class="nav-item">
-            <a class="nav-link nl" href="<?php echo $baseURL; ?>/pages/profile_utilisateur.php">Mon profil</a>
+            <a class="nav-link fst-italic" href="<?php echo $baseURL; ?>/pages/profile_utilisateur.php">Mon profil</a>
           </li>
         <?php endif; ?>
         <li class="nav-item">
-          <a class="nav-link " href="<?php echo $baseURL; ?>/pages/creer_annonce.php">creer et publier des annonces</a>
+          <a class="nav-link fst-italic" href="<?php echo $baseURL; ?>/pages/creer_annonce.php">creer et publier des annonces</a>
         </li>
        <li class="nav-item ">
-          <a class="nav-link " href="<?php echo $baseURL; ?>/pages/be/deconnexion.php">se deconnecter</a>
+          <a class="nav-link fst-italic" href="<?php echo $baseURL; ?>/pages/be/deconnexion.php">se deconnecter</a>
         </li>
          <li class="nav-item">
           <a href=""><img class="rounded-circle avatar" src="https://png.pngtree.com/png-vector/20230131/ourmid/pngtree-flat-style-user-profile-icon-on-isolated-background-vector-png-image_49602770.jpg"/></a>

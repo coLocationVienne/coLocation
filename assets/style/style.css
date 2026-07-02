@@ -41,6 +41,14 @@ footer{
     margin-left: 800px;
 }
 
+/*taille de mon tete navbar*/
+.size{
+display: flex;
+justify-content: space-between;
+
+
+}
+
 
 
 
