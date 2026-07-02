@@ -1,4 +1,16 @@
-<?php $baseURL = "http://localhost/coLocation"; ?>
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// ... rest of your PHP code
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$baseURL = "http://localhost/coLocation";
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +27,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
 </head>
-<?php session_start(); ?>
 <body>
    <nav class="navbar navbar-expand-lg fixed-top bg-body-tertiary">
      <div class="container-fluid">
@@ -37,6 +48,11 @@
          <li class="nav-item">
           <a class="nav-link " href="<?php echo $baseURL; ?>/pages/connexion.php">Connexion</a>
         </li>
+        <?php if (!empty($_SESSION['isLoggedin'])): ?>
+          <li class="nav-item">
+            <a class="nav-link nl" href="<?php echo $baseURL; ?>/pages/profile_utilisateur.php">Mon profil</a>
+          </li>
+        <?php endif; ?>
         <li class="nav-item">
           <a class="nav-link " href="<?php echo $baseURL; ?>/pages/creer_annonce.php">creer et publier des annonces</a>
         </li>
