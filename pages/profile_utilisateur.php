@@ -71,6 +71,8 @@ $profileStatusMessages = [
     'photo_updated' => 'Votre photo de profil a bien ete mise a jour.',
     'photo_removed' => 'Votre photo de profil a bien ete supprimee.',
     'password_updated' => 'Votre mot de passe a bien ete mis a jour.',
+    'user_updated' => 'L\'utilisateur a été mis à jour avec succès.',
+    'user_deleted' => 'L\'utilisateur a été supprimé avec succès.',
 ];
 $profileErrorMessages = [
     'missing_fields' => 'Veuillez remplir tous les champs demandes.',
@@ -82,6 +84,12 @@ $profileErrorMessages = [
     'upload_failed' => 'Impossible d enregistrer la photo. Veuillez reessayer.',
     'server_error' => 'Une erreur est survenue. Veuillez reessayer.',
     'invalid_current_password' => 'Le mot de passe actuel est incorrect.',
+    'unauthorized' => 'Vous n\'avez pas les droits pour effectuer cette action.',
+    'invalid_user' => 'Utilisateur invalide.',
+    'no_changes' => 'Aucune modification à effectuer.',
+    'update_failed' => 'La mise à jour a échoué. Veuillez réessayer.',
+    'cannot_delete_self' => 'Vous ne pouvez pas supprimer votre propre compte.',
+    'delete_failed' => 'La suppression a échoué. Veuillez réessayer.',
 ];
 
 include("../includes/header.php");
@@ -171,6 +179,9 @@ document.addEventListener('DOMContentLoaded', function() {
             </dl>
         </article>
     </section>
+
+    <?php include('profile_utilisateur_admin.php'); ?>
+
 </main>
 
 <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
@@ -264,6 +275,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     </script>
 <?php endif; ?>
+
+
 <script src="../assets/style/js/profile.js"></script>
 
 <?php
