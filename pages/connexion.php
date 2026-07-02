@@ -1,5 +1,12 @@
 <?php
-include("../includes/header.php");
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!empty($_SESSION['isLoggedin'])) {
+    header("Location: ../index.php");
+    exit();
+}
 
 require("../includes/dbConnection.php");
 $dbConn = getDbConnection();
@@ -10,13 +17,10 @@ $loginErrorMessages = [
     'invalid_credentials' => 'Email ou mot de passe incorrect. Veuillez reessayer.',
     'missing_fields' => 'Veuillez remplir votre email et votre mot de passe.',
     'error_connexion' =>'vous devez vous connecter pour creer une annonce'
+    'login_required' => 'Veuillez vous connecter pour acceder a votre profil.',
 ];
 
-print_r($_SESSION['isLoggedin'] . "\n fdf"); 
-if($_SESSION['isLoggedin'] == true) {
-    header("Location: ../index.php");
-    exit();
-}
+include("../includes/header.php");
 ?>
 <section class="login-page">
     <div class="login-card">
