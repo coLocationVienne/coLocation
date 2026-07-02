@@ -79,9 +79,9 @@ CREATE TABLE `annonce` (
 -- Déchargement des données de la table `annonce`
 --
 
-INSERT INTO `annonce` (`id_annonce`, `titre`, `adresse_1`, `adresse_2`, `adresse_3`, `adresse_4`, `ville`, `code_postal`, `loyer_location_chez_habitant`, `description`, `surface_logement`, `surface_chambres`, `nombre_chambre`, `date_expiration`, `date_publication`, `date_modification`, `carte_coordonnee_GPS`, `date_cloture`, `loyer_colocation`, `est_fumeur`, `a_enfant`, `a_animaux`) VALUES
-(1, 'Colocation étudiante lumineuse', '15 Rue de la République', 'Appartement 3B', NULL, NULL, 'Lyon', 69001, 650.00, 'Superbe appartement rénové proche université. Très lumineux avec balcon. Quartier calme et bien desservi par les transports.', 85.50, 12.50, 3, '2026-07-09', '2026-06-09', '2026-06-09', '45.764043, 4.835659', '2026-07-09', 550.00, 0, 0, 0),
-(2, 'Chambre cosy chez l\'habitant', '8 Avenue Victor Hugo', NULL, NULL, NULL, 'Paris', 75016, 800.00, 'Chambre meublée dans appartement spacieux. Propriétaire sympathique. Jardin partagé. Proche commerces et métro.', 120.00, 15.00, 1, '2026-05-25', '2026-04-25', '2026-06-09', '48.856614, 2.352222', '2026-06-08', 700.00, 1, 0, 1);
+INSERT INTO `annonce` (`id_annonce`, `titre`, `adresse_1`, `adresse_2`, `adresse_3`, `adresse_4`, `ville`, `code_postal`, `loyer_location_chez_habitant`, `description`, `surface_logement`, `surface_chambres`, `nombre_chambre`, `date_expiration`, `date_publication`, `date_modification`, `carte_coordonnee_GPS`, `date_cloture`, `loyer_colocation`) VALUES
+(1, 'Colocation étudiante lumineuse', '15 Rue de la République', 'Appartement 3B', NULL, NULL, 'Lyon', 69001, 650.00, 'Superbe appartement rénové proche université. Très lumineux avec balcon. Quartier calme et bien desservi par les transports.', 85.50, 12.50, 3, '2026-07-09', '2026-06-09', '2026-06-09', '45.764043, 4.835659', '2026-07-09', 550.00),
+(2, 'Chambre cosy chez l\'habitant', '8 Avenue Victor Hugo', NULL, NULL, NULL, 'Paris', 75016, 800.00, 'Chambre meublée dans appartement spacieux. Propriétaire sympathique. Jardin partagé. Proche commerces et métro.', 120.00, 15.00, 1, '2026-05-25', '2026-04-25', '2026-06-09', '48.856614, 2.352222', '2026-06-08', 700.00);
 
 -- --------------------------------------------------------
 

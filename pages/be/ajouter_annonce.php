@@ -50,9 +50,7 @@ $nombreChambre = !empty($_POST['nombre_chambre']) ? (int) $_POST['nombre_chambre
 $carteCoordonneeGps = trim(htmlspecialchars($_POST['carte_coordonnee_GPS'] ?? ''));
 $modesVie = $_POST['mode_vie'] ?? [];
 
-$estFumeur = in_array('fumeur', $modesVie, true) ? 1 : 0;
-$aAnimaux = in_array('animaux', $modesVie, true) ? 1 : 0;
-$aEnfant = !empty($_POST['a_enfant']) ? 1 : 0;
+
 
 if (!filter_var($contact, FILTER_VALIDATE_EMAIL)) {
     header('Location: ../creer_annonce.php?error=invalid_email');
@@ -87,10 +85,8 @@ try {
             date_modification,
             carte_coordonnee_GPS,
             date_cloture,
-            loyer_colocation,
-            est_fumeur,
-            a_enfant,
-            a_animaux
+            loyer_colocation
+           
         ) VALUES (
             :titre,
             :adresse_1,
@@ -109,10 +105,8 @@ try {
             :date_modification,
             :carte_coordonnee_GPS,
             :date_cloture,
-            :loyer_colocation,
-            :est_fumeur,
-            :a_enfant,
-            :a_animaux
+            :loyer_colocation
+           
         )
     ");
 
@@ -135,9 +129,6 @@ try {
         ':carte_coordonnee_GPS' => $carteCoordonneeGps,
         ':date_cloture' => $dateCloture,
         ':loyer_colocation' => $loyerColocation,
-        ':est_fumeur' => $estFumeur,
-        ':a_enfant' => $aEnfant,
-        ':a_animaux' => $aAnimaux
     ]);
 
     session_start();
