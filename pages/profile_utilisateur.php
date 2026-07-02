@@ -70,6 +70,7 @@ $profileStatusMessages = [
     'password_updated' => 'Votre mot de passe a bien ete mis a jour.',
     'photo_updated' => 'Votre photo de profil a bien ete mise a jour.',
     'photo_removed' => 'Votre photo de profil a bien ete supprimee.',
+    'password_updated' => 'Votre mot de passe a bien ete mis a jour.',
 ];
 $profileErrorMessages = [
     'missing_fields' => 'Veuillez remplir tous les champs demandes.',
@@ -80,10 +81,31 @@ $profileErrorMessages = [
     'photo_too_large' => 'La photo doit peser moins de 2 Mo.',
     'upload_failed' => 'Impossible d enregistrer la photo. Veuillez reessayer.',
     'server_error' => 'Une erreur est survenue. Veuillez reessayer.',
+    'invalid_current_password' => 'Le mot de passe actuel est incorrect.',
 ];
 
 include("../includes/header.php");
+
+// Add this after your existing error/status message handling
+$openPasswordModal = isset($_GET['passwordModal']) && $_GET['passwordModal'] === '1' && isset($profileError);
+
 ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    <?php if (isset($openPasswordModal) && $openPasswordModal === true): ?>
+        const passwordModal = new bootstrap.Modal(document.getElementById('passwordModal'));
+        passwordModal.show();
+        
+        setTimeout(function() {
+            const currentPasswordInput = document.getElementById('current_password');
+            if (currentPasswordInput) {
+                currentPasswordInput.focus();
+            }
+        }, 500);
+    <?php endif; ?>
+});
+    </script>
 
 <main class="profile-page">
     <section class="profile-hero">
@@ -160,6 +182,7 @@ include("../includes/header.php");
             </div>
             <form action="be/update_password.php" method="POST">
                 <div class="modal-body">
+                    <input type="hidden" name="user_id" value="<?php echo escapeProfileValue($_SESSION['user_id']); ?>">
                     <div class="form-group mb-3">
                         <label for="current_password">Mot de passe actuel</label>
                         <input type="password" id="current_password" name="current_password" required>
@@ -181,6 +204,7 @@ include("../includes/header.php");
         </div>
     </div>
 </div>
+
 
 <div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -240,6 +264,7 @@ include("../includes/header.php");
         });
     </script>
 <?php endif; ?>
+<script src="../assets/style/js/profile.js"></script>
 
 <?php
 include("../includes/footer.php");
