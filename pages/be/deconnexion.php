@@ -1,13 +1,21 @@
-<?php 
+<?php
 session_start();
-try {
-    session_destroy();
-} catch (Exception $e) {
-    echo "il y'a des erreurs ! ". $e->getMessage();
+$_SESSION = [];
+
+if (ini_get('session.use_cookies')) {
+    $params = session_get_cookie_params();
+    setcookie(
+        session_name(),
+        '',
+        time() - 42000,
+        $params['path'],
+        $params['domain'],
+        $params['secure'],
+        $params['httponly']
+    );
 }
 
-header("location : ../../index.php?info=deconnexion");
+session_destroy();
+
+header('Location: ../../index.php?info=deconnexion');
 exit();
-
-
-?>

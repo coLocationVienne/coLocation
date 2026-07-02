@@ -2,13 +2,12 @@
 
 function getDbConnection() {
     $dbHost = 'localhost';
-    $dbHost = 'localhost';
     $dbUser = 'root';
     $dbPass = '';
-    $dbName = 'coLocation';
+    $dbName = 'colocation';
     
     try {
-        $conn = new PDO("mysql:host=$dbHost;dbname=$dbName", $dbUser, $dbPass);
+        $conn = new PDO("mysql:host=$dbHost;dbname=$dbName;charset=utf8", $dbUser, $dbPass);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $conn;
     } catch (PDOException $e) {
