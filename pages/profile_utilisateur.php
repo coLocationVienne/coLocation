@@ -113,6 +113,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     <i class="fa-solid fa-camera"></i>
                     Modifier la photo
                 </button>
+                <button type="button" class="profile-action-button profile-action-button-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                    <i class="fa-solid fa-user-edit"></i>
+                    Modifier mes informations
+                </button>
             </div>
         </div>
     </section>
@@ -221,6 +225,66 @@ document.addEventListener('DOMContentLoaded', function() {
                     <?php endif; ?>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
                     <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- User Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content profile-modal">
+            <div class="modal-header">
+                <h2 class="modal-title fs-5" id="editProfileModalLabel">Modifier mes informations</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <form action="be/update_user_profile.php" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" name="user_id" value="<?php echo escapeProfileValue($_SESSION['user_id']); ?>">
+                    
+                    <div class="form-group mb-3">
+                        <label for="edit_situation">Situation professionnelle</label>
+                        <select id="edit_situation" name="situation" class="form-control">
+                            <option value="">Sélectionnez une situation</option>
+                            <option value="Étudiant" <?php echo ($user['situation_professionnel'] === 'Étudiant') ? 'selected' : ''; ?>>Étudiant</option>
+                            <option value="Salarié" <?php echo ($user['situation_professionnel'] === 'Salarié') ? 'selected' : ''; ?>>Salarié</option>
+                            <option value="Indépendant" <?php echo ($user['situation_professionnel'] === 'Indépendant') ? 'selected' : ''; ?>>Indépendant</option>
+                            <option value="Retraité" <?php echo ($user['situation_professionnel'] === 'Retraité') ? 'selected' : ''; ?>>Retraité</option>
+                            <option value="Sans emploi" <?php echo ($user['situation_professionnel'] === 'Sans emploi') ? 'selected' : ''; ?>>Sans emploi</option>
+                            <option value="Autre" <?php echo ($user['situation_professionnel'] === 'Autre') ? 'selected' : ''; ?>>Autre</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="edit_garant">Garant</label>
+                        <select id="edit_garant" name="garant" class="form-control">
+                            <option value="0" <?php echo ((int)$user['garant'] === 0) ? 'selected' : ''; ?>>Non</option>
+                            <option value="1" <?php echo ((int)$user['garant'] === 1) ? 'selected' : ''; ?>>Oui</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="edit_salary">Salaire mensuel net (€)</label>
+                        <input type="number" step="0.01" id="edit_salary" name="salary" class="form-control" value="<?php echo escapeProfileValue($user['salaire_mensuel_net']); ?>" placeholder="0.00">
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="edit_revenu_fiscal">Revenu fiscal (€)</label>
+                        <input type="number" step="0.01" id="edit_revenu_fiscal" name="revenu_fiscal" class="form-control" value="<?php echo escapeProfileValue($user['revenu_fiscal']); ?>" placeholder="0.00">
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="edit_date_naissance">Date de naissance</label>
+                        <input type="date" id="edit_date_naissance" name="date_naissance" class="form-control" value="<?php echo !empty($user['date_naissance']) ? date('Y-m-d', strtotime($user['date_naissance'])) : ''; ?>">
+                    </div>
+
+                    <hr>
+                    <p class="text-muted small">Les champs optionnels peuvent être laissés vides.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
                 </div>
             </form>
         </div>

@@ -10,6 +10,8 @@ $profileStatusMessages = [
     'photo_uploaded' => 'La photo a été téléchargée avec succès.',
     'photo_replaced' => 'La photo de profil a été remplacée avec succès.',
     'photo_saved' => 'La photo a été enregistrée avec succès.',
+    'profile_updated' => 'Vos informations ont été mises à jour avec succès.',
+    'user_updated' => 'L\'utilisateur a été mis à jour avec succès.',
 ];
 
 $profileErrorMessages = [
@@ -48,4 +50,11 @@ $profileErrorMessages = [
     'upload_cant_write' => 'Impossible d\'écrire le fichier sur le disque.',
     'upload_extension_error' => 'Une extension PHP a arrêté le téléchargement.',
     'image_processing_error' => 'Erreur lors du traitement de l\'image.',
+    'login_required' => 'Vous devez être connecté pour accéder à cette page.',
+    'unauthorized' => 'Vous n\'avez pas l\'autorisation d\'effectuer cette action.',
+    'invalid_user' => 'Utilisateur invalide.',
+    'no_changes' => 'Aucune modification n\'a été effectuée.',
+    'update_failed' => 'Une erreur est survenue lors de la mise à jour. Veuillez réessayer.',
+    'password_too_short' => 'Le mot de passe doit contenir au moins 6 caractères.',
+    'database_error' => 'Erreur de connexion à la base de données.',
 ];
