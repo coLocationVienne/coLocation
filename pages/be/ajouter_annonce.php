@@ -1,12 +1,17 @@
 <?php
-
-
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ../creer_annonce.php');
     exit();
 }
 
+if (empty($_SESSION['user_id'])) {
+    header('Location: ../connexion.php?error=erreur_connexion');
+    exit();
+}
 
 $requiredFields = [
     'titre',
@@ -19,7 +24,8 @@ $requiredFields = [
     'disponibilite',
     'date_expiration',
     'descriptions',
-    'contact'
+    'contact',
+    'nombre_chambre'
 ];
 
 foreach ($requiredFields as $field) {
@@ -46,11 +52,11 @@ $dateModification = date('Y-m-d');
 $dateCloture = $dateExpiration;
 $contact = trim($_POST['contact']);
 $loyerColocation = $loyer;
-$nombreChambre = !empty($_POST['nombre_chambre']) ? (int) $_POST['nombre_chambre'] : 1;
+$nombreChambre = (int) $_POST['nombre_chambre'];
 $carteCoordonneeGps = trim(htmlspecialchars($_POST['carte_coordonnee_GPS'] ?? ''));
-$modesVie = $_POST['mode_vie'] ?? [];
-
-
+$modesVie = array_map('intval', $_POST['mode_vie'] ?? []);
+$regimes = array_map('intval', $_POST['regime'] ?? []);
+$garant = ($_POST['garant'] ?? '') === 'oui' ? 1 : 0;
 
 if (!filter_var($contact, FILTER_VALIDATE_EMAIL)) {
     header('Location: ../creer_annonce.php?error=invalid_email');
@@ -65,6 +71,8 @@ try {
         header('Location: ../creer_annonce.php?error=server_error');
         exit();
     }
+
+    $dbConn->beginTransaction();
 
     $stmt = $dbConn->prepare("
         INSERT INTO annonce (
@@ -86,7 +94,6 @@ try {
             carte_coordonnee_GPS,
             date_cloture,
             loyer_colocation
-           
         ) VALUES (
             :titre,
             :adresse_1,
@@ -106,7 +113,6 @@ try {
             :carte_coordonnee_GPS,
             :date_cloture,
             :loyer_colocation
-           
         )
     ");
 
@@ -131,22 +137,72 @@ try {
         ':loyer_colocation' => $loyerColocation,
     ]);
 
-    session_start();
-    if (!empty($_SESSION['user_id'])) {
-        $idAnnonce = $dbConn->lastInsertId();
-        $linkStmt = $dbConn->prepare("
-            INSERT INTO annonce_utilisateur (id_utilisateur, id_annonce)
-            VALUES (:id_utilisateur, :id_annonce)
+    $idAnnonce = (int) $dbConn->lastInsertId();
+
+    $linkStmt = $dbConn->prepare("
+        INSERT INTO annonce_utilisateur (id_utilisateur, id_annonce)
+        VALUES (:id_utilisateur, :id_annonce)
+    ");
+    $linkStmt->execute([
+        ':id_utilisateur' => $_SESSION['user_id'],
+        ':id_annonce' => $idAnnonce
+    ]);
+
+    if (!empty($modesVie)) {
+        $modeStmt = $dbConn->prepare("
+            INSERT INTO annonce_mode_vie (id_annonce, id_mode_vie)
+            VALUES (:id_annonce, :id_mode_vie)
         ");
-        $linkStmt->execute([
-            ':id_utilisateur' => $_SESSION['user_id'],
-            ':id_annonce' => $idAnnonce
+
+        foreach (array_unique($modesVie) as $idModeVie) {
+            if ($idModeVie > 0) {
+                $modeStmt->execute([
+                    ':id_annonce' => $idAnnonce,
+                    ':id_mode_vie' => $idModeVie
+                ]);
+            }
+        }
+    }
+
+    if (!empty($regimes)) {
+        $regimeStmt = $dbConn->prepare("
+            INSERT INTO annonce_regime_alimentaire (id_annonce, id_regime_alimentaire)
+            VALUES (:id_annonce, :id_regime_alimentaire)
+        ");
+
+        foreach (array_unique($regimes) as $idRegime) {
+            if ($idRegime > 0) {
+                $regimeStmt->execute([
+                    ':id_annonce' => $idAnnonce,
+                    ':id_regime_alimentaire' => $idRegime
+                ]);
+            }
+        }
+    }
+
+    if (isset($_POST['garant'])) {
+        $garantStmt = $dbConn->prepare("
+            UPDATE utilisateur
+            SET garant = :garant
+            WHERE id_utilisateur = :id_utilisateur
+        ");
+        $garantStmt->execute([
+            ':garant' => $garant,
+            ':id_utilisateur' => $_SESSION['user_id']
         ]);
     }
+
+    $dbConn->commit();
 
     header('Location: ../creer_annonce.php?success=1');
     exit();
 } catch (PDOException $e) {
+    if (isset($dbConn) && $dbConn->inTransaction()) {
+        $dbConn->rollBack();
+    }
+
     header('Location: ../creer_annonce.php?error=server_error');
     exit();
 }
+
+?>
