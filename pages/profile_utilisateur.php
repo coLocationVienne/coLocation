@@ -55,9 +55,9 @@ function getProfilePhotoSrc($photoPath) {
         return $photoPath;
     }
 
-    return '../' . ltrim($photoPath, '/');
+    return 'be/' . ltrim($photoPath, '/');
 }
-
+echo $user['photo_profil'];
 $fullName = trim($user['prenom'] . ' ' . $user['nom']);
 $initials = strtoupper(substr($user['prenom'], 0, 1) . substr($user['nom'], 0, 1));
 $birthDate = !empty($user['date_naissance']) ? date('d/m/Y', strtotime($user['date_naissance'])) : 'Non renseignee';
@@ -66,24 +66,8 @@ $salary = number_format((float) $user['salaire_mensuel_net'], 2, ',', ' ') . ' E
 $profilePhotoSrc = getProfilePhotoSrc($user['photo_profil']);
 $profileStatus = $_GET['status'] ?? '';
 $profileError = $_GET['error'] ?? '';
-$profileStatusMessages = [
-    'password_updated' => 'Votre mot de passe a bien ete mis a jour.',
-    'photo_updated' => 'Votre photo de profil a bien ete mise a jour.',
-    'photo_removed' => 'Votre photo de profil a bien ete supprimee.',
-    'password_updated' => 'Votre mot de passe a bien ete mis a jour.',
-];
-$profileErrorMessages = [
-    'missing_fields' => 'Veuillez remplir tous les champs demandes.',
-    'wrong_password' => 'Le mot de passe actuel est incorrect.',
-    'password_mismatch' => 'Les nouveaux mots de passe ne correspondent pas.',
-    'password_too_short' => 'Le nouveau mot de passe doit contenir au moins 6 caracteres.',
-    'invalid_photo' => 'Veuillez choisir une image JPG, PNG, GIF ou WebP.',
-    'photo_too_large' => 'La photo doit peser moins de 2 Mo.',
-    'upload_failed' => 'Impossible d enregistrer la photo. Veuillez reessayer.',
-    'server_error' => 'Une erreur est survenue. Veuillez reessayer.',
-    'invalid_current_password' => 'Le mot de passe actuel est incorrect.',
-];
 
+include("be/common.php");
 include("../includes/header.php");
 
 // Add this after your existing error/status message handling
@@ -111,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <section class="profile-hero">
         <div class="profile-avatar" aria-hidden="true">
             <?php if ($profilePhotoSrc !== ''): ?>
-                <img src="<?php echo escapeProfileValue($profilePhotoSrc); ?>" alt="">
+                <img class="profile-photo-preview" src="<?php echo escapeProfileValue($profilePhotoSrc); ?>" alt="Photo de profil actuelle">
             <?php else: ?>
                 <?php echo escapeProfileValue($initials); ?>
             <?php endif; ?>
@@ -128,6 +112,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 <button type="button" class="profile-action-button profile-action-button-secondary" data-bs-toggle="modal" data-bs-target="#photoModal">
                     <i class="fa-solid fa-camera"></i>
                     Modifier la photo
+                </button>
+                <button type="button" class="profile-action-button profile-action-button-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                    <i class="fa-solid fa-user-edit"></i>
+                    Modifier mes informations
                 </button>
             </div>
         </div>
@@ -171,6 +159,9 @@ document.addEventListener('DOMContentLoaded', function() {
             </dl>
         </article>
     </section>
+
+    <?php include('profile_utilisateur_admin.php'); ?>
+
 </main>
 
 <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
@@ -217,7 +208,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="modal-body">
                     <div class="profile-photo-preview">
                         <?php if ($profilePhotoSrc !== ''): ?>
-                            <img src="<?php echo escapeProfileValue($profilePhotoSrc); ?>" alt="Photo de profil actuelle">
+                            <img class="profile-photo-preview" src="<?php echo escapeProfileValue($profilePhotoSrc); ?>" alt="Photo de profil actuelle">
+                            
                         <?php else: ?>
                             <span><?php echo escapeProfileValue($initials); ?></span>
                         <?php endif; ?>
@@ -233,6 +225,66 @@ document.addEventListener('DOMContentLoaded', function() {
                     <?php endif; ?>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
                     <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- User Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content profile-modal">
+            <div class="modal-header">
+                <h2 class="modal-title fs-5" id="editProfileModalLabel">Modifier mes informations</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <form action="be/update_user_profile.php" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" name="user_id" value="<?php echo escapeProfileValue($_SESSION['user_id']); ?>">
+                    
+                    <div class="form-group mb-3">
+                        <label for="edit_situation">Situation professionnelle</label>
+                        <select id="edit_situation" name="situation" class="form-control">
+                            <option value="">Sélectionnez une situation</option>
+                            <option value="Étudiant" <?php echo ($user['situation_professionnel'] === 'Étudiant') ? 'selected' : ''; ?>>Étudiant</option>
+                            <option value="Salarié" <?php echo ($user['situation_professionnel'] === 'Salarié') ? 'selected' : ''; ?>>Salarié</option>
+                            <option value="Indépendant" <?php echo ($user['situation_professionnel'] === 'Indépendant') ? 'selected' : ''; ?>>Indépendant</option>
+                            <option value="Retraité" <?php echo ($user['situation_professionnel'] === 'Retraité') ? 'selected' : ''; ?>>Retraité</option>
+                            <option value="Sans emploi" <?php echo ($user['situation_professionnel'] === 'Sans emploi') ? 'selected' : ''; ?>>Sans emploi</option>
+                            <option value="Autre" <?php echo ($user['situation_professionnel'] === 'Autre') ? 'selected' : ''; ?>>Autre</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="edit_garant">Garant</label>
+                        <select id="edit_garant" name="garant" class="form-control">
+                            <option value="0" <?php echo ((int)$user['garant'] === 0) ? 'selected' : ''; ?>>Non</option>
+                            <option value="1" <?php echo ((int)$user['garant'] === 1) ? 'selected' : ''; ?>>Oui</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="edit_salary">Salaire mensuel net (€)</label>
+                        <input type="number" step="0.01" id="edit_salary" name="salary" class="form-control" value="<?php echo escapeProfileValue($user['salaire_mensuel_net']); ?>" placeholder="0.00">
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="edit_revenu_fiscal">Revenu fiscal (€)</label>
+                        <input type="number" step="0.01" id="edit_revenu_fiscal" name="revenu_fiscal" class="form-control" value="<?php echo escapeProfileValue($user['revenu_fiscal']); ?>" placeholder="0.00">
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="edit_date_naissance">Date de naissance</label>
+                        <input type="date" id="edit_date_naissance" name="date_naissance" class="form-control" value="<?php echo !empty($user['date_naissance']) ? date('Y-m-d', strtotime($user['date_naissance'])) : ''; ?>">
+                    </div>
+
+                    <hr>
+                    <p class="text-muted small">Les champs optionnels peuvent être laissés vides.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
                 </div>
             </form>
         </div>
@@ -264,6 +316,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     </script>
 <?php endif; ?>
+
+
 <script src="../assets/style/js/profile.js"></script>
 
 <?php

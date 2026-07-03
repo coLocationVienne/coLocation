@@ -26,6 +26,8 @@ if(isset($_POST['email']) && isset($_POST['password'])) {
         session_start();
         $_SESSION['user_id'] = $user['id_utilisateur'];
         $_SESSION['user_email'] = $user['email'];
+        $_SESSION['user_prenom'] = $user['prenom'];
+        $_SESSION['user_nom'] = $user['nom'];
         $_SESSION['isLoggedin'] = true;
         $_SESSION['user_role'] = $user['id_role']; 
 
