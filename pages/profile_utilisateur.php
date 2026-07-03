@@ -55,9 +55,9 @@ function getProfilePhotoSrc($photoPath) {
         return $photoPath;
     }
 
-    return '../' . ltrim($photoPath, '/');
+    return 'be/' . ltrim($photoPath, '/');
 }
-
+echo $user['photo_profil'];
 $fullName = trim($user['prenom'] . ' ' . $user['nom']);
 $initials = strtoupper(substr($user['prenom'], 0, 1) . substr($user['nom'], 0, 1));
 $birthDate = !empty($user['date_naissance']) ? date('d/m/Y', strtotime($user['date_naissance'])) : 'Non renseignee';
@@ -66,32 +66,8 @@ $salary = number_format((float) $user['salaire_mensuel_net'], 2, ',', ' ') . ' E
 $profilePhotoSrc = getProfilePhotoSrc($user['photo_profil']);
 $profileStatus = $_GET['status'] ?? '';
 $profileError = $_GET['error'] ?? '';
-$profileStatusMessages = [
-    'password_updated' => 'Votre mot de passe a bien ete mis a jour.',
-    'photo_updated' => 'Votre photo de profil a bien ete mise a jour.',
-    'photo_removed' => 'Votre photo de profil a bien ete supprimee.',
-    'password_updated' => 'Votre mot de passe a bien ete mis a jour.',
-    'user_updated' => 'L\'utilisateur a été mis à jour avec succès.',
-    'user_deleted' => 'L\'utilisateur a été supprimé avec succès.',
-];
-$profileErrorMessages = [
-    'missing_fields' => 'Veuillez remplir tous les champs demandes.',
-    'wrong_password' => 'Le mot de passe actuel est incorrect.',
-    'password_mismatch' => 'Les nouveaux mots de passe ne correspondent pas.',
-    'password_too_short' => 'Le nouveau mot de passe doit contenir au moins 6 caracteres.',
-    'invalid_photo' => 'Veuillez choisir une image JPG, PNG, GIF ou WebP.',
-    'photo_too_large' => 'La photo doit peser moins de 2 Mo.',
-    'upload_failed' => 'Impossible d enregistrer la photo. Veuillez reessayer.',
-    'server_error' => 'Une erreur est survenue. Veuillez reessayer.',
-    'invalid_current_password' => 'Le mot de passe actuel est incorrect.',
-    'unauthorized' => 'Vous n\'avez pas les droits pour effectuer cette action.',
-    'invalid_user' => 'Utilisateur invalide.',
-    'no_changes' => 'Aucune modification à effectuer.',
-    'update_failed' => 'La mise à jour a échoué. Veuillez réessayer.',
-    'cannot_delete_self' => 'Vous ne pouvez pas supprimer votre propre compte.',
-    'delete_failed' => 'La suppression a échoué. Veuillez réessayer.',
-];
 
+include("be/common.php");
 include("../includes/header.php");
 
 // Add this after your existing error/status message handling
@@ -119,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <section class="profile-hero">
         <div class="profile-avatar" aria-hidden="true">
             <?php if ($profilePhotoSrc !== ''): ?>
-                <img src="<?php echo escapeProfileValue($profilePhotoSrc); ?>" alt="">
+                <img class="profile-photo-preview" src="<?php echo escapeProfileValue($profilePhotoSrc); ?>" alt="Photo de profil actuelle">
             <?php else: ?>
                 <?php echo escapeProfileValue($initials); ?>
             <?php endif; ?>
@@ -228,7 +204,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="modal-body">
                     <div class="profile-photo-preview">
                         <?php if ($profilePhotoSrc !== ''): ?>
-                            <img src="<?php echo escapeProfileValue($profilePhotoSrc); ?>" alt="Photo de profil actuelle">
+                            <img class="profile-photo-preview" src="<?php echo escapeProfileValue($profilePhotoSrc); ?>" alt="Photo de profil actuelle">
+                            
                         <?php else: ?>
                             <span><?php echo escapeProfileValue($initials); ?></span>
                         <?php endif; ?>

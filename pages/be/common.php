@@ -1,0 +1,51 @@
+<?php
+$profileStatusMessages = [
+
+    'password_updated' => 'Votre mot de passe a bien été mis à jour.',
+    'photo_updated' => 'Votre photo de profil a bien été mise à jour.',
+    'photo_removed' => 'Votre photo de profil a bien été supprimée.',
+
+    'user_updated' => 'L\'utilisateur a été mis à jour avec succès.',
+    'user_deleted' => 'L\'utilisateur a été supprimé avec succès.',
+    'photo_uploaded' => 'La photo a été téléchargée avec succès.',
+    'photo_replaced' => 'La photo de profil a été remplacée avec succès.',
+    'photo_saved' => 'La photo a été enregistrée avec succès.',
+];
+
+$profileErrorMessages = [
+
+    'missing_fields' => 'Veuillez remplir tous les champs demandés.',
+    'server_error' => 'Une erreur est survenue. Veuillez réessayer.',
+    'unauthorized' => 'Vous n\'avez pas les droits pour effectuer cette action.',
+    'invalid_user' => 'Utilisateur invalide.',
+    'no_changes' => 'Aucune modification à effectuer.',
+    'update_failed' => 'La mise à jour a échoué. Veuillez réessayer.',
+    'wrong_password' => 'Le mot de passe actuel est incorrect.',
+    'password_mismatch' => 'Les nouveaux mots de passe ne correspondent pas.',
+    'password_too_short' => 'Le nouveau mot de passe doit contenir au moins 6 caractères.',
+    'invalid_current_password' => 'Le mot de passe actuel est incorrect.',
+    'no_file_selected' => 'Veuillez sélectionner une photo à télécharger.',
+    'invalid_photo' => 'Veuillez choisir une image JPG, PNG, GIF ou WebP.',
+    'invalid_file_type' => 'Type de fichier non autorisé. Utilisez: JPG, PNG, GIF ou WEBP.',
+    'photo_too_large' => 'La photo doit peser moins de 2 Mo.',
+    'file_too_large' => 'Le fichier est trop volumineux. Taille maximum: 5MB.',
+    'upload_failed' => 'Impossible d\'enregistrer la photo. Veuillez réessayer.',
+    'upload_error' => 'Erreur lors du téléchargement du fichier.',
+    'move_failed' => 'Erreur lors du déplacement du fichier téléchargé.',
+    'db_update_failed' => 'Erreur lors de la mise à jour de la base de données.',
+    'remove_failed' => 'Erreur lors de la suppression de la photo.',
+    'directory_error' => 'Impossible de créer le dossier de téléchargement.',
+    'permission_error' => 'Le dossier de téléchargement n\'est pas accessible en écriture.',
+    'photo_delete_failed' => 'Impossible de supprimer l\'ancienne photo.',
+    'photo_save_failed' => 'Erreur lors de l\'enregistrement de la photo.',
+    'cannot_delete_self' => 'Vous ne pouvez pas supprimer votre propre compte.',
+    'delete_failed' => 'La suppression a échoué. Veuillez réessayer.',
+    'invalid_image' => 'Le fichier sélectionné n\'est pas une image valide.',
+    'image_too_large' => 'L\'image est trop grande. La taille maximale est de 5MB.',
+    'upload_ini_error' => 'Le fichier dépasse la taille maximale autorisée par PHP.',
+    'upload_partial' => 'Le fichier n\'a été que partiellement téléchargé.',
+    'upload_no_tmp_dir' => 'Dossier temporaire manquant pour le téléchargement.',
+    'upload_cant_write' => 'Impossible d\'écrire le fichier sur le disque.',
+    'upload_extension_error' => 'Une extension PHP a arrêté le téléchargement.',
+    'image_processing_error' => 'Erreur lors du traitement de l\'image.',
+];

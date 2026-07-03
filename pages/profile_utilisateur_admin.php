@@ -18,8 +18,8 @@
                     <select id="roleFilter" class="form-control" onchange="filterUsers()">
                         <option value="">Tous les rôles</option>
                         <option value="admin">Admin</option>
-                        <option value="utilisateur">Utilisateur</option>
-                        <option value="moderateur">Modérateur</option>
+                        <option value="Propriétaire">Propriétaire</option>
+                        <option value="Locataire">Locataire</option>
                     </select>
                 </div>
             </div>
