@@ -91,21 +91,21 @@ $errorMessages = [
                     <label for="ville">Ville</label>
                     <select id="ville" name="ville" required>
                         <option value="" selected disabled hidden>Choisissez une ville</option>
-                        <option value="ChÃ¢tellerault">Chatellerault</option>
+                        <option value="Chatellerault">Chatellerault</option>
                         <option value="Buxerolles">Buxerolles</option>
                         <option value="Jaunay-Marigny">Jaunay-Marigny</option>
                         <option value="Chauvigny">Chauvigny</option>
                         <option value="Luchapt">Luchapt</option>
-                        <option value="NaintrÃ©">Naintrer</option>
+                        <option value="Naintr">Naintrer</option>
                         <option value="Adriers">Adriers</option>
                         <option value="Charroux">Charroux</option>
                         <option value="Monts-sur-Guesnes">Monts-sur-Guesnes</option>
-                        <option value="ChÃ¢teau-Larcher">Chacteau-Larcher</option>
+                        <option value="Chateau-Larcher">Chacteau-Larcher</option>
                         <option value="Lusignan">Lusignan</option>
                         <option value="Chasseneuil-du-Poitou">Chasseneuil-du-Poitou</option>
                         <option value="Lussac-les-ChÃ¢teaux">Lussac-les-Chacteaux</option>
-                        <option value="ArÃ§ay">Arasy</option>
-                        <option value="AnchÃ©">Anchar</option>
+                        <option value="Arsay">Arasy</option>
+                        <option value="Ancha">Anchar</option>
                         <option value="Amberre">Amberre</option>
                     </select>
                 </div>
