@@ -42,6 +42,7 @@ $stmt->execute([
 ]);
 $annonce = $stmt->fetch(PDO::FETCH_ASSOC);
 
+
 if (!$annonce) {
     header("Location: page_annonce.phperror=unauthorized");
     exit();
@@ -81,14 +82,14 @@ $errorMessages = [
     </section>
 
     <section class="annonce-form-section">
-        <php if (!empty($error) && isset($errorMessages[$error])): >
+        <?php if (!empty($error) && isset($errorMessages[$error])): ?>
             <div class="annonce-message" role="alert">
-                <php echo $errorMessages[$error]; >
+                <?php echo $errorMessages[$error]; ?>
             </div>
-        <php endif; >
+        <?php endif; ?>
 
         <form action="be/modifier_annonce.php" method="POST" class="annonce-form">
-            <input type="hidden" name="id_annonce" value="<php echo (int) $annonce['id_annonce']; >">
+            <input type="hidden" name="id_annonce" value="<?php echo (int) $annonce['id_annonce']; ?>">
 
             <fieldset>
                 <legend>Informations du logement</legend>
@@ -96,86 +97,86 @@ $errorMessages = [
                 <div class="annonce-form-grid deux-colonnes">
                     <div class="annonce-field">
                         <label for="titre">Titre de l'annonce</label>
-                        <input type="text" id="titre" name="titre" value="<php echo htmlspecialchars($annonce['titre']); >" required>
+                        <input type="text" id="titre" name="titre" value="<?php echo htmlspecialchars($annonce['titre']); ?>" required>
                     </div>
 
                     <div class="annonce-field">
                         <label for="rue_nom">Numero et nom de rue</label>
-                        <input type="text" id="rue_nom" name="rue_nom" value="<php echo htmlspecialchars($annonce['adresse_1']); >" required>
+                        <input type="text" id="rue_nom" name="rue_nom" value="<?php echo htmlspecialchars($annonce['adresse_1']); ?>" required>
                     </div>
                 </div>
 
                 <div class="annonce-form-grid trois-colonnes">
                     <div class="annonce-field">
                         <label for="appartement">Numero appartement</label>
-                        <input type="text" id="appartement" name="appartement" value="<php echo htmlspecialchars($annonce['adresse_2'] ''); >">
+                        <input type="text" id="appartement" name="appartement" value="<?php echo htmlspecialchars($annonce['adresse_2'] ?? ''); ?>">
                     </div>
 
                     <div class="annonce-field">
                         <label for="batiment">Numero de batiment</label>
-                        <input type="text" id="batiment" name="batiment" value="<php echo htmlspecialchars($annonce['adresse_3'] ''); >">
+                        <input type="text" id="batiment" name="batiment" value="<?php echo htmlspecialchars($annonce['adresse_3'] ?? ''); ?>">
                     </div>
 
                     <div class="annonce-field">
                         <label for="codePostal">Code postal</label>
-                        <input type="number" id="codePostal" name="codePostal" value="<php echo htmlspecialchars($annonce['code_postal']); >" required>
+                        <input type="number" id="codePostal" name="codePostal" value="<?php echo htmlspecialchars($annonce['code_postal']); ?>" required>
                     </div>
                 </div>
 
                 <div class="annonce-field">
                     <label for="infocomplementaire">Information complaimentaire</label>
-                    <input type="text" id="infocomplementaire" name="infocomplementaire" value="<php echo htmlspecialchars($annonce['adresse_4'] ''); >">
+                    <input type="text" id="infocomplementaire" name="infocomplementaire" value="<?php echo htmlspecialchars($annonce['adresse_4'] ?? ''); ?>">
                 </div>
 
                 <div class="annonce-form-grid deux-colonnes">
                     <div class="annonce-field">
                         <label for="ville">Ville</label>
-                        <input type="text" id="ville" name="ville" value="<php echo htmlspecialchars($annonce['ville']); >" required>
+                        <input type="text" id="ville" name="ville" value="<?php echo htmlspecialchars($annonce['ville']); ?>" required>
                     </div>
 
                     <div class="annonce-field">
                         <label for="image_url">Image de l'annonce</label>
-                        <input type="url" id="image_url" name="image_url" value="<php echo htmlspecialchars($annonce['image_url'] ''); >" placeholder="https://...">
+                        <input type="url" id="image_url" name="image_url" value="<?php echo htmlspecialchars($annonce['image_url'] ?? ''); ?>" placeholder="https://...">
                     </div>
                 </div>
 
                 <div class="annonce-form-grid trois-colonnes">
                     <div class="annonce-field">
                         <label for="loyer">Loyer mensuel</label>
-                        <input type="number" id="loyer" name="loyer" min="0" step="0.01" value="<php echo htmlspecialchars($annonce['loyer_location_chez_habitant']); >" required>
+                        <input type="number" id="loyer" name="loyer" min="0" step="0.01" value="<?php echo htmlspecialchars($annonce['loyer_location_chez_habitant']); ?>" required>
                     </div>
 
                     <div class="annonce-field">
                         <label for="surface_logement">Surface du logement en m²</label>
-                        <input type="number" id="surface_logement" name="surface_logement" min="1" step="0.01" value="<php echo htmlspecialchars($annonce['surface_logement']); >" required>
+                        <input type="number" id="surface_logement" name="surface_logement" min="1" step="0.01" value="<?php echo htmlspecialchars($annonce['surface_logement']); ?>" required>
                     </div>
 
                     <div class="annonce-field">
                         <label for="surface_chambres">Surface des chambres en m²</label>
-                        <input type="number" id="surface_chambres" name="surface_chambres" min="1" step="0.01" value="<php echo htmlspecialchars($annonce['surface_chambres']); >" required>
+                        <input type="number" id="surface_chambres" name="surface_chambres" min="1" step="0.01" value="<?php echo htmlspecialchars($annonce['surface_chambres']); ?>" required>
                     </div>
                 </div>
 
                 <div class="annonce-form-grid trois-colonnes">
                     <div class="annonce-field">
                         <label for="nombre_chambre">Nombre de chambres</label>
-                        <input type="number" id="nombre_chambre" name="nombre_chambre" min="1" value="<php echo htmlspecialchars($annonce['nombre_chambre']); >" required>
+                        <input type="number" id="nombre_chambre" name="nombre_chambre" min="1" value="<?php echo htmlspecialchars($annonce['nombre_chambre']); ?>" required>
                     </div>
 
                     <div class="annonce-field">
                         <label for="date_expiration">Date expiration</label>
-                        <input type="date" id="date_expiration" name="date_expiration" value="<php echo htmlspecialchars($annonce['date_expiration']); >" required>
+                        <input type="date" id="date_expiration" name="date_expiration" value="<?php echo htmlspecialchars($annonce['date_expiration']); ?>" required>
                     </div>
 
                     <div class="annonce-field">
                         <label for="date_cloture">Date cloture</label>
-                        <input type="date" id="date_cloture" name="date_cloture" value="<php echo htmlspecialchars($annonce['date_cloture']); >" required>
+                        <input type="date" id="date_cloture" name="date_cloture" value="<?php echo htmlspecialchars($annonce['date_cloture']); ?>" required>
                     </div>
                 </div>
 
                 <div class="annonce-field">
                     <label for="carte_coordonnee_GPS">Coordonnée GPS</label>
-                    <input type="text" id="carte_coordonnee_GPS" name="carte_coordonnee_GPS" value="<php echo htmlspecialchars($annonce['carte_coordonnee_GPS'] ''); >" placeholder="45.764043, 4.835659">
+                    <input type="text" id="carte_coordonnee_GPS" name="carte_coordonnee_GPS" value="<?php echo htmlspecialchars($annonce['carte_coordonnee_GPS'] ?? ''); ?>" placeholder="45.764043, 4.835659">
                 </div>
 
                 <div class="annonce-field">

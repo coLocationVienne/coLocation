@@ -188,7 +188,7 @@ if (!empty($_SESSION['isLoggedin']) && isset($_SESSION['user_id'])) {
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="<?php echo $baseURL; ?>/pages/mes_annonces.php">
+                  <a class="dropdown-item" href="<?php echo $baseURL; ?>/pages/page_annonce.php">
                     <i class="fas fa-list"></i> Mes annonces
                   </a>
                 </li>
