@@ -1,12 +1,33 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!empty($_SESSION['isLoggedin'])) {
+    header("Location: ../index.php");
+    exit();
+}
+
+require("../includes/dbConnection.php");
+$dbConn = getDbConnection();
+
+$loginError = $_GET['error'] ?? '';
+$registered = $_GET['registered'] ?? '';
+$loginErrorMessages = [
+    'invalid_credentials' => 'Email ou mot de passe incorrect. Veuillez reessayer.',
+    'missing_fields' => 'Veuillez remplir votre email et votre mot de passe.',
+    'error_connexion' =>'vous devez vous connecter pour creer une annonce',
+    'login_required' => 'Veuillez vous connecter pour acceder a votre profil.',
+];
+
 include("../includes/header.php");
 ?>
 <section class="login-page">
     <div class="login-card">
-        <h1>Bienvenu</h1>
+        <h1>Bienvenue</h1>
         <p class="login-subtitle">Connectez vous sur votre compte.</p>
 
-        <form action="login_process.php" method="POST" class="login-form">
+        <form action="be/login_process.php" method="POST" class="login-form">
             <div class="form-group">
                 <label for="email">Adress email</label>
                 <input
@@ -46,6 +67,33 @@ include("../includes/header.php");
         </p>
     </div>
 </section>
+
+<?php if (isset($loginErrorMessages[$loginError])): ?>
+    <script>
+        window.addEventListener("load", function () {
+            Swal.fire({
+                title: "Connexion echouee",
+                text: "<?php echo htmlspecialchars($loginErrorMessages[$loginError], ENT_QUOTES); ?>",
+                icon: "error",
+                confirmButtonText: "Reessayer"
+            });
+        });
+    </script>
+<?php endif; ?>
+
+<?php if ($registered === '1'): ?>
+    <script>
+        window.addEventListener("load", function () {
+            Swal.fire({
+                title: "Compte cree",
+                text: "Votre compte a bien ete cree. Vous pouvez maintenant vous connecter.",
+                icon: "success",
+                confirmButtonText: "Se connecter"
+            });
+        });
+    </script>
+<?php endif; ?>
+
 <?php 
 include("../includes/footer.php");
 ?>

@@ -1,51 +1,170 @@
-<?php 
-include("../includes/header.php");
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
+require_once "../includes/dbConnection.php";
+
+if (empty($_SESSION['user_id'])) {
+    header("Location: connexion.php?error=erreur_connexion");
+    exit();
+}
+
+$dbConn = getDbConnection();
+$userId = (int) $_SESSION['user_id'];
+$error = $_GET['error'] ?? '';
+$success = $_GET['success'] ?? '';
+
+$stmt = $dbConn->prepare("
+    SELECT
+        a.*,
+        (
+            SELECT p.url
+            FROM annonce_photo ap
+            INNER JOIN photo p ON p.id_photo = ap.id_photo
+            WHERE ap.id_annonce = a.id_annonce
+            ORDER BY p.id_photo ASC
+            LIMIT 1
+        ) AS image_url
+    FROM annonce a
+    INNER JOIN annonce_utilisateur au ON au.id_annonce = a.id_annonce
+    WHERE au.id_utilisateur = :id_utilisateur
+    ORDER BY a.date_publication DESC, a.id_annonce DESC
+");
+$stmt->execute([
+    ':id_utilisateur' => $userId
+]);
+$annonces = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+include("../includes/header.php");
 ?>
 
-<main class="container-xl">
+<main class="page-annonce">
+    <section class="annonce-entete">
+        <div>
+            <p class="petit-titre">Mes annonces</p>
+            <h1>Gérez vos annonces</h1>
+            <p>
+                Retrouvez uniquement les annonces que vous avez publiées, puis modifiez les informations du logement quand nécessaire.
+            </p>
+        </div>
 
+        <form class="recherche-annonce">
+            <h2>Explorer</h2>
+            <input type="search" id="searchLocation" placeholder="Localisation">
+            <input type="number" id="searchBudget" placeholder="Budget maximum">
+            <button type="button" id="searchButton">Rechercher</button>
+        </form>
+    </section>
 
-<nav class="navbar bg-body-tertiary mt ft">
-  <div class="container-fluid">
-    
-  <form class="d-flex flex-column formu" role="search">
-      <legend>Explorer</legend>
-      <input class="form-control me-2" type="search" placeholder="localisation" aria-label="localisation"/>
-      <input class="form-control me-2" type="search" placeholder="votre prix min/max" aria-label="prix"/>
-      <button class="btn btn-outline-success" type="submit">recherche</button>
-    </form>
-  </div>
-</nav>
+    <section class="announces-section" id="annonces">
+        <div class="section-heading">
+            <div>
+                <p class="petit-titre">Disponibles</p>
+                <h2>Vos annonces</h2>
+            </div>
+            <p id="resultCount"><?php echo count($annonces); ?> annonce(s) trouvée(s)</p>
+        </div>
 
+        <?php if ($success === 'updated'): ?>
+            <p class="annonce-message">Votre annonce a bien été modifiée.</p>
+        <?php endif; ?>
 
+        <?php if ($error === 'unauthorized'): ?>
+            <p class="annonce-message">Vous ne pouvez pas modifier une annonce qui ne vous appartient pas.</p>
+        <?php endif; ?>
 
-<section class="d-flex g-3 section">
-<!--ici seront mes images-->
+        <?php if (empty($annonces)): ?>
+            <p class="empty-state is-visible">Vous n'avez pas encore publié d'annonce.</p>
+        <?php else: ?>
+            <div class="announce-grid" id="announceGrid">
+                <?php foreach ($annonces as $annonce): ?>
+                    <?php
+                        $image = !empty($annonce['image_url'])
+                            ? $annonce['image_url']
+                            : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=900&q=80';
+                        $searchText = strtolower($annonce['titre'] . ' ' . $annonce['ville'] . ' ' . $annonce['description']);
+                    ?>
 
-           <figure class="figure">
-                <img src="https://media.istockphoto.com/photos/stylish-living-room-interior-with-beautiful-house-plants-picture-id1312439845?k=20&m=1312439845&s=170667a&w=0&h=Dm0vTngpk4UP8Zh80DxaDoOAl1IdHxegakHnFlV709o=" class="figure-img img-fluid rounded img-thumbnail" alt="...">
-                <figcaption class="blockquote-footer">245$</figcaption>
-            </figure>
+                    <article class="announce-card" data-search="<?php echo htmlspecialchars($searchText); ?>" data-price="<?php echo htmlspecialchars($annonce['loyer_location_chez_habitant']); ?>">
+                        <div class="announce-image">
+                            <img src="<?php echo htmlspecialchars($image); ?>" alt="<?php echo htmlspecialchars($annonce['titre']); ?>">
+                            <span><?php echo htmlspecialchars($annonce['loyer_location_chez_habitant']); ?> EUR/mois</span>
+                        </div>
 
-            <figure class="figure">
-                <img src="https://media.istockphoto.com/id/1312439694/fr/photo/int%C3%A9rieur-%C3%A9l%C3%A9gant-de-salle-de-salon-avec-de-belles-usines-de-maison.jpg?s=2048x2048&w=is&k=20&c=y3JkqGZj4qWfYzE1zJNs9A6JFO8p767hYBKFOoxgIx4=" class="figure-img img-fluid rounded img-thumbnail" alt="...">
-                <figcaption class="blockquote-footer">475$</figcaption>
-            </figure>
+                        <div class="announce-body">
+                            <div class="announce-topline">
+                                <span><?php echo htmlspecialchars($annonce['ville']); ?></span>
+                                <strong><?php echo htmlspecialchars($annonce['surface_logement']); ?> m²</strong>
+                            </div>
 
-              <figure class="figure">
-                <img src="https://media.istockphoto.com/id/1305457119/fr/photo/int%C3%A9rieur-%C3%A9l%C3%A9gant-de-salle-de-s%C3%A9jour-avec-le-sofa-et-les-coussins-confortables.jpg?s=2048x2048&w=is&k=20&c=dgZBhEiiHj2vbYSwSCzfvqc8W_WjiNkJ6VpoS5ds5RU=" class="figure-img img-fluid rounded img-thumbnail" alt="...">
-                <figcaption class="blockquote-footer">566$</figcaption>
-            </figure>
- 
-            <a href="" class="btn btn-primary">creez vos annonces</a>
-</section>
+                            <h3><?php echo htmlspecialchars($annonce['titre']); ?></h3>
+                            <p><?php echo htmlspecialchars($annonce['description']); ?></p>
 
+                            <div class="announce-meta">
+                                <span><i class="fa-regular fa-calendar"></i> Expire le <?php echo htmlspecialchars($annonce['date_expiration']); ?></span>
+                                <span><i class="fa-solid fa-bed"></i> <?php echo htmlspecialchars($annonce['nombre_chambre']); ?> chambre(s)</span>
+                            </div>
 
+                            <div class="tag-list">
+                                <span><?php echo htmlspecialchars($annonce['surface_chambres']); ?> m² chambre</span>
+                                <span><?php echo htmlspecialchars($annonce['code_postal']); ?></span>
+                            </div>
+
+                            <div class="annonce-actions mt-3">
+                                <a href="formulaire_modifier_annonce.php?id_annonce=<?php echo (int) $annonce['id_annonce']; ?>" class="annonce-btn-principal">
+                                    Modifier
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                <?php endforeach; ?>
+            </div>
+
+            <p class="empty-state" id="emptyState">Aucune annonce ne correspond à votre recherche.</p>
+        <?php endif; ?>
+    </section>
 </main>
 
-some new test here for new branch git
-<?php 
-include("../includes/footer.php");
+<script>
+    const searchLocation = document.getElementById("searchLocation");
+    const searchBudget = document.getElementById("searchBudget");
+    const searchButton = document.getElementById("searchButton");
+    const resultCount = document.getElementById("resultCount");
+    const emptyState = document.getElementById("emptyState");
+    const cards = Array.from(document.querySelectorAll(".announce-card"));
 
+    function filterAnnounces() {
+        const query = searchLocation.value.trim().toLowerCase();
+        const budget = searchBudget.value;
+        let total = 0;
+
+        cards.forEach((card) => {
+            const matchText = card.dataset.search.includes(query);
+            const matchBudget = budget === "" || Number(card.dataset.price) <= Number(budget);
+            const visible = matchText && matchBudget;
+
+            card.hidden = !visible;
+
+            if (visible) {
+                total++;
+            }
+        });
+
+        resultCount.textContent = total + " annonce(s) trouvée(s)";
+
+        if (emptyState) {
+            emptyState.classList.toggle("is-visible", total === 0);
+        }
+    }
+
+    if (searchButton) {
+        searchButton.addEventListener("click", filterAnnounces);
+        searchLocation.addEventListener("input", filterAnnounces);
+        searchBudget.addEventListener("input", filterAnnounces);
+    }
+</script>
+
+<?php
+include("../includes/footer.php");
 ?>

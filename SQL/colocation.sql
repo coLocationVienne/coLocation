@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mar. 09 juin 2026 à 09:36
+-- Généré le : ven. 03 juil. 2026 à 20:19
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -22,8 +22,9 @@ SET time_zone = "+00:00";
 --
 
 -- --------------------------------------------------------
-create database if not exists `colocation` default character set utf8mb4 collate utf8mb4_general_ci;
-use `colocation`;
+CREATE database if no exists colocation;
+dafault character set utf8mb4 collate utf8mb4_general_ci;
+use colocation;
 --
 -- Structure de la table `age_recherche`
 --
@@ -69,19 +70,23 @@ CREATE TABLE `annonce` (
   `date_modification` date NOT NULL,
   `carte_coordonnee_GPS` varchar(40) DEFAULT NULL,
   `date_cloture` date NOT NULL,
-  `loyer_colocation` decimal(5,2) NOT NULL,
-  `est_fumeur` tinyint(1) NOT NULL,
-  `a_enfant` tinyint(1) NOT NULL,
-  `a_animaux` tinyint(1) NOT NULL
+  `loyer_colocation` decimal(5,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `annonce`
 --
 
-INSERT INTO `annonce` (`id_annonce`, `titre`, `adresse_1`, `adresse_2`, `adresse_3`, `adresse_4`, `ville`, `code_postal`, `loyer_location_chez_habitant`, `description`, `surface_logement`, `surface_chambres`, `nombre_chambre`, `date_expiration`, `date_publication`, `date_modification`, `carte_coordonnee_GPS`, `date_cloture`, `loyer_colocation`, `est_fumeur`, `a_enfant`, `a_animaux`) VALUES
-(1, 'Colocation étudiante lumineuse', '15 Rue de la République', 'Appartement 3B', NULL, NULL, 'Lyon', 69001, 650.00, 'Superbe appartement rénové proche université. Très lumineux avec balcon. Quartier calme et bien desservi par les transports.', 85.50, 12.50, 3, '2026-07-09', '2026-06-09', '2026-06-09', '45.764043, 4.835659', '2026-07-09', 550.00, 0, 0, 0),
-(2, 'Chambre cosy chez l\'habitant', '8 Avenue Victor Hugo', NULL, NULL, NULL, 'Paris', 75016, 800.00, 'Chambre meublée dans appartement spacieux. Propriétaire sympathique. Jardin partagé. Proche commerces et métro.', 120.00, 15.00, 1, '2026-05-25', '2026-04-25', '2026-06-09', '48.856614, 2.352222', '2026-06-08', 700.00, 1, 0, 1);
+INSERT INTO `annonce` (`id_annonce`, `titre`, `adresse_1`, `adresse_2`, `adresse_3`, `adresse_4`, `ville`, `code_postal`, `loyer_location_chez_habitant`, `description`, `surface_logement`, `surface_chambres`, `nombre_chambre`, `date_expiration`, `date_publication`, `date_modification`, `carte_coordonnee_GPS`, `date_cloture`, `loyer_colocation`) VALUES
+(1, 'Colocation étudiante lumineuse', '15 Rue de la République', 'Appartement 3B', NULL, NULL, 'Lyon', 69001, 650.00, 'Superbe appartement rénové proche université. Très lumineux avec balcon. Quartier calme et bien desservi par les transports.', 85.50, 12.50, 3, '2026-07-09', '2026-06-09', '2026-06-09', '45.764043, 4.835659', '2026-07-09', 550.00),
+(2, 'Chambre cosy chez l\'habitant', '8 Avenue Victor Hugo', NULL, NULL, NULL, 'Paris', 75016, 800.00, 'Chambre meublée dans appartement spacieux. Propriétaire sympathique. Jardin partagé. Proche commerces et métro.', 120.00, 15.00, 1, '2026-05-25', '2026-04-25', '2026-06-09', '48.856614, 2.352222', '2026-06-08', 700.00),
+(3, 'loulou', '40 RUE AMECON', 'UKML', 'NVK', '', 'Châtellerault', 86100, 560.00, 'Il s&#039;agit d&#039;un T3, salon non compris puisque c&#039;est une colocation. nous sommes a la recherche d&#039;un troisième colocataire.', 30.00, 18.00, 3, '2026-07-29', '2026-07-01', '2026-07-01', '', '2026-07-29', 560.00),
+(4, 'Chambre lumineuse proche du centre', '24 Rue Marchande', 'Appartement 2A', NULL, NULL, 'Vienne', 38200, 420.00, 'Colocation calme avec fibre, balcon et espaces communs agreables.', 72.00, 18.00, 3, '2026-08-31', '2026-07-03', '2026-07-03', NULL, '2026-08-31', 420.00),
+(5, 'Appartement partage ambiance conviviale', '8 Rue des Cedres', NULL, NULL, NULL, 'Estressin', 38200, 365.00, 'Logement agreable pour colocataires sociables, proche des transports.', 64.00, 14.00, 2, '2026-08-15', '2026-07-03', '2026-07-03', NULL, '2026-08-15', 365.00),
+(6, 'Maison avec jardin', '11 Chemin du Jardin', NULL, NULL, 'Maison au calme', 'Pont-Eveque', 38780, 510.00, 'Colocation tranquille avec jardin, parking et ambiance familiale.', 110.00, 22.00, 4, '2026-09-01', '2026-07-03', '2026-07-03', NULL, '2026-09-01', 510.00),
+(7, 'Studio partage proche de la gare', '3 Avenue de la Gare', 'Studio 4', NULL, NULL, 'Vienne', 38200, 590.00, 'Logement pratique pour actifs, avec acces rapide a la gare et commerces a proximite.', 42.00, 20.00, 1, '2026-08-20', '2026-07-03', '2026-07-03', NULL, '2026-08-20', 590.00),
+(8, 'chambre en banlieu', '40 rue aime rasset', '56', '76', '', 'Chauvigny', 86100, 450.00, 'c&#039;est une chambre dans un appartement en banlieu', 999.99, 20.00, 50, '2026-07-29', '2026-07-03', '2026-07-03', '', '2026-07-29', 450.00),
+(9, 'lalalal', '530 RUE AMECON', '98', '43', '', 'NaintrÃ©', 6974, 999.99, 'HIGIYFVK', 546.00, 66.00, 6, '2026-07-31', '2026-07-03', '2026-07-03', '', '2026-07-31', 999.99);
 
 -- --------------------------------------------------------
 
@@ -147,7 +152,19 @@ INSERT INTO `annonce_mode_vie` (`id_annonce`, `id_mode_vie`) VALUES
 (1, 1),
 (1, 3),
 (2, 4),
-(2, 5);
+(2, 5),
+(4, 1),
+(4, 5),
+(5, 2),
+(5, 5),
+(6, 4),
+(6, 7),
+(7, 5),
+(8, 1),
+(8, 5),
+(8, 7),
+(9, 1),
+(9, 7);
 
 -- --------------------------------------------------------
 
@@ -171,7 +188,11 @@ INSERT INTO `annonce_photo` (`id_annonce`, `id_photo`) VALUES
 (1, 4),
 (2, 5),
 (2, 6),
-(2, 7);
+(2, 7),
+(4, 8),
+(5, 9),
+(6, 10),
+(7, 11);
 
 -- --------------------------------------------------------
 
@@ -190,7 +211,14 @@ CREATE TABLE `annonce_regime_alimentaire` (
 
 INSERT INTO `annonce_regime_alimentaire` (`id_annonce`, `id_regime_alimentaire`) VALUES
 (1, 1),
-(1, 2);
+(1, 2),
+(4, 1),
+(4, 2),
+(5, 1),
+(6, 1),
+(7, 1),
+(8, 1),
+(9, 5);
 
 -- --------------------------------------------------------
 
@@ -208,8 +236,14 @@ CREATE TABLE `annonce_utilisateur` (
 --
 
 INSERT INTO `annonce_utilisateur` (`id_utilisateur`, `id_annonce`) VALUES
+(1, 4),
+(1, 6),
+(1, 7),
+(1, 8),
+(1, 9),
 (2, 1),
-(2, 2);
+(2, 2),
+(3, 5);
 
 -- --------------------------------------------------------
 
@@ -280,7 +314,11 @@ INSERT INTO `photo` (`id_photo`, `url`) VALUES
 (4, 'photos/annonce1/salle_de_bain.jpg'),
 (5, 'photos/annonce2/chambre.jpg'),
 (6, 'photos/annonce2/salon.jpg'),
-(7, 'photos/annonce2/jardin.jpg');
+(7, 'photos/annonce2/jardin.jpg'),
+(8, 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=900&q=80'),
+(9, 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=900&q=80'),
+(10, 'https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?auto=format&fit=crop&w=900&q=80'),
+(11, 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80');
 
 -- --------------------------------------------------------
 
@@ -471,7 +509,7 @@ ALTER TABLE `age_recherche`
 -- AUTO_INCREMENT pour la table `annonce`
 --
 ALTER TABLE `annonce`
-  MODIFY `id_annonce` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_annonce` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT pour la table `annonce_avis`
@@ -489,7 +527,7 @@ ALTER TABLE `mode_vie`
 -- AUTO_INCREMENT pour la table `photo`
 --
 ALTER TABLE `photo`
-  MODIFY `id_photo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_photo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT pour la table `regime_alimentaire`
