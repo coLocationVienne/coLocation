@@ -22,8 +22,7 @@ SET time_zone = "+00:00";
 --
 
 -- --------------------------------------------------------
-CREATE database if no exists colocation;
-dafault character set utf8mb4 collate utf8mb4_general_ci;
+CREATE database if not exists colocation;
 use colocation;
 --
 -- Structure de la table `age_recherche`
