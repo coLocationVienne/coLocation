@@ -172,7 +172,7 @@ if (!empty($_SESSION['isLoggedin']) && isset($_SESSION['user_id'])) {
                 <li>
                   <a class="dropdown-item" href="<?php echo $baseURL; ?>/pages/messages.php">
                     <i class="fas fa-envelope"></i> Messages
-                    <span class="badge bg-danger rounded-pill ms-2">3</span>
+                    <span class="badge bg-danger rounded-pill ms-2"><?php echo $messageDAO->countUnread($_SESSION['user_id']); ?></span>
                   </a>
                 </li>
                 <li><hr class="dropdown-divider"></li>
