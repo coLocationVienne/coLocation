@@ -1,47 +1,36 @@
 <?php
-session_start();
+
+require_once "../../init.php";
 
 if (empty($_SESSION['isLoggedin']) || empty($_SESSION['user_id'])) {
     header('Location: ../profile_utilisateur.php?error=unauthorized');
     exit();
 }
 
-require_once('../../includes/dbConnection.php');
-$dbConn = getDbConnection();
+/** @var \colocation\UserDAO $userDAO */
+$adminUser = $userDAO->getById((int)$_SESSION['user_id']);
 
-$stmt = $dbConn->prepare("
-    SELECT r.role 
-    FROM utilisateur u 
-    LEFT JOIN role r ON r.id_role = u.id_role 
-    WHERE u.id_utilisateur = :user_id
-");
-$stmt->execute(['user_id' => $_SESSION['user_id']]);
-$admin = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$admin || strtolower($admin['role']) !== 'admin') {
+if (!$adminUser || $adminUser->getIdRole() != 1) {
     header('Location: ../profile_utilisateur.php?error=unauthorized');
     exit();
 }
 
-$userId = isset($_POST['user_id']) ? (int)$_POST['user_id'] : 0;
+$userIdToDelete = isset($_POST['user_id']) ? (int)$_POST['user_id'] : 0;
 
-if ($userId <= 0) {
+if ($userIdToDelete <= 0) {
     header('Location: ../profile_utilisateur.php?error=invalid_user');
     exit();
 }
 
-if ($userId === $_SESSION['user_id']) {
+if ($userIdToDelete === (int)$_SESSION['user_id']) {
     header('Location: ../profile_utilisateur.php?error=cannot_delete_self');
     exit();
 }
 
-try {
-    $stmt = $dbConn->prepare("DELETE FROM utilisateur WHERE id_utilisateur = :user_id");
-    $stmt->execute(['user_id' => $userId]);
-    
+if ($userDAO->delete($userIdToDelete)) {
     header('Location: ../profile_utilisateur.php?status=user_deleted');
-} catch (PDOException $e) {
-    error_log("Error deleting user: " . $e->getMessage());
+    exit();
+} else {
     header('Location: ../profile_utilisateur.php?error=delete_failed');
+    exit();
 }
-?>
