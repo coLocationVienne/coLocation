@@ -4,3 +4,4 @@
 # JetBrains
 .idea/s
 *.iml
+.idea/
