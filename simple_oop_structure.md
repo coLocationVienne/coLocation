@@ -71,8 +71,3 @@ if ($userManager->login($email, $password)) {
 }
 ```
 
-## Why this is better for you right now:
-1.  **No New Tools**: You don't need to learn Composer or command-line tools yet.
-2.  **Easy to Move**: You can refactor one script at a time (e.g., do Login today, Annonces next week).
-3.  **Cleaner Code**: Your `pages/be/` scripts will be 5-10 lines long instead of 100.
-4.  **Organized**: If you need to change a database table name, you only change it in **one place** (the class file) instead of 10 different scripts.

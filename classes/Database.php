@@ -23,7 +23,7 @@ class Database {
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         } catch (PDOException $exception) {
-            // In a real app, log this instead of echoing
+            // todo: log the error SAfi or LAw or Issintia 
             throw new \RuntimeException("Connection error: " . $exception->getMessage());
         }
     }

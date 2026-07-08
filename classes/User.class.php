@@ -51,7 +51,7 @@ class User {
     public function getRevenuFiscal(): float { return $this->revenu_fiscal; }
     public function getIdRole(): int { return $this->id_role; }
 
-    // Setters
+   
     public function setMotDePasse(string $password): void { $this->mot_de_passe = $password; }
     public function setPhotoProfil(string $photo): void { $this->photo_profil = $photo; }
     public function setIdRole(int $role): void { $this->id_role = $role; }
@@ -81,7 +81,7 @@ class UserDAO extends \colocation\DAO {
     }
 
     protected function dehydrate(object $user): array {
-        /** @var User $user */
+        
         return [
             'id_utilisateur' => $user->getIdUtilisateur(),
             'prenom' => $user->getPrenom(),

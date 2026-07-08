@@ -27,13 +27,10 @@ abstract class DAO {
         return $result ? $this->hydrate($result) : null;
     }
 
-    /**
-     * Generic save for an object
-     */
+
     public function save(object $entity): bool {
         $data = $this->dehydrate($entity);
         
-        // Remove primary key from data if it's null (for auto-increment inserts)
         if (isset($data[$this->primary_key]) && $data[$this->primary_key] === null) {
             unset($data[$this->primary_key]);
         }
@@ -47,9 +44,6 @@ abstract class DAO {
         return $stmt->execute($data);
     }
 
-    /**
-     * Generic update for an object
-     */
     public function update(object $entity): bool {
         $data = $this->dehydrate($entity);
         $id = $data[$this->primary_key];
@@ -60,7 +54,6 @@ abstract class DAO {
         
         $stmt = $this->db->prepare($query);
         
-        // Merge ID into data for binding
         $data['id_val'] = $id;
         
         return $stmt->execute($data);

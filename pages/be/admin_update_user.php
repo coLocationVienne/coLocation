@@ -7,7 +7,6 @@ if (empty($_SESSION['isLoggedin']) || empty($_SESSION['user_id'])) {
     exit();
 }
 
-/** @var \colocation\UserDAO $userDAO */
 $adminUser = $userDAO->getById((int)$_SESSION['user_id']);
 
 // Check if current user is admin (role id 1)
