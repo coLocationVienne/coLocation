@@ -1,4 +1,9 @@
-<?php if (isset($user['role']) && strtolower($user['role']) === 'admin'): ?>
+<?php 
+require_once "../init.php";
+
+$adminUser = $userDAO->getById((int)$_SESSION['user_id']);
+
+if (($adminUser->getIdRole() !== null) && $adminUser->getIdRole() === 1): ?>
     <section class="admin-section mt-5">
         <div class="admin-header">
             <h2>Gestion des utilisateurs</h2>
@@ -17,7 +22,7 @@
                 <div class="col-md-3">
                     <select id="roleFilter" class="form-control" onchange="filterUsers()">
                         <option value="">Tous les rôles</option>
-                        <option value="admin">Admin</option>
+                        <option value="Admin">Admin</option>
                         <option value="Propriétaire">Propriétaire</option>
                         <option value="Locataire">Locataire</option>
                     </select>
@@ -92,8 +97,12 @@
                         <hr>
                         <h6>Changer le mot de passe</h6>
                         <div class="form-group mb-3">
-                            <label for="edit_new_password">Nouveau mot de passe (laisser vide pour ne pas changer)</label>
+                            <label for="edit_new_password">Nouveau mot de passe</label>
                             <input type="password" id="edit_new_password" name="new_password" class="form-control" minlength="6">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="edit_confirm_password">Confirmer le mot de passe</label>
+                            <input type="password" id="edit_confirm_password" name="confirm_password" class="form-control" minlength="6">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -135,7 +144,7 @@
         function loadUsers(page = 1) {
             const search = document.getElementById('userSearch')?.value || '';
             const role = document.getElementById('roleFilter')?.value || '';
-
+            
             fetch(`be/admin_get_users.php?page=${page}&search=${encodeURIComponent(search)}&role=${encodeURIComponent(role)}`)
                 .then(response => response.json())
                 .then(data => {
@@ -147,7 +156,7 @@
                         renderPagination();
                     } else {
                         console.error('Error loading users:', data.message);
-                        showAlert('Erreur lors du chargement des utilisateurs', 'error');
+                        showAlert('Erreur: ' + data.message, 'error');
                     }
                 })
                 .catch(error => {
@@ -169,7 +178,7 @@
                     <td>${escapeHtml(user.nom)}</td>
                     <td>${escapeHtml(user.prenom)}</td>
                     <td>${escapeHtml(user.email)}</td>
-                    <td><span class="badge bg-${user.role === 'admin' ? 'danger' : user.role === 'moderateur' ? 'warning' : 'secondary'}">${escapeHtml(user.role || 'Utilisateur')}</span></td>
+                    <td><span class="badge bg-${user.role === 'Admin' ? 'danger' : user.role === 'Propriétaire' ? 'warning' : 'secondary'}">${escapeHtml(user.role || 'Utilisateur')}</span></td>
                     <td>${user.date_naissance ? formatDate(user.date_naissance) : '-'}</td>
                     <td>
                         <button class="btn btn-sm btn-primary" onclick="editUser(${user.id_utilisateur})">
@@ -189,25 +198,22 @@
 
             let html = '';
             
-            // Previous button
             html += `<li class="page-item ${currentPage <= 1 ? 'disabled' : ''}">
-                <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Précédent</a>
+                <a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">Précédent</a>
             </li>`;
 
-            // Page numbers
             for (let i = 1; i <= totalPages; i++) {
                 if (i === currentPage) {
                     html += `<li class="page-item active"><span class="page-link">${i}</span></li>`;
                 } else if (i === 1 || i === totalPages || Math.abs(i - currentPage) <= 2) {
-                    html += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${i})">${i}</a></li>`;
+                    html += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a></li>`;
                 } else if (i === currentPage - 3 || i === currentPage + 3) {
                     html += `<li class="page-item disabled"><span class="page-link">…</span></li>`;
                 }
             }
 
-            // Next button
             html += `<li class="page-item ${currentPage >= totalPages ? 'disabled' : ''}">
-                <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Suivant</a>
+                <a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">Suivant</a>
             </li>`;
 
             pagination.innerHTML = html;
@@ -228,31 +234,25 @@
         }
 
         function getRoleIdByName(role) {
-            
-                switch (role){
-                    case 'Admin': 
-                        return 1;
-                        break;
-                    case 'Propriétaire':
-                        return 2;
-                        break;
-                    case 'Locataire':
-                        return 3;
-                    default : 
-                        return '';
-                }
+            switch (role){
+                case 'Admin': return 1;
+                case 'Propriétaire': return 2;
+                case 'Locataire': return 3;
+                default : return 3;
+            }
         }
 
         function editUser(userId) {
-            const user = usersData.find(u => u.id_utilisateur === userId);
+            const user = usersData.find(u => u.id_utilisateur == userId);
             if (!user) return;
-            console.log(user);
+            
             document.getElementById('edit_user_id').value = user.id_utilisateur;
             document.getElementById('edit_user_role').value = getRoleIdByName(user.role);
             document.getElementById('edit_user_situation').value = user.situation_professionnel || '';
             document.getElementById('edit_user_garant').value = user.garant || 0;
             document.getElementById('edit_user_salary').value = user.salaire_mensuel_net || '';
             document.getElementById('edit_new_password').value = '';
+            document.getElementById('edit_confirm_password').value = '';
 
             new bootstrap.Modal(document.getElementById('editUserModal')).show();
         }
@@ -285,7 +285,6 @@
             });
         }
 
-        // Form validation for edit user
         document.getElementById('editUserForm')?.addEventListener('submit', function(e) {
             const newPassword = document.getElementById('edit_new_password').value;
             const confirmPassword = document.getElementById('edit_confirm_password').value;
@@ -303,16 +302,8 @@
             }
         });
 
-        // Load users when page loads
         document.addEventListener('DOMContentLoaded', function() {
             loadUsers(1);
-            
-            // Auto-refresh every 5 minutes
-            setInterval(() => {
-                if (document.querySelector('.admin-section')) {
-                    loadUsers(currentPage);
-                }
-            }, 300000);
         });
     </script>
 
@@ -324,65 +315,12 @@
             margin-top: 2rem;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
-
         .admin-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
         }
-
-        .admin-table {
-            margin-top: 1rem;
-        }
-
-        .admin-table th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-        }
-
-        .admin-table td {
-            vertical-align: middle;
-        }
-
-        .admin-filters {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 8px;
-        }
-
-        .pagination-container {
-            margin-top: 2rem;
-        }
-
-        .badge {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.75rem;
-        }
-
-        .admin-actions .btn {
-            margin-left: 0.5rem;
-        }
-
-        @media (max-width: 768px) {
-            .admin-section {
-                padding: 1rem;
-            }
-            
-            .admin-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .admin-actions {
-                margin-top: 1rem;
-                width: 100%;
-            }
-            
-            .admin-actions .btn {
-                width: 100%;
-                margin-left: 0;
-            }
-        }
+        .admin-table { margin-top: 1rem; }
     </style>
 <?php endif; ?>

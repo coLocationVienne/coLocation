@@ -51,7 +51,7 @@ class User {
     public function getRevenuFiscal(): float { return $this->revenu_fiscal; }
     public function getIdRole(): int { return $this->id_role; }
 
-   
+    // Setters
     public function setMotDePasse(string $password): void { $this->mot_de_passe = $password; }
     public function setPhotoProfil(string $photo): void { $this->photo_profil = $photo; }
     public function setIdRole(int $role): void { $this->id_role = $role; }
@@ -81,7 +81,6 @@ class UserDAO extends \colocation\DAO {
     }
 
     protected function dehydrate(object $user): array {
-        
         return [
             'id_utilisateur' => $user->getIdUtilisateur(),
             'prenom' => $user->getPrenom(),
@@ -97,6 +96,53 @@ class UserDAO extends \colocation\DAO {
             'salaire_mensuel_net' => $user->getSalaireMensuelNet(),
             'revenu_fiscal' => $user->getRevenuFiscal(),
             'id_role' => $user->getIdRole()
+        ];
+    }
+
+    public function searchPaginated(string $search = '', string $role = '', int $page = 1, int $limit = 10): array {
+        $offset = ($page - 1) * $limit;
+        $where = ["1=1"];
+        $params = [];
+
+        if (!empty($search)) {
+            $where[] = "(u.nom LIKE :search OR u.prenom LIKE :search OR u.email LIKE :search)";
+            $params[':search'] = "%$search%";
+        }
+
+        if (!empty($role)) {
+            $where[] = "LOWER(r.role) = LOWER(:role)";
+            $params[':role'] = $role;
+        }
+
+        $whereClause = implode(" AND ", $where);
+
+        $countQuery = "SELECT COUNT(*) FROM utilisateur u LEFT JOIN role r ON u.id_role = r.id_role WHERE $whereClause";
+        $stmtCount = $this->db->prepare($countQuery);
+        $stmtCount->execute($params);
+        $total = (int)$stmtCount->fetchColumn();
+
+        $query = "SELECT u.*, r.role as role_name 
+                  FROM utilisateur u 
+                  LEFT JOIN role r ON u.id_role = r.id_role 
+                  WHERE $whereClause 
+                  ORDER BY u.id_utilisateur DESC 
+                  LIMIT $limit OFFSET $offset";
+        
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll();
+
+        $users = [];
+        foreach ($rows as $row) {
+            $row['role'] = $row['role_name']; 
+            $users[] = $row; 
+        }
+
+        return [
+            'users' => $users,
+            'total' => $total,
+            'totalPages' => ceil($total / $limit),
+            'currentPage' => $page
         ];
     }
 }

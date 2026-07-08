@@ -3,10 +3,13 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+require_once __DIR__ . '/../init.php';
+$pdo = $userDAO;
+
 $baseURL = "http://localhost/coLocation";
 
-function getUserAvatar($user_id, $conn) {
-    if (!isset($conn)) {
+function getUserAvatar($user_id, $pdo) {
+    if (!is_int($user_id) || $user_id <= 0) {
         return [
             'src' => '',
             'initials' => 'U',
@@ -15,16 +18,13 @@ function getUserAvatar($user_id, $conn) {
     }
     
     try {
-        $stmt = $conn->prepare("SELECT photo_profil, prenom, nom FROM UTILISATEUR WHERE id_utilisateur = :user_id");
-        $stmt->bindParam(":user_id", $user_id, PDO::PARAM_INT);
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $user = $pdo->getById($user_id);
         
-        if ($user && !empty($user['photo_profil'])) {
+        if ($user && !empty($user->getPhotoProfil())) {
           
-            $photo_path = "/coLocation/pages/be/" . $user['photo_profil'];
+            $photo_path = "/coLocation/pages/be/" . $user->getPhotoProfil();
           
-            $server_path = $_SERVER['DOCUMENT_ROOT'] . '/coLocation/pages/be/' . $user['photo_profil'];
+            $server_path = $_SERVER['DOCUMENT_ROOT'] . '/coLocation/pages/be/' . $user->getPhotoProfil();
             if (file_exists($server_path)) {
                 return [
                     'src' => $photo_path,
@@ -37,10 +37,10 @@ function getUserAvatar($user_id, $conn) {
         }
         
         $initials = '';
-        if (!empty($user['prenom']) && !empty($user['nom'])) {
-            $initials = strtoupper(substr($user['prenom'], 0, 1) . substr($user['nom'], 0, 1));
-        } elseif (!empty($user['prenom'])) {
-            $initials = strtoupper(substr($user['prenom'], 0, 2));
+        if (!empty($user->getPrenom()) && !empty($user->getNom())) {
+            $initials = strtoupper(substr($user->getPrenom(), 0, 1) . substr($user->getNom(), 0, 1));
+        } elseif (!empty($user->getPrenom())) {
+            $initials = strtoupper(substr($user->getPrenom(), 0, 2));
         } else {
             $initials = 'U';
         }
@@ -62,33 +62,10 @@ function getUserAvatar($user_id, $conn) {
 
 $avatarData = null;
 if (!empty($_SESSION['isLoggedin']) && isset($_SESSION['user_id'])) {
-    
-    $db_paths = [
-        __DIR__ . '/../includes/dbConnection.php',
-    ];
-    
-    $db_found = false;
-    foreach ($db_paths as $path) {
-        if (file_exists($path)) {
-            require_once $path;
-            $db_found = true;
-            break;
-        }
-    }
-    
-    if ($db_found && function_exists('getDbConnection')) {
-        try {
-            $conn = getDbConnection();
-            $avatarData = getUserAvatar($_SESSION['user_id'], $conn);
-        } catch (Exception $e) {
-            error_log("Database connection error: " . $e->getMessage());
-            $avatarData = [
-                'src' => '',
-                'initials' => 'U',
-                'has_photo' => false
-            ];
-        }
-    } else {
+    try {
+        $avatarData = getUserAvatar($_SESSION['user_id'], $userDAO);
+    } catch (Exception $e) {
+        error_log("Database connection error: " . $e->getMessage());
         $avatarData = [
             'src' => '',
             'initials' => 'U',
@@ -135,7 +112,7 @@ if (!empty($_SESSION['isLoggedin']) && isset($_SESSION['user_id'])) {
         <ul class="navbar-nav">
           <?php if (empty($_SESSION['isLoggedin'])): ?>
             <li class="nav-item">
-              <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'formulaire_inscription.php' ? 'active' : ''; ?>" href="<?php echo $baseURL; ?>/pages/formulaire_inscription.php">
+              <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'formulaire_inscription.php' ? 'active' : ''; ?>" href="<?php echo $baseURL; ?>/pages/register.php">
                 <i class="fas fa-user-plus"></i> Inscription
               </a>
             </li>
