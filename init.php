@@ -7,6 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . '/classes/Database.php';
 require_once __DIR__ . '/classes/DAO.class.php';
 require_once __DIR__ . '/classes/User.class.php';
+require_once __DIR__ . '/classes/annonce.class.php';
 
 use colocation\UserDAO;
 

@@ -1,393 +1,170 @@
-<?php 
+<?php
 
 namespace colocation;
 
-class Annonce {
+class Annonce
+{
     private ?int $id_annonce;
     private string $titre;
     private string $adresse_1;
     private string $adresse_2;
     private string $adresse_3;
     private string $adresse_4;
+    private string $ville;
     private string $code_postal;
-    private float  $loyer_location_chez_habitant;
+    private float $loyer_location_chez_habitant;
     private string $description;
     private float $surface_logement;
-    private string $surface_chambres;
+    private float $surface_chambres;
     private int $nombre_chambre;
-    private float $date_expiration;
-    private float $date_publication;
-    private float $date_modification;
+    private string $date_expiration;
+    private string $date_publication;
+    private string $date_modification;
     private string $carte_coordonnee_GPS;
-    private float $date_cloture;
+    private string $date_cloture;
     private float $loyer_colocation;
 
-    public function __construct(array $data){
-       $this->id_annonce= $data['id_annonce'] ?? null;
-       $this->titre = $data['titre'] ?? '';
-       $this->adresse_1 = $data['adresse_1'] ?? '';
-       $this->adresse_2 = $data['adresse_2'] ?? '';
-       $this->adresse_3 = $data['adresse_3'] ?? '';
-       $this->adresse_4 = $data['adresse_4'] ?? '';
-       $this->code_postal = (float)($data['code_postal'] ?? 0);
-       $this->loyer_location_chez_habitant = (float)($data['loyer_location_chez_habitant'] ?? 0);
-       $this->description = $data['description'] ?? '';
-       $this->surface_logement = (float)($data['surface_logement'] ?? 0);
-       $this->surface_chambres = (float)($data['surface_chambres'] ?? 0);
-       $this->nombre_chambre  = (int)($data['nombre_chambres'] ?? 0);
-       $this->date_expiration = $data['date_expiration'] ?? '';
-       $this->date_publication =$data['date_publication'] ?? '';
-       $this->date_modification = $data['date_modification'] ?? '';
-       $this->carte_coordonnee_GPS = (string) ($data['carte_coordonnee_GPS'] ?? '');
-       $this->date_cloture = $data['date_cloture'] ?? '';
-       $this->loyer_colocation = (float) ($data['loyer_colocation'] ?? 0);
-
-
-    }
-
-
-
-
-
-    /**
-     * Get the value of id_annonce
-     */
-    public function getIdAnnonce(): ?int
+    public function __construct(array $data)
     {
-        return $this->id_annonce;
+        $this->id_annonce = $data['id_annonce'] ?? null;
+        $this->titre = $data['titre'] ?? '';
+        $this->adresse_1 = $data['adresse_1'] ?? '';
+        $this->adresse_2 = $data['adresse_2'] ?? '';
+        $this->adresse_3 = $data['adresse_3'] ?? '';
+        $this->adresse_4 = $data['adresse_4'] ?? '';
+        $this->ville = $data['ville'] ?? '';
+        $this->code_postal = (string)($data['code_postal'] ?? '');
+        $this->loyer_location_chez_habitant = (float)($data['loyer_location_chez_habitant'] ?? 0);
+        $this->description = $data['description'] ?? '';
+        $this->surface_logement = (float)($data['surface_logement'] ?? 0);
+        $this->surface_chambres = (float)($data['surface_chambres'] ?? 0);
+        $this->nombre_chambre = (int)($data['nombre_chambre'] ?? 0);
+        $this->date_expiration = $data['date_expiration'] ?? '';
+        $this->date_publication = $data['date_publication'] ?? date('Y-m-d');
+        $this->date_modification = $data['date_modification'] ?? date('Y-m-d');
+        $this->carte_coordonnee_GPS = $data['carte_coordonnee_GPS'] ?? '';
+        $this->date_cloture = $data['date_cloture'] ?? '';
+        $this->loyer_colocation = (float)($data['loyer_colocation'] ?? 0);
     }
 
-    /**
-     * Set the value of id_annonce
-     */
-    public function setIdAnnonce(?int $id_annonce): self
-    {
-        $this->id_annonce = $id_annonce;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of titre
-     */
-    public function getTitre(): string
-    {
-        return $this->titre;
-    }
-
-    /**
-     * Set the value of titre
-     */
-    public function setTitre(string $titre): self
-    {
-        $this->titre = $titre;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of adresse_1
-     */
-    public function getAdresse1(): string
-    {
-        return $this->adresse_1;
-    }
-
-    /**
-     * Set the value of adresse_1
-     */
-    public function setAdresse1(string $adresse_1): self
-    {
-        $this->adresse_1 = $adresse_1;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of adresse_2
-     */
-    public function getAdresse2(): string
-    {
-        return $this->adresse_2;
-    }
-
-    /**
-     * Set the value of adresse_2
-     */
-    public function setAdresse2(string $adresse_2): self
-    {
-        $this->adresse_2 = $adresse_2;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of adresse_3
-     */
-    public function getAdresse3(): string
-    {
-        return $this->adresse_3;
-    }
-
-    /**
-     * Set the value of adresse_3
-     */
-    public function setAdresse3(string $adresse_3): self
-    {
-        $this->adresse_3 = $adresse_3;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of adresse_4
-     */
-    public function getAdresse4(): string
-    {
-        return $this->adresse_4;
-    }
-
-    /**
-     * Set the value of adresse_4
-     */
-    public function setAdresse4(string $adresse_4): self
-    {
-        $this->adresse_4 = $adresse_4;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of code_postal
-     */
-    public function getCodePostal(): string
-    {
-        return $this->code_postal;
-    }
-
-    /**
-     * Set the value of code_postal
-     */
-    public function setCodePostal(string $code_postal): self
-    {
-        $this->code_postal = $code_postal;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of loyer_location_chez_habitant
-     */
-    public function getLoyerLocationChezHabitant(): float
-    {
-        return $this->loyer_location_chez_habitant;
-    }
-
-    /**
-     * Set the value of loyer_location_chez_habitant
-     */
-    public function setLoyerLocationChezHabitant(float $loyer_location_chez_habitant): self
-    {
-        $this->loyer_location_chez_habitant = $loyer_location_chez_habitant;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of description
-     */
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    /**
-     * Set the value of description
-     */
-    public function setDescription(string $description): self
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of surface_logement
-     */
-    public function getSurfaceLogement(): float
-    {
-        return $this->surface_logement;
-    }
-
-    /**
-     * Set the value of surface_logement
-     */
-    public function setSurfaceLogement(float $surface_logement): self
-    {
-        $this->surface_logement = $surface_logement;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of surface_chambres
-     */
-    public function getSurfaceChambres(): string
-    {
-        return $this->surface_chambres;
-    }
-
-    /**
-     * Set the value of surface_chambres
-     */
-    public function setSurfaceChambres(string $surface_chambres): self
-    {
-        $this->surface_chambres = $surface_chambres;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of nombre_chambre
-     */
-    public function getNombreChambre(): int
-    {
-        return $this->nombre_chambre;
-    }
-
-    /**
-     * Set the value of nombre_chambre
-     */
-    public function setNombreChambre(int $nombre_chambre): self
-    {
-        $this->nombre_chambre = $nombre_chambre;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of date_expiration
-     */
-    public function getDateExpiration(): float
-    {
-        return $this->date_expiration;
-    }
-
-    /**
-     * Set the value of date_expiration
-     */
-    public function setDateExpiration(float $date_expiration): self
-    {
-        $this->date_expiration = $date_expiration;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of date_publication
-     */
-    public function getDatePublication(): float
-    {
-        return $this->date_publication;
-    }
-
-    /**
-     * Set the value of date_publication
-     */
-    public function setDatePublication(float $date_publication): self
-    {
-        $this->date_publication = $date_publication;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of date_modification
-     */
-    public function getDateModification(): float
-    {
-        return $this->date_modification;
-    }
-
-    /**
-     * Set the value of date_modification
-     */
-    public function setDateModification(float $date_modification): self
-    {
-        $this->date_modification = $date_modification;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of carte_coordonnee_GPS
-     */
-    public function getCarteCoordonneeGPS(): string
-    {
-        return $this->carte_coordonnee_GPS;
-    }
-
-    /**
-     * Set the value of carte_coordonnee_GPS
-     */
-    public function setCarteCoordonneeGPS(string $carte_coordonnee_GPS): self
-    {
-        $this->carte_coordonnee_GPS = $carte_coordonnee_GPS;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of date_cloture
-     */
-    public function getDateCloture(): float
-    {
-        return $this->date_cloture;
-    }
-
-    /**
-     * Set the value of date_cloture
-     */
-    public function setDateCloture(float $date_cloture): self
-    {
-        $this->date_cloture = $date_cloture;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of loyer_colocation
-     */
-    public function getLoyerColocation(): float
-    {
-        return $this->loyer_colocation;
-    }
-
-    /**
-     * Set the value of loyer_colocation
-     */
-    public function setLoyerColocation(float $loyer_colocation): self
-    {
-        $this->loyer_colocation = $loyer_colocation;
-
-        return $this;
-    }
+    public function getIdAnnonce(): ?int { return $this->id_annonce; }
+    public function getTitre(): string { return $this->titre; }
+    public function getAdresse1(): string { return $this->adresse_1; }
+    public function getAdresse2(): string { return $this->adresse_2; }
+    public function getAdresse3(): string { return $this->adresse_3; }
+    public function getAdresse4(): string { return $this->adresse_4; }
+    public function getVille(): string { return $this->ville; }
+    public function getCodePostal(): string { return $this->code_postal; }
+    public function getLoyerLocationChezHabitant(): float { return $this->loyer_location_chez_habitant; }
+    public function getDescription(): string { return $this->description; }
+    public function getSurfaceLogement(): float { return $this->surface_logement; }
+    public function getSurfaceChambres(): float { return $this->surface_chambres; }
+    public function getNombreChambre(): int { return $this->nombre_chambre; }
+    public function getDateExpiration(): string { return $this->date_expiration; }
+    public function getDatePublication(): string { return $this->date_publication; }
+    public function getDateModification(): string { return $this->date_modification; }
+    public function getCarteCoordonneeGPS(): string { return $this->carte_coordonnee_GPS; }
+    public function getDateCloture(): string { return $this->date_cloture; }
+    public function getLoyerColocation(): float { return $this->loyer_colocation; }
+    public function setIdAnnonce(?int $id_annonce): void { $this->id_annonce = $id_annonce; }
 }
 
-class AnnonceDAO extends \colocation\DAO {
-public function __construct(){
-    parent:: __construct('annonce', 'id_annonce');
+class AnnonceDAO extends \colocation\DAO
+{
+    public function __construct()
+    {
+        parent::__construct('annonce', 'id_annonce');
+    }
+
+    protected function hydrate(array $row): Annonce
+    {
+        return new Annonce($row);
+    }
+
+    protected function dehydrate(object $annonce): array
+    {
+        return [
+            'id_annonce' => $annonce->getIdAnnonce(),
+            'titre' => $annonce->getTitre(),
+            'adresse_1' => $annonce->getAdresse1(),
+            'adresse_2' => $annonce->getAdresse2(),
+            'adresse_3' => $annonce->getAdresse3(),
+            'adresse_4' => $annonce->getAdresse4(),
+            'ville' => $annonce->getVille(),
+            'code_postal' => $annonce->getCodePostal(),
+            'loyer_location_chez_habitant' => $annonce->getLoyerLocationChezHabitant(),
+            'description' => $annonce->getDescription(),
+            'surface_logement' => $annonce->getSurfaceLogement(),
+            'surface_chambres' => $annonce->getSurfaceChambres(),
+            'nombre_chambre' => $annonce->getNombreChambre(),
+            'date_expiration' => $annonce->getDateExpiration(),
+            'date_publication' => $annonce->getDatePublication(),
+            'date_modification' => $annonce->getDateModification(),
+            'carte_coordonnee_GPS' => $annonce->getCarteCoordonneeGPS(),
+            'date_cloture' => $annonce->getDateCloture(),
+            'loyer_colocation' => $annonce->getLoyerColocation()
+        ];
+    }
+
+    public function ajouterAnnonce(Annonce $annonce, int $idUtilisateur, array $modesVie = [], array $regimes = []): bool
+    {
+        $this->db->beginTransaction();
+
+        try {
+            $this->save($annonce);
+
+            $idAnnonce = (int)$this->db->lastInsertId();
+
+            $stmt = $this->db->prepare("
+                INSERT INTO annonce_utilisateur (id_utilisateur, id_annonce)
+                VALUES (:id_utilisateur, :id_annonce)
+            ");
+
+            $stmt->execute([
+                ':id_utilisateur' => $idUtilisateur,
+                ':id_annonce' => $idAnnonce
+            ]);
+
+            $this->ajouterModesVie($idAnnonce, $modesVie);
+            $this->ajouterRegimes($idAnnonce, $regimes);
+
+            $this->db->commit();
+
+            return true;
+        } catch (\Exception $e) {
+            $this->db->rollBack();
+            return false;
+        }
+    }
+
+    public function modifierAnnonce(Annonce $annonce, int $idUtilisateur, array $modesVie = [], array $regimes = []): bool
+    {
+        $idAnnonce = $annonce->getIdAnnonce();
+
+        if (!$idAnnonce || !$this->appartientAUtilisateur($idAnnonce, $idUtilisateur)) {
+            return false;
+        }
+
+        $this->db->beginTransaction();
+
+        try {
+            $this->update($annonce);
+
+            $stmt = $this->db->prepare("DELETE FROM annonce_mode_vie WHERE id_annonce = :id_annonce");
+            $stmt->execute([':id_annonce' => $idAnnonce]);
+
+            $stmt = $this->db->prepare("DELETE FROM annonce_regime_alimentaire WHERE id_annonce = :id_annonce");
+            $stmt->execute([':id_annonce' => $idAnnonce]);
+
+            $this->ajouterModesVie($idAnnonce, $modesVie);
+            $this->ajouterRegimes($idAnnonce, $regimes);
+
+            $this->db->commit();
+
+            return true;
+        } catch (\Exception $e) {
+            $this->db->rollBack();
+            return false;
+        }
+    }
 }
-
-protected 
-
-
-
-}
-
-
-
-           
-    
-
-?>
