@@ -7,7 +7,8 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . '/classes/Database.php';
 require_once __DIR__ . '/classes/DAO.class.php';
 require_once __DIR__ . '/classes/User.class.php';
-require_once __DIR__ . '/classes/annonce.class.php';
+require_once __DIR__ . '/classes/Message.class.php';
+require_once __DIR__ . '/classes/Annonce.class.php';
 
 use colocation\UserDAO;
 use colocation\MessageDAO;
@@ -19,7 +20,3 @@ try {
 
     error_log("Initialization error: " . $e->getMessage());
 }
-require_once __DIR__ . '/classes/Annonce.class.php';
-
-use colocation\AnnonceDAO;
-$annonceDAO = new AnnonceDAO();
