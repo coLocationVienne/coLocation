@@ -19,3 +19,7 @@ try {
 
     error_log("Initialization error: " . $e->getMessage());
 }
+require_once __DIR__ . '/classes/Annonce.class.php';
+
+use colocation\AnnonceDAO;
+$annonceDAO = new AnnonceDAO();
