@@ -26,13 +26,13 @@ $errorMessages = [
             <h1>Creer et publier une annonce</h1>
             <p>
                 Ajoutez les informations importantes sur le logement, l'ambiance de la colocation,
-                les modes de vie et les rÃ©gimes alimentaires acceptÃ©s.
+                les modes de vie et les regimes alimentaires acceptés.
             </p>
         </div>
 
         <div class="annonce-conseil">
             <strong>Conseil</strong>
-            <span>Plus votre annonce est prÃ©cise, plus les futurs colocataires peuvent savoir si l'ambiance leur correspond.</span>
+            <span>Plus votre annonce est precise, plus les futurs colocataires peuvent savoir si l'ambiance leur correspond.</span>
         </div>
     </section>
 

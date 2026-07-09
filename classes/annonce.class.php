@@ -167,4 +167,91 @@ class AnnonceDAO extends \colocation\DAO
             return false;
         }
     }
+
+    public function supprimerAnnonce(int $idAnnonce, int $idUtilisateur): bool
+    {
+        if (!$this->appartientAUtilisateur($idAnnonce, $idUtilisateur)) {
+            return false;
+        }
+
+        $this->db->beginTransaction();
+
+        try {
+            $tables = [
+                'annonce_mode_vie',
+                'annonce_regime_alimentaire',
+                'annonce_photo',
+                'annonce_utilisateur'
+            ];
+
+            foreach ($tables as $table) {
+                $stmt = $this->db->prepare("DELETE FROM $table WHERE id_annonce = :id_annonce");
+                $stmt->execute([':id_annonce' => $idAnnonce]);
+            }
+
+            $this->delete($idAnnonce);
+
+            $this->db->commit();
+
+            return true;
+        } catch (\Exception $e) {
+            $this->db->rollBack();
+            return false;
+        }
+    }
+
+    public function appartientAUtilisateur(int $idAnnonce, int $idUtilisateur): bool
+    {
+        $stmt = $this->db->prepare("
+            SELECT COUNT(*)
+            FROM annonce_utilisateur
+            WHERE id_annonce = :id_annonce
+            AND id_utilisateur = :id_utilisateur
+        ");
+
+        $stmt->execute([
+            ':id_annonce' => $idAnnonce,
+            ':id_utilisateur' => $idUtilisateur
+        ]);
+
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
+    private function ajouterModesVie(int $idAnnonce, array $modesVie): void
+    {
+        $stmt = $this->db->prepare("
+            INSERT INTO annonce_mode_vie (id_annonce, id_mode_vie)
+            VALUES (:id_annonce, :id_mode_vie)
+        ");
+
+        foreach (array_unique($modesVie) as $idModeVie) {
+            $idModeVie = (int)$idModeVie;
+
+            if ($idModeVie > 0) {
+                $stmt->execute([
+                    ':id_annonce' => $idAnnonce,
+                    ':id_mode_vie' => $idModeVie
+                ]);
+            }
+        }
+    }
+
+    private function ajouterRegimes(int $idAnnonce, array $regimes): void
+    {
+        $stmt = $this->db->prepare("
+            INSERT INTO annonce_regime_alimentaire (id_annonce, id_regime_alimentaire)
+            VALUES (:id_annonce, :id_regime_alimentaire)
+        ");
+
+        foreach (array_unique($regimes) as $idRegime) {
+            $idRegime = (int)$idRegime;
+
+            if ($idRegime > 0) {
+                $stmt->execute([
+                    ':id_annonce' => $idAnnonce,
+                    ':id_regime_alimentaire' => $idRegime
+                ]);
+            }
+        }
+    }
 }
