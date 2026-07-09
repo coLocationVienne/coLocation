@@ -1,7 +1,7 @@
 <?php require_once "../includes/header.php"; ?>
 
 <!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
 <style>
     #map-container {
@@ -50,10 +50,7 @@
 </style>
 
 <div id="map-container">
-    <!-- Left: Map -->
     <div id="map"></div>
-
-    <!-- Right: Filters and List -->
     <div id="sidebar">
         <h4>Filtrer les annonces</h4>
         <div class="mb-4">
@@ -61,14 +58,12 @@
             <input type="number" id="priceFilter" class="form-control" placeholder="Prix max (€)" onchange="updateFilters()">
         </div>
         <hr>
-        <div id="annonce-list">
-            <!-- Dynamic list here -->
-        </div>
+        <div id="annonce-list"></div>
     </div>
 </div>
 
 <!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
     let map;
@@ -76,9 +71,7 @@
     let allAnnonces = [];
 
     function initMap() {
-        // Center on Vienne, France
         map = L.map('map').setView([45.525, 4.875], 13);
-
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
@@ -94,11 +87,11 @@
                     allAnnonces = data.annonces;
                     displayAnnonces(allAnnonces);
                 }
-            });
+            })
+            .catch(err => console.error("Error fetching annonces:", err));
     }
 
     function displayAnnonces(annonces) {
-        // Clear existing markers
         markers.forEach(m => map.removeLayer(m));
         markers = [];
 
@@ -106,7 +99,6 @@
         listContainer.innerHTML = '';
 
         annonces.forEach(a => {
-            // Add Marker if GPS exists
             if (a.gps) {
                 const coords = a.gps.split(',').map(c => parseFloat(c.trim()));
                 if (coords.length === 2 && !isNaN(coords[0])) {
@@ -125,7 +117,6 @@
                 }
             }
 
-            // Add to Sidebar List
             const card = document.createElement('div');
             card.className = 'annonce-card';
             card.innerHTML = `
@@ -140,7 +131,6 @@
                 if (a.gps) {
                     const coords = a.gps.split(',').map(c => parseFloat(c.trim()));
                     map.setView(coords, 16);
-                    // Find marker to open popup
                     const marker = markers.find(m => m.getLatLng().lat === coords[0] && m.getLatLng().lng === coords[1]);
                     if (marker) marker.openPopup();
                 }
@@ -152,13 +142,9 @@
     function updateFilters() {
         const search = document.getElementById('searchFilter').value.toLowerCase();
         const price = parseFloat(document.getElementById('priceFilter').value) || Infinity;
-
         const filtered = allAnnonces.filter(a => {
-            const matchesSearch = a.titre.toLowerCase().includes(search) || a.ville.toLowerCase().includes(search);
-            const matchesPrice = a.loyer <= price;
-            return matchesSearch && matchesPrice;
+            return (a.titre.toLowerCase().includes(search) || a.ville.toLowerCase().includes(search)) && a.loyer <= price;
         });
-
         displayAnnonces(filtered);
     }
 

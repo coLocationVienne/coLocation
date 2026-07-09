@@ -12,11 +12,12 @@ require_once __DIR__ . '/classes/Annonce.class.php';
 
 use colocation\UserDAO;
 use colocation\MessageDAO;
+use colocation\AnnonceDAO;
 
 try {
     $userDAO = new UserDAO();
     $messageDAO = new MessageDAO();
+    $annonceDAO = new AnnonceDAO();
 } catch (Exception $e) {
-
     error_log("Initialization error: " . $e->getMessage());
 }
