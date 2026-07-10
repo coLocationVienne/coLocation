@@ -115,6 +115,7 @@ include("../includes/header.php");
                                 <a href="formulaire_modifier_annonce.php?id_annonce=<?php echo (int) $annonce['id_annonce']; ?>" class="annonce-btn-principal">
                                     Modifier
                                 </a>
+
                             </div>
                         </div>
                     </article>
