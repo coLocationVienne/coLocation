@@ -1,6 +1,5 @@
 <?php require_once "../includes/header.php"; ?>
 
-<!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
 <style>
@@ -62,7 +61,7 @@
     </div>
 </div>
 
-<!-- Leaflet JS -->
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
