@@ -116,6 +116,13 @@ include("../includes/header.php");
                                     Modifier
                                 </a>
 
+                                <form action="be/supprimer_annonce.php" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer cette annonce ?');">
+                                        <input type="hidden" name="id_annonce" value="<?php echo (int) $annonce['id_annonce']; ?>">
+                                        <button type="submit" class="annonce-btn-danger">
+                                            Supprimer
+                                        </button>
+                                </form>
+
                             </div>
                         </div>
                     </article>
