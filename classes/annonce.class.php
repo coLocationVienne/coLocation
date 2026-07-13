@@ -254,5 +254,4 @@ class AnnonceDAO extends \colocation\DAO
             }
         }
     }
-    
-}
+    }
