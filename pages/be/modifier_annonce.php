@@ -64,6 +64,7 @@ $annonce = new Annonce([
     'surface_chambres' => (float)$_POST['surface_chambres'],
     'nombre_chambre' => (int)$_POST['nombre_chambre'],
     'date_expiration' => $_POST['date_expiration'],
+    'date_publication' => $ancienneAnnonce->getDatePublication(),
     'date_modification' => date('Y-m-d'),
     'carte_coordonnee_GPS' => trim(
         $_POST['carte_coordonnee_GPS'] ?? ''
