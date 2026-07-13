@@ -15,7 +15,7 @@ $error = $_GET['error'] ?? '';
 $errorMessages = [
     'missing_fields' => 'Veuillez remplir tous les champs obligatoires.',
     'invalid_email' => 'Veuillez saisir une adresse email valide.',
-    'server_error' => 'Une erreur est survenue pendant la publication de lâ€™annonce.',
+    'server_error' => 'Une erreur est survenue pendant la publication de l annonce.',
 ];
 ?>
 
@@ -26,13 +26,13 @@ $errorMessages = [
             <h1>Creer et publier une annonce</h1>
             <p>
                 Ajoutez les informations importantes sur le logement, l'ambiance de la colocation,
-                les modes de vie et les rÃ©gimes alimentaires acceptÃ©s.
+                les modes de vie et les regimes alimentaires acceptés.
             </p>
         </div>
 
         <div class="annonce-conseil">
             <strong>Conseil</strong>
-            <span>Plus votre annonce est prÃ©cise, plus les futurs colocataires peuvent savoir si l'ambiance leur correspond.</span>
+            <span>Plus votre annonce est precise, plus les futurs colocataires peuvent savoir si l'ambiance leur correspond.</span>
         </div>
     </section>
 
@@ -151,7 +151,7 @@ $errorMessages = [
 
                 <div class="annonce-field">
                     <label for="descriptions">Description</label>
-                    <textarea id="descriptions" name="descriptions" rows="4" placeholder="DÃ©crivez la chambre, les espaces communs, les transports, l'ambiance..." required></textarea>
+                    <textarea id="descriptions" name="descriptions" rows="4" placeholder="Decrivez la chambre, les espaces communs, les transports, l'ambiance..." required></textarea>
                 </div>
             </fieldset>
 

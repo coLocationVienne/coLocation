@@ -1,35 +1,22 @@
 <?php
 
-if(isset($_POST['email']) && isset($_POST['password'])) {
-    try {
-        require("../../includes/dbConnection.php");
-        $dbConn = getDbConnection();
-    } catch (PDOException $e) {
-        die("Database connection failed: " . $e->getMessage());
-    }
+require_once "../../init.php";
 
-
+if (isset($_POST['email']) && isset($_POST['password'])) {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-    $stmt = $dbConn->prepare("SELECT * FROM utilisateur WHERE email = :email");
-    $stmt->bindParam(':email', $email);
-    $stmt->execute();
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    /** @var \colocation\UserDAO $userDAO */
+    $users = $userDAO->findBy(['email' => $email]);
+    $user = !empty($users) ? $users[0] : null;
 
-    $passwordIsValid = $user && (
-        password_verify($password, $user['mot_de_passe']) ||
-        hash_equals($user['mot_de_passe'], $password)
-    );
-
-    if ($passwordIsValid) {
-        session_start();
-        $_SESSION['user_id'] = $user['id_utilisateur'];
-        $_SESSION['user_email'] = $user['email'];
-        $_SESSION['user_prenom'] = $user['prenom'];
-        $_SESSION['user_nom'] = $user['nom'];
+    if ($user && $user->verifierMotDePasse($password)) {
+        $_SESSION['user_id'] = $user->getIdUtilisateur();
+        $_SESSION['user_email'] = $user->getEmail();
+        $_SESSION['user_prenom'] = $user->getPrenom();
+        $_SESSION['user_nom'] = $user->getNom();
         $_SESSION['isLoggedin'] = true;
-        $_SESSION['user_role'] = $user['id_role']; 
+        $_SESSION['user_role'] = $user->getIdRole();
 
         header("Location: ../../index.php");
         exit();

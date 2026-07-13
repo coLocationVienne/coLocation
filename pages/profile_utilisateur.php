@@ -1,4 +1,6 @@
 <?php
+
+require_once "../init.php";
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -8,33 +10,7 @@ if (empty($_SESSION['isLoggedin']) || empty($_SESSION['user_id'])) {
     exit();
 }
 
-require("../includes/dbConnection.php");
-$dbConn = getDbConnection();
-$user = null;
-
-if ($dbConn) {
-    $stmt = $dbConn->prepare("
-        SELECT
-            u.id_utilisateur,
-            u.nom,
-            u.prenom,
-            u.email,
-            u.situation_professionnel,
-            u.garant,
-            u.date_naissance,
-            u.photo_profil,
-            u.salaire_mensuel_net,
-            u.revenu_fiscal,
-            r.role
-        FROM utilisateur u
-        LEFT JOIN role r ON r.id_role = u.id_role
-        WHERE u.id_utilisateur = :id_utilisateur
-        LIMIT 1
-    ");
-    $stmt->bindParam(':id_utilisateur', $_SESSION['user_id'], PDO::PARAM_INT);
-    $stmt->execute();
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-}
+$user = $userDAO->getById((int)$_SESSION['user_id']);
 
 if (!$user) {
     session_destroy();
@@ -57,13 +33,13 @@ function getProfilePhotoSrc($photoPath) {
 
     return 'be/' . ltrim($photoPath, '/');
 }
-echo $user['photo_profil'];
-$fullName = trim($user['prenom'] . ' ' . $user['nom']);
-$initials = strtoupper(substr($user['prenom'], 0, 1) . substr($user['nom'], 0, 1));
-$birthDate = !empty($user['date_naissance']) ? date('d/m/Y', strtotime($user['date_naissance'])) : 'Non renseignee';
-$hasGarant = (int) $user['garant'] === 1 ? 'Oui' : 'Non';
-$salary = number_format((float) $user['salaire_mensuel_net'], 2, ',', ' ') . ' EUR';
-$profilePhotoSrc = getProfilePhotoSrc($user['photo_profil']);
+echo $user->getPhotoProfil();
+$fullName = trim($user->getPrenom() . ' ' . $user->getNom());
+$initials = strtoupper(substr($user->getPrenom(), 0, 1) . substr($user->getNom(), 0, 1));
+$birthDate = !empty($user->getDateNaissance()) ? date('d/m/Y', strtotime($user->getDateNaissance())) : 'Non renseignee';
+$hasGarant = $user->isGarant() === 1 ? 'Oui' : 'Non';
+$salary = number_format((float) $user->getSalaireMensuelNet(), 2, ',', ' ') . ' EUR';
+$profilePhotoSrc = getProfilePhotoSrc($user->getPhotoProfil());
 $profileStatus = $_GET['status'] ?? '';
 $profileError = $_GET['error'] ?? '';
 
@@ -103,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div>
             <p class="section-kicker">Espace utilisateur</p>
             <h1><?php echo escapeProfileValue($fullName); ?></h1>
-            <p><?php echo escapeProfileValue($user['email']); ?></p>
+            <p><?php echo escapeProfileValue($user->getEmail()); ?></p>
             <div class="profile-actions">
                 <button type="button" class="profile-action-button" data-bs-toggle="modal" data-bs-target="#passwordModal">
                     <i class="fa-solid fa-key"></i>
@@ -127,19 +103,19 @@ document.addEventListener('DOMContentLoaded', function() {
             <dl class="profile-list">
                 <div>
                     <dt>Role</dt>
-                    <dd><?php echo escapeProfileValue($user['role'] ?? 'Utilisateur'); ?></dd>
+                    <dd><?php echo $user->getIdRole() ?? 'Utilisateur'; ?></dd>
                 </div>
                 <div>
                     <dt>Situation professionnelle</dt>
-                    <dd><?php echo escapeProfileValue($user['situation_professionnel']); ?></dd>
+                    <dd><?php echo $user->getSituationProfessionnel(); ?></dd>
                 </div>
                 <div>
                     <dt>Date de naissance</dt>
-                    <dd><?php echo escapeProfileValue($birthDate); ?></dd>
+                    <dd><?php echo $birthDate; ?></dd>
                 </div>
                 <div>
                     <dt>Garant</dt>
-                    <dd><?php echo escapeProfileValue($hasGarant); ?></dd>
+                    <dd><?php echo $hasGarant; ?></dd>
                 </div>
             </dl>
         </article>
@@ -153,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <div>
                     <dt>Revenu fiscal</dt>
-                    <dd><?php echo escapeProfileValue($user['revenu_fiscal'] ?: 'Non renseigne'); ?></dd>
+                    <dd><?php echo escapeProfileValue($user->getRevenuFiscal() ?: 'Non renseigne'); ?></dd>
                 </div>
                 
             </dl>
@@ -247,36 +223,36 @@ document.addEventListener('DOMContentLoaded', function() {
                         <label for="edit_situation">Situation professionnelle</label>
                         <select id="edit_situation" name="situation" class="form-control">
                             <option value="">Sélectionnez une situation</option>
-                            <option value="Étudiant" <?php echo ($user['situation_professionnel'] === 'Étudiant') ? 'selected' : ''; ?>>Étudiant</option>
-                            <option value="Salarié" <?php echo ($user['situation_professionnel'] === 'Salarié') ? 'selected' : ''; ?>>Salarié</option>
-                            <option value="Indépendant" <?php echo ($user['situation_professionnel'] === 'Indépendant') ? 'selected' : ''; ?>>Indépendant</option>
-                            <option value="Retraité" <?php echo ($user['situation_professionnel'] === 'Retraité') ? 'selected' : ''; ?>>Retraité</option>
-                            <option value="Sans emploi" <?php echo ($user['situation_professionnel'] === 'Sans emploi') ? 'selected' : ''; ?>>Sans emploi</option>
-                            <option value="Autre" <?php echo ($user['situation_professionnel'] === 'Autre') ? 'selected' : ''; ?>>Autre</option>
+                            <option value="Étudiant" <?php echo ($user->getSituationProfessionnel() === 'Étudiant') ? 'selected' : ''; ?>>Étudiant</option>
+                            <option value="Salarié" <?php echo ($user->getSituationProfessionnel() === 'Salarié') ? 'selected' : ''; ?>>Salarié</option>
+                            <option value="Indépendant" <?php echo ($user->getSituationProfessionnel() === 'Indépendant') ? 'selected' : ''; ?>>Indépendant</option>
+                            <option value="Retraité" <?php echo ($user->getSituationProfessionnel() === 'Retraité') ? 'selected' : ''; ?>>Retraité</option>
+                            <option value="Sans emploi" <?php echo ($user->getSituationProfessionnel() === 'Sans emploi') ? 'selected' : ''; ?>>Sans emploi</option>
+                            <option value="Autre" <?php echo ($user->getSituationProfessionnel() === 'Autre') ? 'selected' : ''; ?>>Autre</option>
                         </select>
                     </div>
 
                     <div class="form-group mb-3">
                         <label for="edit_garant">Garant</label>
                         <select id="edit_garant" name="garant" class="form-control">
-                            <option value="0" <?php echo ((int)$user['garant'] === 0) ? 'selected' : ''; ?>>Non</option>
-                            <option value="1" <?php echo ((int)$user['garant'] === 1) ? 'selected' : ''; ?>>Oui</option>
+                            <option value="0" <?php echo ((int)$user->isGarant() === 0) ? 'selected' : ''; ?>>Non</option>
+                            <option value="1" <?php echo ((int)$user->isGarant() === 1) ? 'selected' : ''; ?>>Oui</option>
                         </select>
                     </div>
 
                     <div class="form-group mb-3">
                         <label for="edit_salary">Salaire mensuel net (€)</label>
-                        <input type="number" step="0.01" id="edit_salary" name="salary" class="form-control" value="<?php echo escapeProfileValue($user['salaire_mensuel_net']); ?>" placeholder="0.00">
+                        <input type="number" step="0.01" id="edit_salary" name="salary" class="form-control" value="<?php echo escapeProfileValue($user->getSalaireMensuelNet()); ?>" placeholder="0.00">
                     </div>
 
                     <div class="form-group mb-3">
                         <label for="edit_revenu_fiscal">Revenu fiscal (€)</label>
-                        <input type="number" step="0.01" id="edit_revenu_fiscal" name="revenu_fiscal" class="form-control" value="<?php echo escapeProfileValue($user['revenu_fiscal']); ?>" placeholder="0.00">
+                        <input type="number" step="0.01" id="edit_revenu_fiscal" name="revenu_fiscal" class="form-control" value="<?php echo escapeProfileValue($user->getRevenuFiscal()); ?>" placeholder="0.00">
                     </div>
 
                     <div class="form-group mb-3">
                         <label for="edit_date_naissance">Date de naissance</label>
-                        <input type="date" id="edit_date_naissance" name="date_naissance" class="form-control" value="<?php echo !empty($user['date_naissance']) ? date('Y-m-d', strtotime($user['date_naissance'])) : ''; ?>">
+                        <input type="date" id="edit_date_naissance" name="date_naissance" class="form-control" value="<?php echo !empty($user->getDateNaissance()) ? date('Y-m-d', strtotime($user->getDateNaissance())) : ''; ?>">
                     </div>
 
                     <hr>
