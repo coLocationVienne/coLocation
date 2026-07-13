@@ -13,6 +13,8 @@ $dbConn = getDbConnection();
 
 $loginError = $_GET['error'] ?? '';
 $registered = $_GET['registered'] ?? '';
+$redirect = $_GET['redirect'] ?? '';
+
 $loginErrorMessages = [
     'invalid_credentials' => 'Email ou mot de passe incorrect. Veuillez reessayer.',
     'missing_fields' => 'Veuillez remplir votre email et votre mot de passe.',
@@ -28,6 +30,8 @@ include("../includes/header.php");
         <p class="login-subtitle">Connectez vous sur votre compte.</p>
 
         <form action="be/login_process.php" method="POST" class="login-form">
+            <input type="hidden" name="redirect" value="<?php echo htmlspecialchars($redirect); ?>">
+            
             <div class="form-group">
                 <label for="email">Adress email</label>
                 <input

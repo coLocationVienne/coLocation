@@ -15,6 +15,13 @@ abstract class DAO {
         $this->primary_key = $primary_key;
     }
 
+    /**
+     * Get the PDO database connection
+     */
+    public function getDb(): ?PDO {
+        return $this->db;
+    }
+
     abstract protected function hydrate(array $row): object;
     abstract protected function dehydrate(object $entity): array;
 
@@ -26,7 +33,6 @@ abstract class DAO {
         $result = $stmt->fetch();
         return $result ? $this->hydrate($result) : null;
     }
-
 
     public function save(object $entity): bool {
         $data = $this->dehydrate($entity);

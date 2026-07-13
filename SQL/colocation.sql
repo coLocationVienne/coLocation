@@ -116,7 +116,7 @@ INSERT INTO `annonce_age` (`id_annonce`, `id_age`) VALUES
 
 CREATE TABLE `annonce_avis` (
   `id_avis` int(11) NOT NULL,
-  `note` decimal(2,2) DEFAULT NULL,
+  `note` decimal(3,2) DEFAULT NULL,
   `date_` date NOT NULL,
   `commentaire` text NOT NULL,
   `id_annonce` int(11) DEFAULT NULL,

@@ -5,6 +5,7 @@ require_once "../../init.php";
 if (isset($_POST['email']) && isset($_POST['password'])) {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
+    $redirect = !empty($_POST['redirect']) ? $_POST['redirect'] : "../../index.php";
 
     /** @var \colocation\UserDAO $userDAO */
     $users = $userDAO->findBy(['email' => $email]);
@@ -18,10 +19,11 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
         $_SESSION['isLoggedin'] = true;
         $_SESSION['user_role'] = $user->getIdRole();
 
-        header("Location: ../../index.php");
+        header("Location: " . $redirect);
         exit();
     } else {
-        header("Location: ../connexion.php?error=invalid_credentials");
+        $redirectParam = !empty($_POST['redirect']) ? "&redirect=" . urlencode($_POST['redirect']) : "";
+        header("Location: ../connexion.php?error=invalid_credentials" . $redirectParam);
         exit();
     }
 } else {

@@ -1,52 +1,8 @@
 <?php
 include("includes/header.php");
 
-$annonces = [
-    [
-        "title" => "Chambre lumineuse proche du centre",
-        "city" => "Vienne centre",
-        "price" => 420,
-        "surface" => "18 m2",
-        "available" => "Disponible maintenant",
-        "match" => 96,
-        "profile" => "Calme, etudiant, teletravail",
-        "tags" => ["2 colocataires", "Balcon", "Fibre"],
-        "image" => "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=900&q=80"
-    ],
-    [
-        "title" => "Appartement partage esprit creatif",
-        "city" => "Estressin",
-        "price" => 365,
-        "surface" => "14 m2",
-        "available" => "A partir du 15 juillet",
-        "match" => 89,
-        "profile" => "Artistes, sorties, cuisine commune",
-        "tags" => ["Atelier", "Cuisine equipee", "Soirees"],
-        "image" => "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=900&q=80"
-    ],
-    [
-        "title" => "Maison avec jardin et ambiance familiale",
-        "city" => "Pont-Eveque",
-        "price" => 510,
-        "surface" => "22 m2",
-        "available" => "Libre en aout",
-        "match" => 93,
-        "profile" => "Nature, animaux acceptes, repas partages",
-        "tags" => ["Jardin", "Parking", "Maison"],
-        "image" => "https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?auto=format&fit=crop&w=900&q=80"
-    ],
-    [
-        "title" => "Studio partage premium pres de la gare",
-        "city" => "Gare de Vienne",
-        "price" => 590,
-        "surface" => "20 m2",
-        "available" => "Disponible maintenant",
-        "match" => 84,
-        "profile" => "Actifs, mobilite, rythme independant",
-        "tags" => ["Gare", "Ascenseur", "Meuble"],
-        "image" => "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80"
-    ],
-];
+/** @var \colocation\AnnonceDAO $annonceDAO */
+$annoncesFromDb = $annonceDAO->getAllWithPhotos();
 ?>
 
 <main class="landing-page">
@@ -71,7 +27,7 @@ $annonces = [
                 <button type="reset">Effacer</button>
             </form>
             <div class="hero-stats" aria-label="Statistiques de la plateforme">
-                <span><strong>42</strong> annonces actives</span>
+                <span><strong><?php echo count($annoncesFromDb); ?></strong> annonces actives</span>
                 <span><strong>91%</strong> match moyen</span>
                 <span><strong>24h</strong> reponse rapide</span>
             </div>
@@ -91,37 +47,36 @@ $annonces = [
     <section class="announces-section" id="annonces">
         <div class="section-heading">
             <div>
-                <p class="section-kicker">Annonces test</p>
-                <h2>Dernieres opportunites</h2>
+                <p class="section-kicker">Annonces récentes</p>
+                <h2>Dernières opportunités</h2>
             </div>
-            <p id="resultCount"><?php echo count($annonces); ?> annonces trouvees</p>
+            <p id="resultCount"><?php echo count($annoncesFromDb); ?> annonces trouvées</p>
         </div>
 
         <div class="announce-grid" id="announceGrid">
-            <?php foreach ($annonces as $annonce): ?>
+            <?php foreach ($annoncesFromDb as $a): ?>
                 <?php
-                    $searchText = strtolower($annonce["title"] . " " . $annonce["city"] . " " . $annonce["profile"] . " " . implode(" ", $annonce["tags"]) . " " . $annonce["available"]);
+                    $searchText = strtolower($a->getTitre() . " " . $a->getVille() . " " . $a->getDescription());
+                    $photo = $a->getPhoto() ? (strpos($a->getPhoto(), 'http') === 0 ? $a->getPhoto() : "pages/be/" . $a->getPhoto()) : "https://via.placeholder.com/400x300?text=Pas+de+photo";
                 ?>
-                <article class="announce-card" data-search="<?php echo htmlspecialchars($searchText); ?>" data-price="<?php echo $annonce["price"]; ?>">
+                <article class="announce-card" data-search="<?php echo htmlspecialchars($searchText); ?>" data-price="<?php echo $a->getLoyer(); ?>">
                     <div class="announce-image">
-                        <img src="<?php echo $annonce["image"]; ?>" alt="<?php echo htmlspecialchars($annonce["title"]); ?>">
-                        <span><?php echo $annonce["match"]; ?>% compatible</span>
+                        <img src="<?php echo $photo; ?>" alt="<?php echo htmlspecialchars($a->getTitre()); ?>">
+                        <span>90% compatible</span>
                     </div>
                     <div class="announce-body">
                         <div class="announce-topline">
-                            <span><?php echo $annonce["city"]; ?></span>
-                            <strong><?php echo $annonce["price"]; ?> EUR/mois</strong>
+                            <span><?php echo htmlspecialchars($a->getVille()); ?></span>
+                            <strong><?php echo number_format($a->getLoyer(), 2); ?> EUR/mois</strong>
                         </div>
-                        <h3><?php echo $annonce["title"]; ?></h3>
-                        <p><?php echo $annonce["profile"]; ?></p>
+                        <h3><?php echo htmlspecialchars($a->getTitre()); ?></h3>
+                        <p class="text-truncate"><?php echo htmlspecialchars(substr($a->getDescription(), 0, 100)) . '...'; ?></p>
                         <div class="announce-meta">
-                            <span><i class="fa-regular fa-calendar"></i><?php echo $annonce["available"]; ?></span>
-                            <span><i class="fa-solid fa-ruler-combined"></i><?php echo $annonce["surface"]; ?></span>
+                            <span><i class="fa-regular fa-calendar"></i> Publiée le <?php echo date('d/m/Y', strtotime($a->getDatePublication())); ?></span>
+                            <span><i class="fa-solid fa-ruler-combined"></i> <?php echo $a->getSurfaceChambre(); ?> m²</span>
                         </div>
-                        <div class="tag-list">
-                            <?php foreach ($annonce["tags"] as $tag): ?>
-                                <span><?php echo $tag; ?></span>
-                            <?php endforeach; ?>
+                        <div class="mt-3">
+                            <a href="pages/voir_annonce.php?id=<?php echo $a->getId(); ?>" class="btn btn-primary btn-sm w-100">Voir l'annonce</a>
                         </div>
                     </div>
                 </article>
@@ -129,30 +84,6 @@ $annonces = [
         </div>
 
         <p class="empty-state" id="emptyState">Aucune annonce ne correspond a votre recherche. Essayez un autre quartier, budget ou style de vie.</p>
-    </section>
-
-    <section class="steps-section">
-        <div>
-            <p class="section-kicker">Pourquoi ca marche</p>
-            <h2>Ne cherchez plus seulement un appartement, trouvez vos futurs amis.</h2>
-        </div>
-        <div class="steps-grid">
-            <article>
-                <span class="nombre-cercle">1</span>
-                <h3>Compatibilite</h3>
-                <p>Mode de vie, rythme, menage et invites sont pris en compte avant la visite.</p>
-            </article>
-            <article>
-                <span class="nombre-cercle">2</span>
-                <h3>Discussion</h3>
-                <p>Une prise de contact claire pour faire connaissance et poser les bonnes questions.</p>
-            </article>
-            <article>
-                <span class="nombre-cercle">3</span>
-                <h3>Dossier simple</h3>
-                <p>Les documents, cautions et informations utiles sont organises au meme endroit.</p>
-            </article>
-        </div>
     </section>
 </main>
 
@@ -180,7 +111,7 @@ $annonces = [
             }
         });
 
-        resultCount.textContent = visibleCount + (visibleCount > 1 ? " annonces trouvees" : " annonce trouvee");
+        resultCount.textContent = visibleCount + (visibleCount > 1 ? " annonces trouvées" : " annonce trouvée");
         emptyState.classList.toggle("is-visible", visibleCount === 0);
     }
 
@@ -191,6 +122,4 @@ $annonces = [
     });
 </script>
 
-<?php
-include("includes/footer.php");
-?>
+<?php include("includes/footer.php"); ?>
