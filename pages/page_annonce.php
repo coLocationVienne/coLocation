@@ -81,7 +81,7 @@ include("../includes/header.php");
                 <?php foreach ($annonces as $annonce): ?>
                     <?php
                         $image = !empty($annonce['image_url'])
-                            ? $annonce['image_url']
+                            ? '../' . $annonce['image_url']
                             : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=900&q=80';
                         $searchText = strtolower($annonce['titre'] . ' ' . $annonce['ville'] . ' ' . $annonce['description']);
                     ?>
@@ -112,13 +112,13 @@ include("../includes/header.php");
                             </div>
 
                             <div class="annonce-actions mt-3">
-                                <a href="formulaire_modifier_annonce.php?id_annonce=<?php echo (int) $annonce['id_annonce']; ?>" class="annonce-btn-principal">
+                                <a href="formulaire_modifier_annonce.php?id_annonce=<?php echo (int) $annonce['id_annonce']; ?>" class="btn btn-primary">
                                     Modifier
                                 </a>
 
                                 <form action="be/supprimer_annonce.php" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer cette annonce ?');">
                                         <input type="hidden" name="id_annonce" value="<?php echo (int) $annonce['id_annonce']; ?>">
-                                        <button type="submit" class="annonce-btn-danger">
+                                        <button type="submit" class="btn btn-danger">
                                             Supprimer
                                         </button>
                                 </form>

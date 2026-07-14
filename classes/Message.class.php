@@ -27,8 +27,6 @@ class Message {
 
 class MessageDAO extends \colocation\DAO {
     public function __construct() {
-        // This table doesn't have a single primary key, so we use a dummy one for now
-        // Or we could update the table to have an id_message
         parent::__construct('envoi_message', 'id_utilisateur');
     }
 
@@ -71,9 +69,6 @@ class MessageDAO extends \colocation\DAO {
         return $messages;
     }
 
-    /**
-     * Get all conversations for a user
-     */
     public function getUserConversations(int $userId): array {
         $query = "SELECT m.*, u.prenom, u.nom, a.titre as annonce_titre
                   FROM envoi_message m
@@ -90,7 +85,7 @@ class MessageDAO extends \colocation\DAO {
     }
 
     /**
-     * Count unread messages (if we add an is_read column later)
+     * to do : Rohid safi (if we add an is_read column later)
      * For now, just returning a count of recent messages as a placeholder
      */
     public function countUnread(int $userId): int {

@@ -14,7 +14,7 @@ if (!$annonce) {
 
 /** @var \colocation\CommentDAO $commentDAO */
 $comments = $commentDAO->getByAnnonceId($id);
-$photo = $annonce->getPhoto() ? (strpos($annonce->getPhoto(), 'http') === 0 ? $annonce->getPhoto() : "be/" . $annonce->getPhoto()) : "https://via.placeholder.com/800x400?text=Pas+de+photo";
+$photo = $annonce->getPhoto() ? (strpos($annonce->getPhoto(), 'http') === 0 ? $annonce->getPhoto() : "../" . $annonce->getPhoto()) : "https://via.placeholder.com/800x400?text=Pas+de+photo";
 ?>
 
 <div class="container mt-5 pt-5">

@@ -139,10 +139,10 @@ $errorMessages = [
                         <input type="text" id="ville" name="ville" value="<?php echo htmlspecialchars($annonce['ville']); ?>" required>
                     </div>
 
-                    <div class="annonce-field">
+                    <!-- <div class="annonce-field">
                         <label for="image_url">Image de l'annonce</label>
                         <input type="url" id="image_url" name="image_url" value="<?php echo htmlspecialchars($annonce['image_url'] ?? ''); ?>" placeholder="https://...">
-                    </div>
+                    </div> -->
                 </div>
 
                 <div class="annonce-form-grid trois-colonnes">
