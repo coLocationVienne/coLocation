@@ -14,12 +14,10 @@ $id_user = (int)$_SESSION['user_id'];
 $commentaire = trim(htmlspecialchars($_POST['commentaire']));
 $note = isset($_POST['note']) ? (float)$_POST['note'] : 5.0;
 
-// Note is now stored as 1.0 to 5.0 in DECIMAL(3,2)
 if ($note > 5.0) $note = 5.0;
 if ($note < 0) $note = 0;
 
 try {
-    /** @var \colocation\CommentDAO $commentDAO */
     $db = $commentDAO->getDb();
     
     if ($id_owner <= 0) {

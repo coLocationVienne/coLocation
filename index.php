@@ -57,7 +57,7 @@ $annoncesFromDb = $annonceDAO->getAllWithPhotos();
             <?php foreach ($annoncesFromDb as $a): ?>
                 <?php
                     $searchText = strtolower($a->getTitre() . " " . $a->getVille() . " " . $a->getDescription());
-                    $photo = $a->getPhoto() ? (strpos($a->getPhoto(), 'http') === 0 ? $a->getPhoto() : "pages/be/" . $a->getPhoto()) : "https://via.placeholder.com/400x300?text=Pas+de+photo";
+                    $photo = $a->getPhoto() ? (strpos($a->getPhoto(), 'http') === 0 ? $a->getPhoto() : $a->getPhoto()) : "https://via.placeholder.com/400x300?text=Pas+de+photo";
                 ?>
                 <article class="announce-card" data-search="<?php echo htmlspecialchars($searchText); ?>" data-price="<?php echo $a->getLoyer(); ?>">
                     <div class="announce-image">
