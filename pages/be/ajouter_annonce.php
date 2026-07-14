@@ -62,14 +62,13 @@ $modesVie = $_POST['mode_vie'] ?? [];
 $regimes = $_POST['regime'] ?? [];
 
 $annonceDAO = new AnnonceDAO();
-$success = $annonceDAO->ajouterAnnonce($annonce, (int)$_SESSION['user_id'], $modesVie, $regimes);
+$idAnnonce = $annonceDAO->ajouterAnnonce($annonce, (int)$_SESSION['user_id'], $modesVie, $regimes);
 
-if ($success) {
-    header('Location: ../creer_annonce.php?success=1');
+if ($idAnnonce > 0) {
+    // REDIRECT to photo management instead of creation page
+    header('Location: ../modifier_photos.php?id_annonce=' . $idAnnonce . '&success=annonce_created');
     exit();
 }
 
 header('Location: ../creer_annonce.php?error=server_error');
 exit();
-
-?>

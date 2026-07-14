@@ -21,3 +21,7 @@ try {
 } catch (Exception $e) {
     error_log("Initialization error: " . $e->getMessage());
 }
+require_once __DIR__ . '/classes/Comment.class.php';
+
+use colocation\CommentDAO;
+$commentDAO = new CommentDAO();

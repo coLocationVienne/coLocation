@@ -69,7 +69,12 @@ $errorMessages = [
     <section class="creer-annonce-hero">
         <div>
             <p class="annonce-kicker">Modifier une annonce</p>
-            <h1>Modifier votre annonce</h1>
+            <div class="d-flex justify-content-between align-items-center">
+                <h1>Modifier votre annonce</h1>
+                <a href="modifier_photos.php?id_annonce=<?php echo $idAnnonce; ?>" class="btn btn-primary" style="background: #007bff; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block; margin-top: 10px;">
+                    <i class="fas fa-camera"></i> Gérer les photos
+                </a>
+            </div>
             <p>
                 Mettez a  jour toutes les informations visibles sur votre annonce.
             </p>
@@ -165,12 +170,12 @@ $errorMessages = [
 
                     <div class="annonce-field">
                         <label for="date_expiration">Date expiration</label>
-                        <input type="date" id="date_expiration" name="date_expiration" value="<?php echo htmlspecialchars($annonce['date_expiration']); ?>" required>
+                        <input type="date" id="date_expiration" name="date_expiration" value="<?php echo htmlspecialchars($annonce['date_expiration'] ?? ''); ?>" required>
                     </div>
 
                     <div class="annonce-field">
                         <label for="date_cloture">Date cloture</label>
-                        <input type="date" id="date_cloture" name="date_cloture" value="<?php echo htmlspecialchars($annonce['date_cloture']); ?>" required>
+                        <input type="date" id="date_cloture" name="date_cloture" value="<?php echo htmlspecialchars($annonce['date_cloture'] ?? ''); ?>" required>
                     </div>
                 </div>
 
