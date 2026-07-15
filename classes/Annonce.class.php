@@ -299,6 +299,7 @@ class AnnonceDAO extends \colocation\DAO {
 
     private function ajouterModesVie(int $idAnnonce, array $modesVie): void
     {
+
         $stmt = $this->db->prepare("
             INSERT INTO annonce_mode_vie (id_annonce, id_mode_vie)
             VALUES (:id_annonce, :id_mode_vie)
@@ -315,8 +316,16 @@ class AnnonceDAO extends \colocation\DAO {
         }
     }
 
+     function avoirModeVie(int $idAnnonce){
+        $modeStmt = $this->db->prepare("SELECT id_mode_vie FROM annonce_mode_vie WHERE id_annonce = :id_annonce");
+        $modeStmt->execute([':id_annonce' => $idAnnonce]);
+
+         return $modeStmt->fetchAll();
+    }
+
     private function ajouterRegimes(int $idAnnonce, array $regimes): void
     {
+
         $stmt = $this->db->prepare("
             INSERT INTO annonce_regime_alimentaire (id_annonce, id_regime)
             VALUES (:id_annonce, :id_regime)
@@ -332,4 +341,13 @@ class AnnonceDAO extends \colocation\DAO {
             }
         }
     }
+
+    function avoirRegime(int $idAnnonce){
+        $regimeStmt =$this->db->prepare("SELECT id_regime_alimentaire FROM annonce_regime_alimentaire WHERE id_annonce = :id_annonce");
+        $regimeStmt->execute([':id_annonce' => $idAnnonce]);
+
+         return $regimeStmt->fetchAll();
+    }
+   
+
 }
