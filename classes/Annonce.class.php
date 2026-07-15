@@ -193,6 +193,7 @@ class AnnonceDAO extends \colocation\DAO {
 
     public function ajouterAnnonce(Annonce $annonce, int $userId, array $modesVie, array $regimes): int {
         try {
+            
             $this->db->beginTransaction();
 
             $this->save($annonce);
@@ -209,6 +210,7 @@ class AnnonceDAO extends \colocation\DAO {
             }
 
             $this->db->commit();
+            
             return (int)$idAnnonce;
         } catch (\Exception $e) {
             $this->db->rollBack();
@@ -327,7 +329,7 @@ class AnnonceDAO extends \colocation\DAO {
     {
 
         $stmt = $this->db->prepare("
-            INSERT INTO annonce_regime_alimentaire (id_annonce, id_regime)
+            INSERT INTO annonce_regime_alimentaire (id_annonce, id_regime_alimentaire)
             VALUES (:id_annonce, :id_regime)
         ");
 
