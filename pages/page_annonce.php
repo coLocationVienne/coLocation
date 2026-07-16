@@ -98,7 +98,8 @@ include("../includes/header.php");
                                 <span class="badge bg-light text-primary border" style="font-weight: 500;">
                                     <i class="fas fa-map-marker-alt me-1"></i> <?php echo htmlspecialchars($a->getVille()); ?>
                                 </span>
-                                <small class="text-muted"><?php echo htmlspecialchars($a->getSurfaceLogement()); ?> m²</small>
+                                <small class="text-muted"><?php echo htmlspecialchars($a->getSurfaceLogement()); ?> 
+                                m²</small>
                             </div>
                             <h5 class="card-title text-dark" style="font-weight: 600; font-size: 1.1rem;"><?php echo htmlspecialchars($a->getTitre()); ?></h5>
                             
