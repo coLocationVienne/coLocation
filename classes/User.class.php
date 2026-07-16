@@ -17,7 +17,7 @@ class User {
     private float $salaire_mensuel_net;
     private float $revenu_fiscal;
     private int $id_role;
-    private string $type_compte; // NEW FIELD
+    private string $type_compte; 
 
     public function __construct(array $data) {
         $this->id_utilisateur = $data['id_utilisateur'] ?? null;
@@ -85,7 +85,6 @@ class UserDAO extends \colocation\DAO {
     }
 
     protected function dehydrate(object $user): array {
-        /** @var User $user */
         return [
             'id_utilisateur' => $user->getIdUtilisateur(),
             'prenom' => $user->getPrenom(),
