@@ -9,6 +9,7 @@ require_once __DIR__ . '/classes/DAO.class.php';
 require_once __DIR__ . '/classes/User.class.php';
 require_once __DIR__ . '/classes/Message.class.php';
 require_once __DIR__ . '/classes/Annonce.class.php';
+require_once __DIR__ . '/pages/be/common.php';
 
 use colocation\UserDAO;
 use colocation\MessageDAO;

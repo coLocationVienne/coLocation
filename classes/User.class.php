@@ -17,6 +17,7 @@ class User {
     private float $salaire_mensuel_net;
     private float $revenu_fiscal;
     private int $id_role;
+    private string $type_compte; // NEW FIELD
 
     public function __construct(array $data) {
         $this->id_utilisateur = $data['id_utilisateur'] ?? null;
@@ -33,6 +34,7 @@ class User {
         $this->salaire_mensuel_net = (float)($data['salaire_mensuel_net'] ?? 0);
         $this->revenu_fiscal = (float)($data['revenu_fiscal'] ?? 0);
         $this->id_role = (int)($data['id_role'] ?? 3);
+        $this->type_compte = $data['type_compte'] ?? 'colocataire';
     }   
 
     // Getters
@@ -50,6 +52,7 @@ class User {
     public function getSalaireMensuelNet(): float { return $this->salaire_mensuel_net; }
     public function getRevenuFiscal(): float { return $this->revenu_fiscal; }
     public function getIdRole(): int { return $this->id_role; }
+    public function getTypeCompte(): string { return $this->type_compte; }
 
     // Setters
     public function setMotDePasse(string $password): void { $this->mot_de_passe = $password; }
@@ -65,6 +68,7 @@ class User {
     public function setDateNaissance(string $val): void { $this->date_naissance = $val; }
     public function setSalaireMensuelNet(float $val): void { $this->salaire_mensuel_net = $val; }
     public function setRevenuFiscal(float $val): void { $this->revenu_fiscal = $val; }
+    public function setTypeCompte(string $val): void { $this->type_compte = $val; }
 
     public function verifierMotDePasse(string $mot_de_passe): bool {
         return password_verify($mot_de_passe, $this->mot_de_passe);
@@ -81,6 +85,7 @@ class UserDAO extends \colocation\DAO {
     }
 
     protected function dehydrate(object $user): array {
+        /** @var User $user */
         return [
             'id_utilisateur' => $user->getIdUtilisateur(),
             'prenom' => $user->getPrenom(),
@@ -95,7 +100,8 @@ class UserDAO extends \colocation\DAO {
             'photo_profil' => $user->getPhotoProfil(),
             'salaire_mensuel_net' => $user->getSalaireMensuelNet(),
             'revenu_fiscal' => $user->getRevenuFiscal(),
-            'id_role' => $user->getIdRole()
+            'id_role' => $user->getIdRole(),
+            'type_compte' => $user->getTypeCompte()
         ];
     }
 

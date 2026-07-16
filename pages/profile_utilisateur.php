@@ -114,10 +114,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     <dd><?php echo $birthDate; ?></dd>
                 </div>
                 <div>
-                    <dt>Garant</dt>
-                    <dd><?php echo $hasGarant; ?></dd>
-                </div>
-            </dl>
+	                    <dt>Garant</dt>
+	                    <dd><?php echo $hasGarant; ?></dd>
+	                </div>
+	                <div>
+	                    <dt>Type de compte</dt>
+	                    <dd>
+	                        <span class="badge <?php echo ($user->getTypeCompte() === 'propriétaire') ? 'bg-primary' : 'bg-success'; ?>" style="padding: 5px 10px; border-radius: 4px; color: white; background-color: <?php echo ($user->getTypeCompte() === 'propriétaire') ? '#007bff' : '#28a745'; ?>;">
+	                            <?php echo ucfirst($user->getTypeCompte()); ?>
+	                        </span>
+	                    </dd>
+	                </div>
+	            </dl>
         </article>
 
         <article class="profile-card">
@@ -250,10 +258,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         <input type="number" step="0.01" id="edit_revenu_fiscal" name="revenu_fiscal" class="form-control" value="<?php echo escapeProfileValue($user->getRevenuFiscal()); ?>" placeholder="0.00">
                     </div>
 
-                    <div class="form-group mb-3">
-                        <label for="edit_date_naissance">Date de naissance</label>
-                        <input type="date" id="edit_date_naissance" name="date_naissance" class="form-control" value="<?php echo !empty($user->getDateNaissance()) ? date('Y-m-d', strtotime($user->getDateNaissance())) : ''; ?>">
-                    </div>
+<div class="form-group mb-3">
+	                        <label for="edit_date_naissance">Date de naissance</label>
+	                        <input type="date" id="edit_date_naissance" name="date_naissance" class="form-control" value="<?php echo !empty($user->getDateNaissance()) ? date('Y-m-d', strtotime($user->getDateNaissance())) : ''; ?>">
+	                    </div>
+
+	                    <div class="form-group mb-3">
+	                        <label for="edit_type_compte">Type de compte</label>
+	                        <select id="edit_type_compte" name="type_compte" class="form-control">
+	                            <option value="colocataire" <?php echo ($user->getTypeCompte() === 'colocataire') ? 'selected' : ''; ?>>Colocataire</option>
+	                            <option value="propriétaire" <?php echo ($user->getTypeCompte() === 'propriétaire') ? 'selected' : ''; ?>>Propriétaire</option>
+	                        </select>
+	                    </div>
 
                     <hr>
                     <p class="text-muted small">Les champs optionnels peuvent être laissés vides.</p>

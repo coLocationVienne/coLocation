@@ -123,64 +123,69 @@ if (!empty($_SESSION['isLoggedin']) && isset($_SESSION['user_id'])) {
             </li>
           <?php else: ?>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <div class="avatar-wrapper">
-                  <?php if ($avatarData && $avatarData['has_photo'] && !empty($avatarData['src'])): ?>
-                    <img class="avatar-img" src="<?php echo htmlspecialchars($avatarData['src']); ?>" alt="Photo de profil">
-                  <?php else: ?>
-                    <div class="avatar-circle">
-                      <?php echo htmlspecialchars($avatarData['initials'] ?? 'U'); ?>
-                    </div>
-                  <?php endif; ?>
-                  <span class="avatar-name">
-                    <?php 
-                      if (isset($_SESSION['user_prenom'])) {
-                          echo htmlspecialchars(strtoupper($_SESSION['user_prenom']));
-                      } else {
-                          echo 'Mon compte';
-                      }
-                    ?>
-                  </span>
-                </div>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                <li>
-                  <div class="dropdown-header">
-                    <?php 
-                      if (isset($_SESSION['user_prenom']) && isset($_SESSION['user_nom'])) {
-                          echo htmlspecialchars($_SESSION['user_prenom'] . ' ' . $_SESSION['user_nom']);
-                      } else {
-                          echo 'Mon compte';
-                      }
-                    ?>
-                    <small>
-                      <?php echo isset($_SESSION['user_email']) ? htmlspecialchars($_SESSION['user_email']) : ''; ?>
-                    </small>
-                  </div>
-                </li>
+<a class="nav-link" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 0; display: flex; align-items: center;">
+	                <div class="avatar-wrapper" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 5px 10px; border-radius: 25px; transition: background 0.2s;">
+	                  <?php if ($avatarData && $avatarData['has_photo'] && !empty($avatarData['src'])): ?>
+	                    <img class="avatar-img" src="<?php echo htmlspecialchars($avatarData['src']); ?>" alt="Photo de profil" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+	                  <?php else: ?>
+	                    <div class="avatar-circle" style="width: 32px; height: 32px; background: #007bff; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+	                      <?php echo htmlspecialchars($avatarData['initials'] ?? 'U'); ?>
+	                    </div>
+	                  <?php endif; ?>
+	                  <span class="avatar-name" style="font-weight: 500; color: #333; font-size: 14px;">
+	                    <?php 
+	                      if (isset($_SESSION['user_prenom'])) {
+	                          echo htmlspecialchars(ucfirst(strtolower($_SESSION['user_prenom'])));
+	                      } else {
+	                          echo 'Mon compte';
+	                      }
+	                    ?>
+	                    <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 5px; color: #888;"></i>
+	                  </span>
+	                </div>
+	              </a>
+<ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="profileDropdown" style="border-radius: 12px; margin-top: 10px; padding: 10px; min-width: 220px;">
+	                <li>
+	                  <div class="dropdown-header" style="padding: 10px 15px; border-bottom: 1px solid #f8f9fa; margin-bottom: 5px;">
+	                    <div style="font-weight: 600; color: #333; font-size: 15px;">
+	                      <?php 
+	                        if (isset($_SESSION['user_prenom']) && isset($_SESSION['user_nom'])) {
+	                            echo htmlspecialchars($_SESSION['user_prenom'] . ' ' . $_SESSION['user_nom']);
+	                        } else {
+	                            echo 'Mon compte';
+	                        }
+	                      ?>
+	                    </div>
+	                    <div style="color: #6c757d; font-size: 12px; font-weight: 400;">
+	                      <?php echo isset($_SESSION['user_email']) ? htmlspecialchars($_SESSION['user_email']) : ''; ?>
+	                    </div>
+	                  </div>
+	                </li>
                 <li><hr class="dropdown-divider"></li>
-                <li>
-                  <a class="dropdown-item" href="<?php echo $baseURL; ?>/pages/profile_utilisateur.php">
-                    <i class="fas fa-user-circle"></i> Voir mon profil
-                  </a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="<?php echo $baseURL; ?>/pages/page_annonce.php">
-                    <i class="fas fa-list"></i> Mes annonces
-                  </a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="<?php echo $baseURL; ?>/pages/messages.php">
-                    <i class="fas fa-envelope"></i> Messages
-                    <span class="badge bg-danger rounded-pill ms-2"><?php echo $messageDAO->countUnread($_SESSION['user_id']); ?></span>
-                  </a>
-                </li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                  <a class="dropdown-item text-danger" href="<?php echo $baseURL; ?>/pages/be/deconnexion.php">
-                    <i class="fas fa-sign-out-alt"></i> Se déconnecter
-                  </a>
-                </li>
+<li>
+	                  <a class="dropdown-item" href="<?php echo $baseURL; ?>/pages/profile_utilisateur.php" style="border-radius: 8px; padding: 8px 15px; display: flex; align-items: center; gap: 10px;">
+	                    <i class="fas fa-user-circle" style="color: #007bff; width: 20px;"></i> Voir mon profil
+	                  </a>
+	                </li>
+	                <li>
+	                  <a class="dropdown-item" href="<?php echo $baseURL; ?>/pages/page_annonce.php" style="border-radius: 8px; padding: 8px 15px; display: flex; align-items: center; gap: 10px;">
+	                    <i class="fas fa-list" style="color: #6c757d; width: 20px;"></i> Mes annonces
+	                  </a>
+	                </li>
+	                <li>
+	                  <a class="dropdown-item" href="<?php echo $baseURL; ?>/pages/messages.php" style="border-radius: 8px; padding: 8px 15px; display: flex; align-items: center; gap: 10px; justify-content: space-between;">
+	                    <div style="display: flex; align-items: center; gap: 10px;">
+	                        <i class="fas fa-envelope" style="color: #28a745; width: 20px;"></i> Messages
+	                    </div>
+	                    <span class="badge bg-danger rounded-pill" style="font-size: 10px;"><?php echo $messageDAO->countUnread($_SESSION['user_id']); ?></span>
+	                  </a>
+	                </li>
+	                <li><hr class="dropdown-divider" style="border-color: #f8f9fa;"></li>
+	                <li>
+	                  <a class="dropdown-item text-danger" href="<?php echo $baseURL; ?>/pages/be/deconnexion.php" style="border-radius: 8px; padding: 8px 15px; display: flex; align-items: center; gap: 10px;">
+	                    <i class="fas fa-sign-out-alt" style="width: 20px;"></i> Se déconnecter
+	                  </a>
+	                </li>
               </ul>
             </li>
           <?php endif; ?>

@@ -48,6 +48,9 @@ $conversations = $messageDAO->getUserConversations($_SESSION['user_id']);
                         <div>
                             <i class="fas fa-user-circle me-2"></i>
                             <strong><?php echo htmlspecialchars($otherUser->getPrenom() . ' ' . $otherUser->getNom()); ?></strong>
+	                            <span class="badge ms-2" style="font-size: 0.7em; padding: 4px 8px; color: white; background-color: <?php echo ($otherUser->getTypeCompte() === 'propriétaire') ? '#007bff' : '#28a745'; ?>;">
+	                                <?php echo ucfirst($otherUser->getTypeCompte()); ?>
+	                            </span>
                             <br>
                             <small>
                                 À propos de : 
