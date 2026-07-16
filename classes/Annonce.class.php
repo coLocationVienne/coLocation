@@ -122,10 +122,13 @@ class AnnonceDAO extends \colocation\DAO {
     public function getAllWithPhotos(): array {
         $query = "SELECT a.*, p.url as photo_url, au.id_utilisateur as owner_id
                   FROM annonce a 
-                  LEFT JOIN annonce_photo ap ON a.id_annonce = ap.id_annonce 
-                  LEFT JOIN photo p ON ap.id_photo = p.id_photo 
+                  LEFT JOIN (
+                      SELECT id_annonce, MIN(id_photo) as first_photo_id
+                      FROM annonce_photo
+                      GROUP BY id_annonce
+                  ) ap_first ON a.id_annonce = ap_first.id_annonce
+                  LEFT JOIN photo p ON ap_first.first_photo_id = p.id_photo 
                   LEFT JOIN annonce_utilisateur au ON a.id_annonce = au.id_annonce
-                  GROUP BY a.id_annonce
                   ORDER BY a.date_publication DESC";
         $stmt = $this->db->query($query);
         $results = $stmt->fetchAll();
@@ -140,8 +143,13 @@ class AnnonceDAO extends \colocation\DAO {
     public function getFullById(int $id): ?Annonce {
         $query = "SELECT a.*, p.url as photo_url, au.id_utilisateur as owner_id
                   FROM annonce a 
-                  LEFT JOIN annonce_photo ap ON a.id_annonce = ap.id_annonce 
-                  LEFT JOIN photo p ON ap.id_photo = p.id_photo 
+                  LEFT JOIN (
+                      SELECT id_annonce, MIN(id_photo) as first_photo_id
+                      FROM annonce_photo
+                      WHERE id_annonce = :id
+                      GROUP BY id_annonce
+                  ) ap_first ON a.id_annonce = ap_first.id_annonce
+                  LEFT JOIN photo p ON ap_first.first_photo_id = p.id_photo 
                   LEFT JOIN annonce_utilisateur au ON a.id_annonce = au.id_annonce
                   WHERE a.id_annonce = :id
                   LIMIT 1";
@@ -149,6 +157,29 @@ class AnnonceDAO extends \colocation\DAO {
         $stmt->execute(['id' => $id]);
         $row = $stmt->fetch();
         return $row ? $this->hydrate($row) : null;
+    }
+
+    public function getAllAnouncesByUserId(int $userId): array {
+        $query = "SELECT a.*, p.url as photo_url, au.id_utilisateur as owner_id
+                  FROM annonce a 
+                  INNER JOIN annonce_utilisateur au ON a.id_annonce = au.id_annonce
+                  LEFT JOIN (
+                      SELECT id_annonce, MIN(id_photo) as first_photo_id
+                      FROM annonce_photo
+                      GROUP BY id_annonce
+                  ) ap_first ON a.id_annonce = ap_first.id_annonce
+                  LEFT JOIN photo p ON ap_first.first_photo_id = p.id_photo 
+                  WHERE au.id_utilisateur = :user_id
+                  ORDER BY a.date_publication DESC";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute(['user_id' => $userId]);
+        $results = $stmt->fetchAll();
+        
+        $annonces = [];
+        foreach ($results as $row) {
+            $annonces[] = $this->hydrate($row);
+        }
+        return $annonces;
     }
 
     public function getPhotos(int $idAnnonce): array {
@@ -193,9 +224,7 @@ class AnnonceDAO extends \colocation\DAO {
 
     public function ajouterAnnonce(Annonce $annonce, int $userId, array $modesVie, array $regimes): int {
         try {
-            
             $this->db->beginTransaction();
-
             $this->save($annonce);
             $idAnnonce = $this->db->lastInsertId();
             $stmtUser = $this->db->prepare("INSERT INTO annonce_utilisateur (id_annonce, id_utilisateur) VALUES (?, ?)");
@@ -210,7 +239,6 @@ class AnnonceDAO extends \colocation\DAO {
             }
 
             $this->db->commit();
-            
             return (int)$idAnnonce;
         } catch (\Exception $e) {
             $this->db->rollBack();
@@ -222,24 +250,19 @@ class AnnonceDAO extends \colocation\DAO {
     public function modifierAnnonce(Annonce $annonce, int $userId, array $modesVie, array $regimes): bool {
         try {
             $this->db->beginTransaction();
-
             if (!$this->appartientAUtilisateur($annonce->getId(), $userId)) {
                 $this->db->rollBack();
                 return false;
             }
-
             $this->update($annonce);
-
             $this->db->prepare("DELETE FROM annonce_mode_vie WHERE id_annonce = ?")->execute([$annonce->getId()]);
             if (!empty($modesVie)) {
                 $this->ajouterModesVie($annonce->getId(), $modesVie);
             }
-
             $this->db->prepare("DELETE FROM annonce_regime_alimentaire WHERE id_annonce = ?")->execute([$annonce->getId()]);
             if (!empty($regimes)) {
                 $this->ajouterRegimes($annonce->getId(), $regimes);
             }
-
             $this->db->commit();
             return true;
         } catch (\Exception $e) {
@@ -249,29 +272,17 @@ class AnnonceDAO extends \colocation\DAO {
         }
     }
 
-    public function supprimerAnnonce(int $idAnnonce, int $idUtilisateur): bool
-    {
+    public function supprimerAnnonce(int $idAnnonce, int $idUtilisateur): bool {
         if (!$this->appartientAUtilisateur($idAnnonce, $idUtilisateur)) {
             return false;
         }
-
         $this->db->beginTransaction();
-
         try {
-            $tables = [
-                'annonce_mode_vie',
-                'annonce_regime_alimentaire',
-                'annonce_photo',
-                'annonce_utilisateur',
-                'annonce_avis',
-                'envoi_message'
-            ];
-
+            $tables = ['annonce_mode_vie', 'annonce_regime_alimentaire', 'annonce_photo', 'annonce_utilisateur', 'annonce_avis', 'envoi_message'];
             foreach ($tables as $table) {
                 $stmt = $this->db->prepare("DELETE FROM $table WHERE id_annonce = :id_annonce");
                 $stmt->execute([':id_annonce' => $idAnnonce]);
             }
-
             $this->delete($idAnnonce);
             $this->db->commit();
             return true;
@@ -282,74 +293,41 @@ class AnnonceDAO extends \colocation\DAO {
         }
     }
 
-    public function appartientAUtilisateur(int $idAnnonce, int $idUtilisateur): bool
-    {
-        $stmt = $this->db->prepare("
-            SELECT COUNT(*)
-            FROM annonce_utilisateur
-            WHERE id_annonce = :id_annonce
-            AND id_utilisateur = :id_utilisateur
-        ");
-
-        $stmt->execute([
-            ':id_annonce' => $idAnnonce,
-            ':id_utilisateur' => $idUtilisateur
-        ]);
-
+    public function appartientAUtilisateur(int $idAnnonce, int $idUtilisateur): bool {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM annonce_utilisateur WHERE id_annonce = :id_annonce AND id_utilisateur = :id_utilisateur");
+        $stmt->execute([':id_annonce' => $idAnnonce, ':id_utilisateur' => $idUtilisateur]);
         return (int)$stmt->fetchColumn() > 0;
     }
 
-    private function ajouterModesVie(int $idAnnonce, array $modesVie): void
-    {
-
-        $stmt = $this->db->prepare("
-            INSERT INTO annonce_mode_vie (id_annonce, id_mode_vie)
-            VALUES (:id_annonce, :id_mode_vie)
-        ");
-
+    private function ajouterModesVie(int $idAnnonce, array $modesVie): void {
+        $stmt = $this->db->prepare("INSERT INTO annonce_mode_vie (id_annonce, id_mode_vie) VALUES (:id_annonce, :id_mode_vie)");
         foreach (array_unique($modesVie) as $idModeVie) {
             $idModeVie = (int)$idModeVie;
             if ($idModeVie > 0) {
-                $stmt->execute([
-                    ':id_annonce' => $idAnnonce,
-                    ':id_mode_vie' => $idModeVie
-                ]);
+                $stmt->execute([':id_annonce' => $idAnnonce, ':id_mode_vie' => $idModeVie]);
             }
         }
     }
 
-     function avoirModeVie(int $idAnnonce){
+    public function avoirModeVie(int $idAnnonce) {
         $modeStmt = $this->db->prepare("SELECT id_mode_vie FROM annonce_mode_vie WHERE id_annonce = :id_annonce");
         $modeStmt->execute([':id_annonce' => $idAnnonce]);
-
-         return $modeStmt->fetchAll();
+        return $modeStmt->fetchAll();
     }
 
-    private function ajouterRegimes(int $idAnnonce, array $regimes): void
-    {
-
-        $stmt = $this->db->prepare("
-            INSERT INTO annonce_regime_alimentaire (id_annonce, id_regime_alimentaire)
-            VALUES (:id_annonce, :id_regime)
-        ");
-
+    private function ajouterRegimes(int $idAnnonce, array $regimes): void {
+        $stmt = $this->db->prepare("INSERT INTO annonce_regime_alimentaire (id_annonce, id_regime_alimentaire) VALUES (:id_annonce, :id_regime)");
         foreach (array_unique($regimes) as $idRegime) {
             $idRegime = (int)$idRegime;
             if ($idRegime > 0) {
-                $stmt->execute([
-                    ':id_annonce' => $idAnnonce,
-                    ':id_regime' => $idRegime
-                ]);
+                $stmt->execute([':id_annonce' => $idAnnonce, ':id_regime' => $idRegime]);
             }
         }
     }
 
-    function avoirRegime(int $idAnnonce){
-        $regimeStmt =$this->db->prepare("SELECT id_regime_alimentaire FROM annonce_regime_alimentaire WHERE id_annonce = :id_annonce");
+    public function avoirRegime(int $idAnnonce) {
+        $regimeStmt = $this->db->prepare("SELECT id_regime_alimentaire FROM annonce_regime_alimentaire WHERE id_annonce = :id_annonce");
         $regimeStmt->execute([':id_annonce' => $idAnnonce]);
-
-         return $regimeStmt->fetchAll();
+        return $regimeStmt->fetchAll();
     }
-   
-
 }

@@ -3,176 +3,165 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once "../includes/dbConnection.php";
+require_once '../init.php';
 
 if (empty($_SESSION['user_id'])) {
     header("Location: connexion.php?error=erreur_connexion");
     exit();
 }
 
-$dbConn = getDbConnection();
 $userId = (int) $_SESSION['user_id'];
 $error = $_GET['error'] ?? '';
 $success = $_GET['success'] ?? '';
 
-$stmt = $dbConn->prepare("
-    SELECT
-        a.*,
-        (
-            SELECT p.url
-            FROM annonce_photo ap
-            INNER JOIN photo p ON p.id_photo = ap.id_photo
-            WHERE ap.id_annonce = a.id_annonce
-            ORDER BY p.id_photo ASC
-            LIMIT 1
-        ) AS image_url
-    FROM annonce a
-    INNER JOIN annonce_utilisateur au ON au.id_annonce = a.id_annonce
-    WHERE au.id_utilisateur = :id_utilisateur
-    ORDER BY a.date_publication DESC, a.id_annonce DESC
-");
-$stmt->execute([
-    ':id_utilisateur' => $userId
-]);
-$annonces = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Fetch announcements using the DAO
+$annonces = $annonceDAO->getAllAnouncesByUserId($userId);
 
 include("../includes/header.php");
 ?>
 
-<main class="page-annonce">
-    <section class="annonce-entete">
+<div class="container" style="margin-top: 100px; margin-bottom: 50px; max-width: 1200px;">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
         <div>
-            <p class="petit-titre">Mes annonces</p>
-            <h1>Gérez vos annonces</h1>
-            <p>
-                Retrouvez uniquement les annonces que vous avez publiées, puis modifiez les informations du logement quand nécessaire.
-            </p>
+            <h1 style="font-size: 1.75rem; font-weight: 700; color: #333; margin: 0;">Mes annonces</h1>
+            <p class="text-muted mb-0">Gérez vos publications et suivez leur statut.</p>
         </div>
+        <a href="creer_annonce.php" class="btn btn-primary" style="border-radius: 8px; padding: 10px 20px; font-weight: 600;">
+            <i class="fas fa-plus me-2"></i> Nouvelle annonce
+        </a>
+    </div>
 
-        <form class="recherche-annonce">
-            <h2>Explorer</h2>
-            <input type="search" id="searchLocation" placeholder="Localisation">
-            <input type="number" id="searchBudget" placeholder="Budget maximum">
-            <button type="button" id="searchButton">Rechercher</button>
-        </form>
-    </section>
-
-    <section class="announces-section" id="annonces">
-        <div class="section-heading">
-            <div>
-                <p class="petit-titre">Disponibles</p>
-                <h2>Vos annonces</h2>
-            </div>
-            <p id="resultCount"><?php echo count($annonces); ?> annonce(s) trouvée(s)</p>
+    <!-- Filters Bar -->
+    <div class="bg-white p-3 mb-4 rounded shadow-sm border d-flex gap-3 align-items-center flex-wrap">
+        <div style="flex: 1; min-width: 250px; position: relative;">
+            <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #adb5bd;"></i>
+            <input type="text" id="manageSearch" class="form-control" placeholder="Rechercher par titre ou ville..." style="padding-left: 35px; border-radius: 8px;">
         </div>
+        <div style="width: 200px;">
+            <select id="manageBudget" class="form-select" style="border-radius: 8px;">
+                <option value="all">Tous les budgets</option>
+                <option value="400">Max 400 €</option>
+                <option value="500">Max 500 €</option>
+                <option value="600">Max 600 €</option>
+            </select>
+        </div>
+        <div class="text-muted ms-auto" id="resultCounter">
+            <strong><?php echo count($annonces); ?></strong> annonce(s) au total
+        </div>
+    </div>
 
-        <?php if ($success === 'updated'): ?>
-            <p class="annonce-message">Votre annonce a bien été modifiée.</p>
-        <?php endif; ?>
+    <!-- Feedback Alerts -->
+    <?php if ($success === 'updated'): ?>
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="border-left: 4px solid #28a745;">
+            <i class="fas fa-check-circle me-2"></i> Votre annonce a été mise à jour avec succès.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
 
-        <?php if ($error === 'unauthorized'): ?>
-            <p class="annonce-message">Vous ne pouvez pas modifier une annonce qui ne vous appartient pas.</p>
-        <?php endif; ?>
+    <?php if ($error === 'unauthorized'): ?>
+        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="border-left: 4px solid #dc3545;">
+            <i class="fas fa-exclamation-triangle me-2"></i> Vous n'êtes pas autorisé à modifier cette annonce.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
 
-        <?php if (empty($annonces)): ?>
-            <p class="empty-state is-visible">Vous n'avez pas encore publié d'annonce.</p>
-        <?php else: ?>
-            <div class="announce-grid" id="announceGrid">
-                <?php foreach ($annonces as $annonce): ?>
-                    <?php
-                        $image = !empty($annonce['image_url'])
-                            ? '../' . $annonce['image_url']
-                            : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=900&q=80';
-                        $searchText = strtolower($annonce['titre'] . ' ' . $annonce['ville'] . ' ' . $annonce['description']);
-                    ?>
-
-                    <article class="announce-card" data-search="<?php echo htmlspecialchars($searchText); ?>" data-price="<?php echo htmlspecialchars($annonce['loyer_location_chez_habitant']); ?>">
-                        <div class="announce-image">
-                            <img src="<?php echo htmlspecialchars($image); ?>" alt="<?php echo htmlspecialchars($annonce['titre']); ?>">
-                            <span><?php echo htmlspecialchars($annonce['loyer_location_chez_habitant']); ?> EUR/mois</span>
+    <!-- Announce Grid -->
+    <?php if (empty($annonces)): ?>
+        <div class="text-center py-5 bg-light rounded-4 border-2 border-dashed">
+            <div class="mb-3"><i class="fas fa-home fa-3x text-light-emphasis"></i></div>
+            <h4>Aucune annonce pour le moment</h4>
+            <p class="text-muted">Commencez par créer votre première annonce de colocation.</p>
+            <a href="creer_annonce.php" class="btn btn-outline-primary mt-2">Créer une annonce</a>
+        </div>
+    <?php else: ?>
+        <div class="row g-4" id="manageGrid">
+            <?php foreach ($annonces as $a): ?>
+                <?php
+                    $photoUrl = $a->getPhoto();
+                    $image = !empty($photoUrl)
+                        ? (strpos($photoUrl, 'http') === 0 ? $photoUrl : '../' . $photoUrl)
+                        : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400&q=80';
+                    
+                    $searchText = strtolower($a->getTitre() . ' ' . $a->getVille());
+                ?>
+                <div class="col-md-6 col-lg-4 manage-card-wrapper" data-search="<?php echo htmlspecialchars($searchText); ?>" data-price="<?php echo $a->getLoyerHabitant(); ?>">
+                    <div class="card h-100 border-0 shadow-sm overflow-hidden" style="border-radius: 12px; transition: transform 0.2s;">
+                        <div style="position: relative; height: 180px;">
+                            <img src="<?php echo htmlspecialchars($image); ?>" class="card-img-top w-100 h-100" style="object-fit: cover;" alt="Aperçu">
+                            <div style="position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.6); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">
+                                <?php echo number_format($a->getLoyerHabitant(), 0, ',', ' '); ?> €
+                            </div>
                         </div>
-
-                        <div class="announce-body">
-                            <div class="announce-topline">
-                                <span><?php echo htmlspecialchars($annonce['ville']); ?></span>
-                                <strong><?php echo htmlspecialchars($annonce['surface_logement']); ?> m²</strong>
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge bg-light text-primary border" style="font-weight: 500;">
+                                    <i class="fas fa-map-marker-alt me-1"></i> <?php echo htmlspecialchars($a->getVille()); ?>
+                                </span>
+                                <small class="text-muted"><?php echo htmlspecialchars($a->getSurfaceLogement()); ?> 
+                                m²</small>
                             </div>
-
-                            <h3><?php echo htmlspecialchars($annonce['titre']); ?></h3>
-                            <p><?php echo htmlspecialchars($annonce['description']); ?></p>
-
-                            <div class="announce-meta">
-                                <span><i class="fa-regular fa-calendar"></i> Expire le <?php echo htmlspecialchars($annonce['date_expiration']); ?></span>
-                                <span><i class="fa-solid fa-bed"></i> <?php echo htmlspecialchars($annonce['nombre_chambre']); ?> chambre(s)</span>
-                            </div>
-
-                            <div class="tag-list">
-                                <span><?php echo htmlspecialchars($annonce['surface_chambres']); ?> m² chambre</span>
-                                <span><?php echo htmlspecialchars($annonce['code_postal']); ?></span>
-                            </div>
-
-                            <div class="annonce-actions mt-3">
-                                <a href="formulaire_modifier_annonce.php?id_annonce=<?php echo (int) $annonce['id_annonce']; ?>" class="btn btn-primary">
-                                    Modifier
+                            <h5 class="card-title text-dark" style="font-weight: 600; font-size: 1.1rem;"><?php echo htmlspecialchars($a->getTitre()); ?></h5>
+                            
+                            <div class="mt-auto pt-3 border-top d-flex gap-2">
+                                <a href="formulaire_modifier_annonce.php?id_annonce=<?php echo $a->getId(); ?>" class="btn btn-sm btn-light border flex-grow-1" style="font-weight: 500;">
+                                    <i class="fas fa-edit me-1 text-primary"></i> Editer
                                 </a>
-
-                                <form action="be/supprimer_annonce.php" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer cette annonce ?');">
-                                        <input type="hidden" name="id_annonce" value="<?php echo (int) $annonce['id_annonce']; ?>">
-                                        <button type="submit" class="btn btn-danger">
-                                            Supprimer
-                                        </button>
+                                <a href="modifier_photos.php?id_annonce=<?php echo $a->getId(); ?>" class="btn btn-sm btn-light border" title="Photos">
+                                    <i class="fas fa-camera text-secondary"></i>
+                                </a>
+                                <a href="voir_annonce.php?id=<?php echo $a->getId(); ?>" class="btn btn-sm btn-light border" title="Voir l'aperçu">
+                                    <i class="fas fa-external-link-alt text-info"></i>
+                                </a>
+                                <form action="be/supprimer_annonce.php" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer cette annonce ?');" class="d-inline">
+                                    <input type="hidden" name="id_annonce" value="<?php echo $a->getId(); ?>">
+                                    <button type="submit" class="btn btn-sm btn-light border text-danger" title="Supprimer">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
                                 </form>
-
                             </div>
                         </div>
-                    </article>
-                <?php endforeach; ?>
-            </div>
-
-            <p class="empty-state" id="emptyState">Aucune annonce ne correspond à votre recherche.</p>
-        <?php endif; ?>
-    </section>
-</main>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        
+        <div id="noMatchMessage" class="text-center py-5 d-none">
+            <i class="fas fa-search fa-2x text-muted mb-2"></i>
+            <p class="text-muted">Aucune annonce ne correspond à votre recherche.</p>
+        </div>
+    <?php endif; ?>
+</div>
 
 <script>
-    const searchLocation = document.getElementById("searchLocation");
-    const searchBudget = document.getElementById("searchBudget");
-    const searchButton = document.getElementById("searchButton");
-    const resultCount = document.getElementById("resultCount");
-    const emptyState = document.getElementById("emptyState");
-    const cards = Array.from(document.querySelectorAll(".announce-card"));
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('manageSearch');
+    const budgetSelect = document.getElementById('manageBudget');
+    const cards = document.querySelectorAll('.manage-card-wrapper');
+    const counter = document.getElementById('resultCounter');
+    const noMatch = document.getElementById('noMatchMessage');
 
-    function filterAnnounces() {
-        const query = searchLocation.value.trim().toLowerCase();
-        const budget = searchBudget.value;
-        let total = 0;
+    function performFilter() {
+        const query = searchInput.value.toLowerCase().trim();
+        const maxPrice = budgetSelect.value === 'all' ? Infinity : Number(budgetSelect.value);
+        let visibleCount = 0;
 
-        cards.forEach((card) => {
-            const matchText = card.dataset.search.includes(query);
-            const matchBudget = budget === "" || Number(card.dataset.price) <= Number(budget);
-            const visible = matchText && matchBudget;
-
-            card.hidden = !visible;
-
-            if (visible) {
-                total++;
-            }
+        cards.forEach(card => {
+            const matchesSearch = card.dataset.search.includes(query);
+            const matchesPrice = Number(card.dataset.price) <= maxPrice;
+            const isVisible = matchesSearch && matchesPrice;
+            
+            card.classList.toggle('d-none', !isVisible);
+            if (isVisible) visibleCount++;
         });
 
-        resultCount.textContent = total + " annonce(s) trouvée(s)";
-
-        if (emptyState) {
-            emptyState.classList.toggle("is-visible", total === 0);
-        }
+        counter.innerHTML = `<strong>${visibleCount}</strong> annonce(s) trouvée(s)`;
+        noMatch.classList.toggle('d-none', visibleCount > 0);
     }
 
-    if (searchButton) {
-        searchButton.addEventListener("click", filterAnnounces);
-        searchLocation.addEventListener("input", filterAnnounces);
-        searchBudget.addEventListener("input", filterAnnounces);
-    }
+    searchInput.addEventListener('input', performFilter);
+    budgetSelect.addEventListener('change', performFilter);
+});
 </script>
 
-<?php
-include("../includes/footer.php");
-?>
+<?php include("../includes/footer.php"); ?>
