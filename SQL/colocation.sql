@@ -1,11 +1,12 @@
+
 -- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Hôte : 127.0.0.1
--- Généré le : ven. 03 juil. 2026 à 20:19
--- Version du serveur : 10.4.32-MariaDB
--- Version de PHP : 8.2.12
+-- Host: localhost
+-- Generation Time: Jul 15, 2026 at 02:02 PM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,15 +19,12 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données : `colocation`
+-- Database: `colocation`
 --
-
--- --------------------------------------------------------
 CREATE database if not exists colocation;
 use colocation;
---
--- Structure de la table `age_recherche`
---
+
+-- --------------------------------------------------------
 
 CREATE TABLE `age_recherche` (
   `id_age` int(11) NOT NULL,
@@ -34,7 +32,7 @@ CREATE TABLE `age_recherche` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `age_recherche`
+-- Dumping data for table `age_recherche`
 --
 
 INSERT INTO `age_recherche` (`id_age`, `tranche_age`) VALUES
@@ -47,7 +45,7 @@ INSERT INTO `age_recherche` (`id_age`, `tranche_age`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `annonce`
+-- Table structure for table `annonce`
 --
 
 CREATE TABLE `annonce` (
@@ -73,7 +71,7 @@ CREATE TABLE `annonce` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `annonce`
+-- Dumping data for table `annonce`
 --
 
 INSERT INTO `annonce` (`id_annonce`, `titre`, `adresse_1`, `adresse_2`, `adresse_3`, `adresse_4`, `ville`, `code_postal`, `loyer_location_chez_habitant`, `description`, `surface_logement`, `surface_chambres`, `nombre_chambre`, `date_expiration`, `date_publication`, `date_modification`, `carte_coordonnee_GPS`, `date_cloture`, `loyer_colocation`) VALUES
@@ -85,12 +83,14 @@ INSERT INTO `annonce` (`id_annonce`, `titre`, `adresse_1`, `adresse_2`, `adresse
 (6, 'Maison avec jardin', '11 Chemin du Jardin', NULL, NULL, 'Maison au calme', 'Pont-Eveque', 38780, 510.00, 'Colocation tranquille avec jardin, parking et ambiance familiale.', 110.00, 22.00, 4, '2026-09-01', '2026-07-03', '2026-07-03', NULL, '2026-09-01', 510.00),
 (7, 'Studio partage proche de la gare', '3 Avenue de la Gare', 'Studio 4', NULL, NULL, 'Vienne', 38200, 590.00, 'Logement pratique pour actifs, avec acces rapide a la gare et commerces a proximite.', 42.00, 20.00, 1, '2026-08-20', '2026-07-03', '2026-07-03', NULL, '2026-08-20', 590.00),
 (8, 'chambre en banlieu', '40 rue aime rasset', '56', '76', '', 'Chauvigny', 86100, 450.00, 'c&#039;est une chambre dans un appartement en banlieu', 999.99, 20.00, 50, '2026-07-29', '2026-07-03', '2026-07-03', '', '2026-07-29', 450.00),
-(9, 'lalalal', '530 RUE AMECON', '98', '43', '', 'NaintrÃ©', 6974, 999.99, 'HIGIYFVK', 546.00, 66.00, 6, '2026-07-31', '2026-07-03', '2026-07-03', '', '2026-07-31', 999.99);
+(9, 'lala', '530 RUE AMECON', '98', '43', '', 'NaintrÃ©', 6974, 999.99, 'HIGIYFVK', 546.00, 66.00, 6, '2026-07-31', '2026-07-03', '2026-07-07', '', '2026-07-31', 999.99),
+(11, 'Studio Etudiant', '5 Place Saint-Louis', '', '', '', 'Vienne', 38200, 350.00, 'Studio calme proche gare.', 25.00, 20.00, 1, '2026-07-26', '2026-07-16', '2026-07-16', '', '2026-08-01', 350.00),
+(12, 'Chambre en Colocation', '24 Avenue Gambetta', '', '', '', 'Vienne', 38200, 400.00, 'Chambre meublée.', 80.00, 12.00, 3, '2026-07-14', '2026-07-16', '2026-07-16', '', '2026-08-01', 400.00);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `annonce_age`
+-- Table structure for table `annonce_age`
 --
 
 CREATE TABLE `annonce_age` (
@@ -99,7 +99,7 @@ CREATE TABLE `annonce_age` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `annonce_age`
+-- Dumping data for table `annonce_age`
 --
 
 INSERT INTO `annonce_age` (`id_annonce`, `id_age`) VALUES
@@ -111,7 +111,7 @@ INSERT INTO `annonce_age` (`id_annonce`, `id_age`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `annonce_avis`
+-- Table structure for table `annonce_avis`
 --
 
 CREATE TABLE `annonce_avis` (
@@ -125,17 +125,20 @@ CREATE TABLE `annonce_avis` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `annonce_avis`
+-- Dumping data for table `annonce_avis`
 --
 
 INSERT INTO `annonce_avis` (`id_avis`, `note`, `date_`, `commentaire`, `id_annonce`, `id_utilisateur`, `id_utilisateur_1`) VALUES
 (1, 0.99, '2026-05-30', 'Très bonne colocation ! L\'appartement est propre et bien situé. Les colocataires sont sympathiques. Je recommande.', 1, 3, 2),
-(2, 0.99, '2026-06-04', 'Annonce correcte mais le propriétaire est un peu strict sur les règles. La chambre est petite mais fonctionnelle.', 2, 4, 2);
+(2, 0.99, '2026-06-04', 'Annonce correcte mais le propriétaire est un peu strict sur les règles. La chambre est petite mais fonctionnelle.', 2, 4, 2),
+(3, 3.00, '2026-07-13', 'huu', 11, 7, 7),
+(4, 5.00, '2026-07-13', 'cesr', 11, 7, 7),
+(5, 5.00, '2026-07-13', 'hhhh', 11, 7, 7);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `annonce_mode_vie`
+-- Table structure for table `annonce_mode_vie`
 --
 
 CREATE TABLE `annonce_mode_vie` (
@@ -144,7 +147,7 @@ CREATE TABLE `annonce_mode_vie` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `annonce_mode_vie`
+-- Dumping data for table `annonce_mode_vie`
 --
 
 INSERT INTO `annonce_mode_vie` (`id_annonce`, `id_mode_vie`) VALUES
@@ -168,7 +171,7 @@ INSERT INTO `annonce_mode_vie` (`id_annonce`, `id_mode_vie`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `annonce_photo`
+-- Table structure for table `annonce_photo`
 --
 
 CREATE TABLE `annonce_photo` (
@@ -177,7 +180,7 @@ CREATE TABLE `annonce_photo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `annonce_photo`
+-- Dumping data for table `annonce_photo`
 --
 
 INSERT INTO `annonce_photo` (`id_annonce`, `id_photo`) VALUES
@@ -191,12 +194,14 @@ INSERT INTO `annonce_photo` (`id_annonce`, `id_photo`) VALUES
 (4, 8),
 (5, 9),
 (6, 10),
-(7, 11);
+(7, 11),
+(12, 15),
+(12, 16);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `annonce_regime_alimentaire`
+-- Table structure for table `annonce_regime_alimentaire`
 --
 
 CREATE TABLE `annonce_regime_alimentaire` (
@@ -205,7 +210,7 @@ CREATE TABLE `annonce_regime_alimentaire` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `annonce_regime_alimentaire`
+-- Dumping data for table `annonce_regime_alimentaire`
 --
 
 INSERT INTO `annonce_regime_alimentaire` (`id_annonce`, `id_regime_alimentaire`) VALUES
@@ -222,7 +227,7 @@ INSERT INTO `annonce_regime_alimentaire` (`id_annonce`, `id_regime_alimentaire`)
 -- --------------------------------------------------------
 
 --
--- Structure de la table `annonce_utilisateur`
+-- Table structure for table `annonce_utilisateur`
 --
 
 CREATE TABLE `annonce_utilisateur` (
@@ -231,7 +236,7 @@ CREATE TABLE `annonce_utilisateur` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `annonce_utilisateur`
+-- Dumping data for table `annonce_utilisateur`
 --
 
 INSERT INTO `annonce_utilisateur` (`id_utilisateur`, `id_annonce`) VALUES
@@ -242,12 +247,14 @@ INSERT INTO `annonce_utilisateur` (`id_utilisateur`, `id_annonce`) VALUES
 (1, 9),
 (2, 1),
 (2, 2),
-(3, 5);
+(3, 5),
+(7, 11),
+(7, 12);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `envoi_message`
+-- Table structure for table `envoi_message`
 --
 
 CREATE TABLE `envoi_message` (
@@ -259,18 +266,32 @@ CREATE TABLE `envoi_message` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `envoi_message`
+-- Dumping data for table `envoi_message`
 --
 
 INSERT INTO `envoi_message` (`id_utilisateur`, `id_utilisateur_1`, `id_annonce`, `date_`, `contenu`) VALUES
 (3, 4, 1, '2026-06-02', 'Salut Julie, j\'ai vu que tu cherchais une colocation. Cette annonce à Lyon est vraiment bien ! Qu\'en penses-tu ?'),
 (4, 3, 1, '2026-06-03', 'Merci Thomas ! Oui elle a l\'air super. Je vais contacter la propriétaire pour visiter cette semaine.'),
-(3, 4, 1, '2026-06-04', 'Super ! N\'hésite pas si tu as besoin d\'infos, j\'ai déjà visité l\'appartement.');
+(3, 4, 1, '2026-06-04', 'Super ! N\'hésite pas si tu as besoin d\'infos, j\'ai déjà visité l\'appartement.'),
+(3, 2, 1, '2026-07-08', 'Bonjour, je suis très intéressé par votre colocation !'),
+(2, 7, 11, '2026-07-03', 'Bonjour, est-ce que les charges sont incluses ?'),
+(7, 2, 11, '2026-07-03', 'Bonjour Sophie, oui tout est inclus.'),
+(2, 7, 11, '2026-07-03', 'Parfait, merci !'),
+(3, 7, 12, '2026-07-04', 'Salut, la chambre est-elle meublée ?'),
+(7, 3, 12, '2026-07-04', 'Salut Thomas, oui : lit, bureau et placard.'),
+(3, 7, 12, '2026-07-05', 'Génial, merci !'),
+(3, 2, 1, '2026-07-08', 'hi'),
+(3, 7, 12, '2026-07-08', 'hi'),
+(7, 3, 12, '2026-07-08', 'how are you doing'),
+(3, 7, 12, '2026-07-08', 'i am good thanks'),
+(7, 7, 12, '2026-07-13', 'hi'),
+(7, 7, 11, '2026-07-13', 'hi'),
+(7, 7, 12, '2026-07-13', 'hu');
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `mode_vie`
+-- Table structure for table `mode_vie`
 --
 
 CREATE TABLE `mode_vie` (
@@ -279,7 +300,7 @@ CREATE TABLE `mode_vie` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `mode_vie`
+-- Dumping data for table `mode_vie`
 --
 
 INSERT INTO `mode_vie` (`id_mode_vie`, `mode_avis`) VALUES
@@ -294,7 +315,7 @@ INSERT INTO `mode_vie` (`id_mode_vie`, `mode_avis`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `photo`
+-- Table structure for table `photo`
 --
 
 CREATE TABLE `photo` (
@@ -303,26 +324,28 @@ CREATE TABLE `photo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `photo`
+-- Dumping data for table `photo`
 --
 
 INSERT INTO `photo` (`id_photo`, `url`) VALUES
-(1, 'photos/annonce1/salon.jpg'),
-(2, 'photos/annonce1/chambre1.jpg'),
-(3, 'photos/annonce1/cuisine.jpg'),
-(4, 'photos/annonce1/salle_de_bain.jpg'),
-(5, 'photos/annonce2/chambre.jpg'),
-(6, 'photos/annonce2/salon.jpg'),
-(7, 'photos/annonce2/jardin.jpg'),
-(8, 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=900&q=80'),
-(9, 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=900&q=80'),
-(10, 'https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?auto=format&fit=crop&w=900&q=80'),
-(11, 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80');
+(1, 'photos/annonce12/6a552320dce4c.jpg'),
+(2, 'photos/annonce12/6a552320dce4c.jpg'),
+(3, 'photos/annonce12/6a552320dce4c.jpg'),
+(4, 'photos/annonce12/6a552320dce4c.jpg'),
+(5, 'photos/annonce12/6a552320dce4c.jpg'),
+(6, 'photos/annonce12/6a552320dce4c.jpg'),
+(7, 'photos/annonce12/6a552320dce4c.jpg'),
+(8, 'photos/annonce12/6a552320dce4c.jpg'),
+(9, 'photos/annonce12/6a552320dce4c.jpg'),
+(10, 'photos/annonce12/6a552320dce4c.jpg'),
+(11, 'photos/annonce12/6a552320dce4c.jpg'),
+(15, 'photos/annonce12/6a5666db6c869.jpg'),
+(16, 'photos/annonce12/6a5667a5557e1.jpeg');
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `regime_alimentaire`
+-- Table structure for table `regime_alimentaire`
 --
 
 CREATE TABLE `regime_alimentaire` (
@@ -331,7 +354,7 @@ CREATE TABLE `regime_alimentaire` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `regime_alimentaire`
+-- Dumping data for table `regime_alimentaire`
 --
 
 INSERT INTO `regime_alimentaire` (`id_regime_alimentaire`, `regime_alimentaire`) VALUES
@@ -345,7 +368,7 @@ INSERT INTO `regime_alimentaire` (`id_regime_alimentaire`, `regime_alimentaire`)
 -- --------------------------------------------------------
 
 --
--- Structure de la table `role`
+-- Table structure for table `role`
 --
 
 CREATE TABLE `role` (
@@ -354,7 +377,7 @@ CREATE TABLE `role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `role`
+-- Dumping data for table `role`
 --
 
 INSERT INTO `role` (`id_role`, `role`) VALUES
@@ -365,7 +388,7 @@ INSERT INTO `role` (`id_role`, `role`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `utilisateur`
+-- Table structure for table `utilisateur`
 --
 
 CREATE TABLE `utilisateur` (
@@ -382,44 +405,48 @@ CREATE TABLE `utilisateur` (
   `salaire_mensuel_net` decimal(5,2) NOT NULL,
   `prenom` varchar(40) NOT NULL,
   `revenu_fiscal` varchar(50) NOT NULL,
-  `id_role` int(11) NOT NULL
+  `id_role` int(11) NOT NULL,
+  `type_compte` enum('colocataire','propriétaire') DEFAULT 'colocataire'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `utilisateur`
+-- Dumping data for table `utilisateur`
 --
 
-INSERT INTO `utilisateur` (`id_utilisateur`, `nom`, `email`, `mot_de_passe`, `situation_professionnel`, `garant`, `retraite`, `caisse_allocation_familial`, `date_naissance`, `photo_profil`, `salaire_mensuel_net`, `prenom`, `revenu_fiscal`, `id_role`) VALUES
-(1, 'Dupont', 'jean.dupont@email.com', 'motdepasse123', 'Administrateur', 0, 0.00, 0.00, '1985-03-15', 'photos/profil/jean_dupont.jpg', 999.99, 'Jean', '45000€', 1),
-(2, 'Martin', 'sophie.martin@email.com', 'proprio123', 'Propriétaire', 1, 999.99, 200.00, '1978-07-22', 'photos/profil/sophie_martin.jpg', 999.99, 'Sophie', '38000€', 2),
-(3, 'Petit', 'thomas.petit@email.com', 'locataire123', 'Étudiant', 1, 0.00, 150.00, '1998-11-05', 'photos/profil/thomas_petit.jpg', 999.99, 'Thomas', '15000€', 3),
-(4, 'Bernard', 'julie.bernard@email.com', 'locataire456', 'Salarié', 0, 0.00, 0.00, '1995-04-18', 'photos/profil/julie_bernard.jpg', 999.99, 'Julie', '22000€', 3);
+INSERT INTO `utilisateur` (`id_utilisateur`, `nom`, `email`, `mot_de_passe`, `situation_professionnel`, `garant`, `retraite`, `caisse_allocation_familial`, `date_naissance`, `photo_profil`, `salaire_mensuel_net`, `prenom`, `revenu_fiscal`, `id_role`, `type_compte`) VALUES
+(1, 'Dupont', 'jean.dupont@email.com', '$2y$10$jPyT2RHjQDbVPRzs7nNW2OhS9N9Wf9Nocvmtxmo23cfs04fVApPNi', 'Administrateur', 1, 0.00, 0.00, '1985-03-15', 'uploads/profile_photos/user_1_1783414945.jpg', 999.99, 'Jean', '45000', 1, 'colocataire'),
+(2, 'Martin', 'sophie.martin@email.com', 'proprio123', 'Propriétaire', 1, 999.99, 200.00, '1978-07-22', 'photos/profil/sophie_martin.jpg', 999.99, 'Sophie', '38000€', 2, 'colocataire'),
+(3, 'Petit', 'thomas.petit@email.com', '$2y$10$C7JeXhHsvdPHc9PF9a0P3eLFEc1BCF0SE1LJe5atLTzgmXRmgYosa', 'Étudiant', 1, 0.00, 150.00, '1998-11-05', 'photos/profil/thomas_petit.jpg', 999.99, 'Thomas', '15000', 3, 'colocataire'),
+(4, 'Bernard', 'julie.bernard@email.com', '$2y$10$NHG15nBQizpCPewNnqZfJONkW8ZmFINwJuoFWzKGBR9YHUr6lHUDu', 'Salarié', 0, 0.00, 0.00, '1995-04-18', 'photos/profil/julie_bernard.jpg', 999.99, 'Julie', '22000', 3, 'colocataire'),
+(7, 'test', 'test@test.com', '$2y$10$FDJ.nEIAp9SNMuCtWd0jGeMWTpAzjA6DyOfREpWvSlnJ7flDGNY8O', 'Étudiant', 1, 0.00, 0.00, '2026-07-01', '', 500.00, 'test', '888', 1, 'colocataire'),
+(8, 'non', 'non@non.no', '$2y$10$037.PyC14.MKHB1YCxgHZ.c2qdmhYHghRh5Lc3QPl0Uhac5xcjNVO', 'Étudiant', 1, 0.00, 0.00, '2026-07-02', '', 233.00, 'non', '3333', 3, 'colocataire'),
+(9, 'safi', 'sroheed@gmail.com', '$2y$10$3/DCjH0CJMtItkcDFU/R9O2UC49BNBDzzxvrTu/pFga/6MULuYK3C', 'Salarié', 0, 0.00, 0.00, '2026-07-02', 'uploads/profile_photos/user_9_1783514015.jpg', 112.00, 'rohid', '888', 3, 'colocataire');
 
 --
--- Index pour les tables déchargées
+-- Indexes for dumped tables
 --
 
 --
--- Index pour la table `age_recherche`
+-- Indexes for table `age_recherche`
 --
 ALTER TABLE `age_recherche`
   ADD PRIMARY KEY (`id_age`);
 
 --
--- Index pour la table `annonce`
+-- Indexes for table `annonce`
 --
 ALTER TABLE `annonce`
   ADD PRIMARY KEY (`id_annonce`);
 
 --
--- Index pour la table `annonce_age`
+-- Indexes for table `annonce_age`
 --
 ALTER TABLE `annonce_age`
   ADD PRIMARY KEY (`id_annonce`,`id_age`),
   ADD KEY `id_age` (`id_age`);
 
 --
--- Index pour la table `annonce_avis`
+-- Indexes for table `annonce_avis`
 --
 ALTER TABLE `annonce_avis`
   ADD PRIMARY KEY (`id_avis`),
@@ -428,35 +455,35 @@ ALTER TABLE `annonce_avis`
   ADD KEY `id_utilisateur_1` (`id_utilisateur_1`);
 
 --
--- Index pour la table `annonce_mode_vie`
+-- Indexes for table `annonce_mode_vie`
 --
 ALTER TABLE `annonce_mode_vie`
   ADD PRIMARY KEY (`id_annonce`,`id_mode_vie`),
   ADD KEY `id_mode_vie` (`id_mode_vie`);
 
 --
--- Index pour la table `annonce_photo`
+-- Indexes for table `annonce_photo`
 --
 ALTER TABLE `annonce_photo`
   ADD PRIMARY KEY (`id_annonce`,`id_photo`),
   ADD KEY `id_photo` (`id_photo`);
 
 --
--- Index pour la table `annonce_regime_alimentaire`
+-- Indexes for table `annonce_regime_alimentaire`
 --
 ALTER TABLE `annonce_regime_alimentaire`
   ADD PRIMARY KEY (`id_annonce`,`id_regime_alimentaire`),
   ADD KEY `id_regime_alimentaire` (`id_regime_alimentaire`);
 
 --
--- Index pour la table `annonce_utilisateur`
+-- Indexes for table `annonce_utilisateur`
 --
 ALTER TABLE `annonce_utilisateur`
   ADD PRIMARY KEY (`id_utilisateur`,`id_annonce`),
   ADD KEY `id_annonce` (`id_annonce`);
 
 --
--- Index pour la table `envoi_message`
+-- Indexes for table `envoi_message`
 --
 ALTER TABLE `envoi_message`
   ADD KEY `id_utilisateur` (`id_utilisateur`),
@@ -464,101 +491,101 @@ ALTER TABLE `envoi_message`
   ADD KEY `id_annonce` (`id_annonce`);
 
 --
--- Index pour la table `mode_vie`
+-- Indexes for table `mode_vie`
 --
 ALTER TABLE `mode_vie`
   ADD PRIMARY KEY (`id_mode_vie`);
 
 --
--- Index pour la table `photo`
+-- Indexes for table `photo`
 --
 ALTER TABLE `photo`
   ADD PRIMARY KEY (`id_photo`);
 
 --
--- Index pour la table `regime_alimentaire`
+-- Indexes for table `regime_alimentaire`
 --
 ALTER TABLE `regime_alimentaire`
   ADD PRIMARY KEY (`id_regime_alimentaire`);
 
 --
--- Index pour la table `role`
+-- Indexes for table `role`
 --
 ALTER TABLE `role`
   ADD PRIMARY KEY (`id_role`);
 
 --
--- Index pour la table `utilisateur`
+-- Indexes for table `utilisateur`
 --
 ALTER TABLE `utilisateur`
   ADD PRIMARY KEY (`id_utilisateur`),
   ADD KEY `id_role` (`id_role`);
 
 --
--- AUTO_INCREMENT pour les tables déchargées
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT pour la table `age_recherche`
+-- AUTO_INCREMENT for table `age_recherche`
 --
 ALTER TABLE `age_recherche`
   MODIFY `id_age` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT pour la table `annonce`
+-- AUTO_INCREMENT for table `annonce`
 --
 ALTER TABLE `annonce`
-  MODIFY `id_annonce` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_annonce` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
--- AUTO_INCREMENT pour la table `annonce_avis`
+-- AUTO_INCREMENT for table `annonce_avis`
 --
 ALTER TABLE `annonce_avis`
-  MODIFY `id_avis` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_avis` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT pour la table `mode_vie`
+-- AUTO_INCREMENT for table `mode_vie`
 --
 ALTER TABLE `mode_vie`
   MODIFY `id_mode_vie` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT pour la table `photo`
+-- AUTO_INCREMENT for table `photo`
 --
 ALTER TABLE `photo`
-  MODIFY `id_photo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_photo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
--- AUTO_INCREMENT pour la table `regime_alimentaire`
+-- AUTO_INCREMENT for table `regime_alimentaire`
 --
 ALTER TABLE `regime_alimentaire`
   MODIFY `id_regime_alimentaire` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT pour la table `role`
+-- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
   MODIFY `id_role` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT pour la table `utilisateur`
+-- AUTO_INCREMENT for table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id_utilisateur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_utilisateur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
--- Contraintes pour les tables déchargées
+-- Constraints for dumped tables
 --
 
 --
--- Contraintes pour la table `annonce_age`
+-- Constraints for table `annonce_age`
 --
 ALTER TABLE `annonce_age`
   ADD CONSTRAINT `annonce_age_ibfk_1` FOREIGN KEY (`id_annonce`) REFERENCES `annonce` (`id_annonce`),
   ADD CONSTRAINT `annonce_age_ibfk_2` FOREIGN KEY (`id_age`) REFERENCES `age_recherche` (`id_age`);
 
 --
--- Contraintes pour la table `annonce_avis`
+-- Constraints for table `annonce_avis`
 --
 ALTER TABLE `annonce_avis`
   ADD CONSTRAINT `annonce_avis_ibfk_1` FOREIGN KEY (`id_annonce`) REFERENCES `annonce` (`id_annonce`),
@@ -566,35 +593,35 @@ ALTER TABLE `annonce_avis`
   ADD CONSTRAINT `annonce_avis_ibfk_3` FOREIGN KEY (`id_utilisateur_1`) REFERENCES `utilisateur` (`id_utilisateur`);
 
 --
--- Contraintes pour la table `annonce_mode_vie`
+-- Constraints for table `annonce_mode_vie`
 --
 ALTER TABLE `annonce_mode_vie`
   ADD CONSTRAINT `annonce_mode_vie_ibfk_1` FOREIGN KEY (`id_annonce`) REFERENCES `annonce` (`id_annonce`),
   ADD CONSTRAINT `annonce_mode_vie_ibfk_2` FOREIGN KEY (`id_mode_vie`) REFERENCES `mode_vie` (`id_mode_vie`);
 
 --
--- Contraintes pour la table `annonce_photo`
+-- Constraints for table `annonce_photo`
 --
 ALTER TABLE `annonce_photo`
   ADD CONSTRAINT `annonce_photo_ibfk_1` FOREIGN KEY (`id_annonce`) REFERENCES `annonce` (`id_annonce`),
   ADD CONSTRAINT `annonce_photo_ibfk_2` FOREIGN KEY (`id_photo`) REFERENCES `photo` (`id_photo`);
 
 --
--- Contraintes pour la table `annonce_regime_alimentaire`
+-- Constraints for table `annonce_regime_alimentaire`
 --
 ALTER TABLE `annonce_regime_alimentaire`
   ADD CONSTRAINT `annonce_regime_alimentaire_ibfk_1` FOREIGN KEY (`id_annonce`) REFERENCES `annonce` (`id_annonce`),
   ADD CONSTRAINT `annonce_regime_alimentaire_ibfk_2` FOREIGN KEY (`id_regime_alimentaire`) REFERENCES `regime_alimentaire` (`id_regime_alimentaire`);
 
 --
--- Contraintes pour la table `annonce_utilisateur`
+-- Constraints for table `annonce_utilisateur`
 --
 ALTER TABLE `annonce_utilisateur`
   ADD CONSTRAINT `annonce_utilisateur_ibfk_1` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateur` (`id_utilisateur`),
   ADD CONSTRAINT `annonce_utilisateur_ibfk_2` FOREIGN KEY (`id_annonce`) REFERENCES `annonce` (`id_annonce`);
 
 --
--- Contraintes pour la table `envoi_message`
+-- Constraints for table `envoi_message`
 --
 ALTER TABLE `envoi_message`
   ADD CONSTRAINT `envoi_message_ibfk_1` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateur` (`id_utilisateur`),
@@ -602,7 +629,7 @@ ALTER TABLE `envoi_message`
   ADD CONSTRAINT `envoi_message_ibfk_3` FOREIGN KEY (`id_annonce`) REFERENCES `annonce` (`id_annonce`);
 
 --
--- Contraintes pour la table `utilisateur`
+-- Constraints for table `utilisateur`
 --
 ALTER TABLE `utilisateur`
   ADD CONSTRAINT `utilisateur_ibfk_1` FOREIGN KEY (`id_role`) REFERENCES `role` (`id_role`);

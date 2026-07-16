@@ -10,7 +10,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">aide</a>
+          <a class="nav-link" aria-current="page" href="#">aide</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Confidentialité</a>
@@ -26,7 +26,7 @@
   </div>
 </nav>
 
-<p>© 2024 Colocation Vienne. Conçu pour le partage</p>
+<p>© 2026 Colocation Vienne. Tous droits réservés.</p>
 
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>

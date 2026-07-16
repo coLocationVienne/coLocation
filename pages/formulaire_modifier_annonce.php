@@ -15,11 +15,6 @@ if (empty($_GET['id_annonce'])) {
     exit();
 }
 
-// $dbConn = getDbConnection();
-// $idAnnonce = (int) $_GET['id_annonce'];
-// $userId = (int) $_SESSION['user_id'];
-// $error = $_GET['error'] ?? '';
-
 require_once '../init.php';
 
  $idAnnonce = (int) $_GET['id_annonce'];
@@ -33,23 +28,13 @@ if (!$annonce) {
     exit();
 }
 
-// $modeStmt = $dbConn->prepare("SELECT id_mode_vie FROM annonce_mode_vie WHERE id_annonce = :id_annonce");
-// $modeStmt->execute([':id_annonce' => $idAnnonce]);
  $selectedModes = $annonceDAO->avoirModeVie($idAnnonce);
-
-// $regimeStmt = $dbConn->prepare("SELECT id_regime_alimentaire FROM annonce_regime_alimentaire WHERE id_annonce = :id_annonce");
-// $regimeStmt->execute([':id_annonce' => $idAnnonce]);
  $selectedRegimes = $annonceDAO->avoirRegime($idAnnonce);
 
 
 
 include("../includes/header.php");
 
-$errorMessages = [
-    'missing_fields' => 'Veuillez remplir tous les champs obligatoires.',
-    'server_error' => 'Une erreur est survenue pendant la modification de l annonce.',
-    'invalid_image' => 'Veuillez saisir une adresse dâ€™image valide.'
-];
 ?>
 
 <main class="creer-annonce-page">
@@ -75,8 +60,9 @@ $errorMessages = [
 
     <section class="annonce-form-section">
         <?php if (!empty($error) && isset($errorMessages[$error])): ?>
-            <div class="annonce-message" role="alert">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <?php echo $errorMessages[$error]; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         <?php endif; ?>
     
@@ -130,7 +116,8 @@ $errorMessages = [
                 <div class="annonce-form-grid trois-colonnes">
                     <div class="annonce-field">
                         <label for="loyer">Loyer mensuel</label>
-                        <input type="number" id="loyer" name="loyer" min="0" step="0.01" value="<?php echo htmlspecialchars($annonce->getLoyerHabitant()); ?>" required>
+                        <input type="number" id="loyer" name="loyer" min="0" max="600" step="0.01" value="<?php echo htmlspecialchars($annonce->getLoyerHabitant()); ?>" required>
+	                        <small id="loyer-warning" style="color: red; display: none;">Le loyer ne peut pas dépasser 600€.</small>
                     </div>
 
                     <div class="annonce-field">
@@ -199,14 +186,39 @@ $errorMessages = [
                 </div>
             </fieldset>
             <div class="annonce-actions">
-                <a href="page_annonce.php" class="annonce-btn-secondaire">Annuler</a>
-                <button type="submit" class="annonce-btn-principal">Enregistrer les modifications</button>
+                <a href="page_annonce.php" class="btn btn-danger">Annuler</a>
+                <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
             </div>
         </form>
     </section>
 </main>
 
 <?php
-include("../includes/footer.php");
-?>
+	include("../includes/footer.php");
+	?>
+	<script>
+	document.addEventListener('DOMContentLoaded', function() {
+	    const loyerInput = document.getElementById('loyer');
+	    const warning = document.getElementById('loyer-warning');
+	    const form = document.querySelector('.annonce-form');
+
+	    loyerInput.addEventListener('input', function() {
+	        if (parseFloat(this.value) > 600) {
+	            warning.style.display = 'block';
+	            this.style.borderColor = 'red';
+	        } else {
+	            warning.style.display = 'none';
+	            this.style.borderColor = '';
+	        }
+	    });
+
+	    form.addEventListener('submit', function(e) {
+	        if (parseFloat(loyerInput.value) > 600) {
+	            e.preventDefault();
+	            alert('Le loyer ne peut pas dépasser 600€. Veuillez corriger le montant.');
+	            loyerInput.focus();
+	        }
+	    });
+	});
+	</script>
 

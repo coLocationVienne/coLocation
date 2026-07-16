@@ -28,6 +28,7 @@ if (isset($_POST['garant'])) $user->setGarant((bool)$_POST['garant']);
 if (isset($_POST['salary'])) $user->setSalaireMensuelNet((float)$_POST['salary']);
 if (isset($_POST['revenu_fiscal'])) $user->setRevenuFiscal((float)$_POST['revenu_fiscal']);
 if (isset($_POST['date_naissance'])) $user->setDateNaissance($_POST['date_naissance']);
+if (isset($_POST['type_compte'])) $user->setTypeCompte($_POST['type_compte']);
 
 if ($userDAO->update($user)) {
     header('Location: ../profile_utilisateur.php?status=profile_updated');
