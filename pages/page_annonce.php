@@ -3,38 +3,46 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once "../includes/dbConnection.php";
+// require_once "../includes/dbConnection.php";
 
 if (empty($_SESSION['user_id'])) {
     header("Location: connexion.php?error=erreur_connexion");
     exit();
 }
 
-$dbConn = getDbConnection();
-$userId = (int) $_SESSION['user_id'];
+// $dbConn = getDbConnection();
+// $userId = (int) $_SESSION['user_id'];
 $error = $_GET['error'] ?? '';
 $success = $_GET['success'] ?? '';
 
-$stmt = $dbConn->prepare("
-    SELECT
-        a.*,
-        (
-            SELECT p.url
-            FROM annonce_photo ap
-            INNER JOIN photo p ON p.id_photo = ap.id_photo
-            WHERE ap.id_annonce = a.id_annonce
-            ORDER BY p.id_photo ASC
-            LIMIT 1
-        ) AS image_url
-    FROM annonce a
-    INNER JOIN annonce_utilisateur au ON au.id_annonce = a.id_annonce
-    WHERE au.id_utilisateur = :id_utilisateur
-    ORDER BY a.date_publication DESC, a.id_annonce DESC
-");
-$stmt->execute([
-    ':id_utilisateur' => $userId
-]);
-$annonces = $stmt->fetchAll(PDO::FETCH_ASSOC);
+require_once '../init.php';
+
+//  $idAnnonce = (int) $_GET['id_annonce'];
+ $userId = (int) $_SESSION['user_id'];
+
+
+// $stmt = $dbConn->prepare("
+//     SELECT
+//         a.*,
+//         (
+//             SELECT p.url
+//             FROM annonce_photo ap
+//             INNER JOIN photo p ON p.id_photo = ap.id_photo
+//             WHERE ap.id_annonce = a.id_annonce
+//             ORDER BY p.id_photo ASC
+//             LIMIT 1
+//         ) AS image_url
+//     FROM annonce a
+//     INNER JOIN annonce_utilisateur au ON au.id_annonce = a.id_annonce
+//     WHERE au.id_utilisateur = :id_utilisateur
+//     ORDER BY a.date_publication DESC, a.id_annonce DESC
+// ");
+// $stmt->execute([
+//     ':id_utilisateur' => $userId
+// ]);
+$annonces = $annonceDAO->getAllAnouncesByUserId($userId);
+echo '<pre>' ; var_dump($annonces); echo '</pre>' ; 
+
 
 include("../includes/header.php");
 ?>
@@ -63,7 +71,7 @@ include("../includes/header.php");
                 <p class="petit-titre">Disponibles</p>
                 <h2>Vos annonces</h2>
             </div>
-            <p id="resultCount"><?php echo count($annonces); ?> annonce(s) trouvée(s)</p>
+            <p id="resultCount"> annonce(s) trouvée(s)</p>
         </div>
 
         <?php if ($success === 'updated'): ?>
@@ -79,6 +87,7 @@ include("../includes/header.php");
         <?php else: ?>
             <div class="announce-grid" id="announceGrid">
                 <?php foreach ($annonces as $annonce): ?>
+                    <h3><?= htmlspecialchars($annonce->getTitre()) ?></h3>
                     <?php
                         $image = !empty($annonce['image_url'])
                             ? '../' . $annonce['image_url']

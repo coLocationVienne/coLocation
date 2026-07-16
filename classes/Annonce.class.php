@@ -151,6 +151,19 @@ class AnnonceDAO extends \colocation\DAO {
         return $row ? $this->hydrate($row) : null;
     }
 
+     public function getAllAnouncesByUserId(int $id): ?Annonce {
+        $query = "SELECT a.*, p.url as photo_url, au.id_utilisateur as owner_id
+                  FROM annonce a 
+                  LEFT JOIN annonce_photo ap ON a.id_annonce = ap.id_annonce 
+                  LEFT JOIN photo p ON ap.id_photo = p.id_photo 
+                  LEFT JOIN annonce_utilisateur au ON a.id_annonce = au.id_annonce
+                  WHERE a.id_annonce = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute(['id' => $id]);
+        $row = $stmt->fetch();
+        return $row ? $this->hydrate($row) : null;
+    }
+
     public function getPhotos(int $idAnnonce): array {
         $query = "SELECT p.* FROM photo p 
                   JOIN annonce_photo ap ON p.id_photo = ap.id_photo 
