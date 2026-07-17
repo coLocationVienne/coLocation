@@ -24,7 +24,7 @@ function getUserAvatar($user_id, $pdo) {
           
             $photo_path = "/coLocation/pages/be/" . $user->getPhotoProfil();
           
-            $server_path = $_SERVER['DOCUMENT_ROOT'] . '/coLocation/pages/be/' . $user->getPhotoProfil();
+            $server_path = $_SERVER['DOCUMENT_ROOT'] . '/coLocation/pages/' . $user->getPhotoProfil();
             if (file_exists($server_path)) {
                 return [
                     'src' => $photo_path,

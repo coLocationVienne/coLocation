@@ -6,6 +6,10 @@ $annoncesFromDb = $annonceDAO->getAllWithPhotos();
 ?>
 
 <main class="landing-page">
+    <div class="test-banner">
+        <h2>TEST BANNER</h2>
+        <p>This is a big banner for testing purposes on the home page.</p>
+    </div>
     <section class="hero-section">
         <div class="hero-content">
             <p class="hero-kicker">Colocation Vienne</p>
