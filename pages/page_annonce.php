@@ -6,7 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once '../init.php';
 
 if (empty($_SESSION['user_id'])) {
-    header("Location: connexion.php?error=erreur_connexion");
+    header("Location: /coLocation/auth/login?error=erreur_connexion");
     exit();
 }
 
@@ -17,7 +17,7 @@ $success = $_GET['success'] ?? '';
 // Fetch announcements using the DAO
 $annonces = $annonceDAO->getAllAnouncesByUserId($userId);
 
-include("../includes/header.php");
+require_once(__DIR__ . "/../init.php"); require_once(__DIR__ . "/../app/Views/partials/header.php");
 ?>
 
 <div class="container" style="margin-top: 100px; margin-bottom: 50px; max-width: 1200px;">
@@ -80,7 +80,7 @@ include("../includes/header.php");
                 <?php
                     $photoUrl = $a->getPhoto();
                     $image = !empty($photoUrl)
-                        ? (strpos($photoUrl, 'http') === 0 ? $photoUrl : '../' . $photoUrl)
+                        ? (strpos($photoUrl, 'http') === 0 ? $photoUrl : '/coLocation/' . $photoUrl)
                         : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400&q=80';
                     
                     $searchText = strtolower($a->getTitre() . ' ' . $a->getVille());
@@ -104,7 +104,7 @@ include("../includes/header.php");
                             <h5 class="card-title text-dark" style="font-weight: 600; font-size: 1.1rem;"><?php echo htmlspecialchars($a->getTitre()); ?></h5>
                             
                             <div class="mt-auto pt-3 border-top d-flex gap-2">
-                                <a href="formulaire_modifier_annonce.php?id_annonce=<?php echo $a->getId(); ?>" class="btn btn-sm btn-light border flex-grow-1" style="font-weight: 500;">
+                                <a href="/coLocation/annonce/edit?id=<?php echo $a->getId(); ?>" class="btn btn-sm btn-light border flex-grow-1" style="font-weight: 500;">
                                     <i class="fas fa-edit me-1 text-primary"></i> Editer
                                 </a>
                                 <a href="modifier_photos.php?id_annonce=<?php echo $a->getId(); ?>" class="btn btn-sm btn-light border" title="Photos">
@@ -113,7 +113,7 @@ include("../includes/header.php");
                                 <a href="voir_annonce.php?id=<?php echo $a->getId(); ?>" class="btn btn-sm btn-light border" title="Voir l'aperçu">
                                     <i class="fas fa-external-link-alt text-info"></i>
                                 </a>
-                                <form action="be/supprimer_annonce.php" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer cette annonce ?');" class="d-inline">
+                                <form action="/coLocation/annonce/delete" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer cette annonce ?');" class="d-inline">
                                     <input type="hidden" name="id_annonce" value="<?php echo $a->getId(); ?>">
                                     <button type="submit" class="btn btn-sm btn-light border text-danger" title="Supprimer">
                                         <i class="fas fa-trash-alt"></i>
@@ -164,4 +164,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<?php include("../includes/footer.php"); ?>
+<?php require_once(__DIR__ . "/../app/Views/partials/footer.php"); ?>

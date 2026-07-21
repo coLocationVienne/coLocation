@@ -1,8 +1,8 @@
 <?php
-require_once "../includes/header.php";
+require_once(__DIR__ . "/../init.php"); require_once(__DIR__ . "/../app/Views/partials/header.php");
 
 if (empty($_SESSION['isLoggedin'])) {
-    header("Location: connexion.php");
+    header("Location: /coLocation/auth/login");
     exit();
 }
 
@@ -80,7 +80,7 @@ $conversations = $messageDAO->getUserConversations($_SESSION['user_id']);
                         <?php endif; ?>
                     </div>
                     <div class="card-footer bg-white">
-                        <form action="be/send_message.php" method="POST">
+                        <form action="/coLocation/message/send" method="POST">
                             <input type="hidden" name="id_annonce" value="<?php echo $_GET['annonce_id']; ?>">
                             <input type="hidden" name="id_receiver" value="<?php echo $_GET['with_user']; ?>">
                             <div class="input-group">
@@ -103,4 +103,4 @@ $conversations = $messageDAO->getUserConversations($_SESSION['user_id']);
     </div>
 </div>
 
-<?php require_once "../includes/footer.php"; ?>
+<?php require_once(__DIR__ . "/../app/Views/partials/footer.php"); ?>

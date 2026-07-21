@@ -1,42 +1,15 @@
+<?php 
+
+use App\Core\Config;
+
+include __DIR__ . "/../partials/header.php"; 
+?>
 <?php
-require_once(__DIR__ . "/../init.php"); require_once(__DIR__ . "/../app/Views/partials/header.php");
-
-$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-
-/** @var \colocation\AnnonceDAO $annonceDAO */
-$annonce = $annonceDAO->getFullById($id);
-
-if (!$annonce) {
-    echo "<div class='container mt-5 pt-5'><div class='alert alert-danger'>Annonce non trouvée.</div></div>";
-    require_once(__DIR__ . "/../app/Views/partials/footer.php");
-    exit();
-}
-
-/** @var \colocation\CommentDAO $commentDAO */
-$comments = $commentDAO->getByAnnonceId($id);
-$photo = $annonce->getPhoto() ? (strpos($annonce->getPhoto(), 'http') === 0 ? $annonce->getPhoto() : "../" . $annonce->getPhoto()) : "https://via.placeholder.com/800x400?text=Pas+de+photo";
+$photo = $annonce->getPhoto() ? (strpos($annonce->getPhoto(), 'http') === 0 ? $annonce->getPhoto() : Config::url($annonce->getPhoto())) : "https://via.placeholder.com/800x400?text=Pas+de+photo";
 ?>
 
 <div class="container mt-5 pt-5">
-    <!-- Alert Notifications -->
-    <?php if (isset($_GET['success'])): ?>
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle me-2"></i> Votre commentaire a été publié avec succès !
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    <?php endif; ?>
-
-    <?php if (isset($_GET['error'])): ?>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="fas fa-exclamation-triangle me-2"></i> 
-            Une erreur est survenue lors de la publication : <?php echo htmlspecialchars($_GET['error']); ?>
-            <?php if (isset($_GET['msg'])) echo "<br><small>" . htmlspecialchars($_GET['msg']) . "</small>"; ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    <?php endif; ?>
-
     <div class="row">
-        <!-- Main Content -->
         <div class="col-md-8">
             <div class="card mb-4 shadow-sm">
                 <img src="<?php echo $photo; ?>" class="card-img-top" alt="<?php echo htmlspecialchars($annonce->getTitre()); ?>" style="height: 400px; object-fit: cover;">
@@ -109,31 +82,31 @@ $photo = $annonce->getPhoto() ? (strpos($annonce->getPhoto(), 'http') === 0 ? $a
                         <?php endforeach; ?>
                     <?php endif; ?>
 
+                    <hr class="my-4">
+                    
+                    <h6 class="mb-3">Laisser un commentaire</h6>
                     <?php if (!empty($_SESSION['isLoggedin'])): ?>
-                        <div class="mt-4 p-3 bg-light rounded">
-                            <h6 class="mb-3">Laisser un avis</h6>
-                            <form action="/coLocation/comment/add" method="POST">
-                                <input type="hidden" name="id_annonce" value="<?php echo $id; ?>">
-                                <input type="hidden" name="id_owner" value="<?php echo $annonce->getOwnerId(); ?>">
-                                
-                                <div class="mb-3">
-                                    <label class="form-label small text-muted">Votre note :</label>
-                                    <select name="note" class="form-select form-select-sm" style="width: auto;">
-                                        <option value="5.0">5 étoiles (Excellent)</option>
-                                        <option value="4.0">4 étoiles (Très bien)</option>
-                                        <option value="3.0">3 étoiles (Bien)</option>
-                                        <option value="2.0">2 étoiles (Moyen)</option>
-                                        <option value="1.0">1 étoile (Mauvais)</option>
-                                    </select>
-                                </div>
-
-                                <div class="mb-3">
-                                    <textarea name="commentaire" class="form-control border-0" rows="3" placeholder="Partagez votre expérience..." required></textarea>
-                                </div>
-                                <div class="text-end">
-                                    <button type="submit" class="btn btn-primary px-4">Publier l'avis</button>
-                                </div>
-                            </form>
+                        <form action="<?php echo Config::url('comment/add'); ?>" method="POST">
+                            <input type="hidden" name="id_annonce" value="<?php echo $id; ?>">
+                            <input type="hidden" name="id_owner" value="<?php echo $annonce->getOwnerId(); ?>">
+                            <div class="mb-3">
+                                <label class="form-label small text-muted">Note</label>
+                                <select name="note" class="form-select form-select-sm w-auto">
+                                    <option value="5">5 ★★★★★ (Excellent)</option>
+                                    <option value="4">4 ★★★★☆ (Très bien)</option>
+                                    <option value="3" selected>3 ★★★☆☆ (Bien)</option>
+                                    <option value="2">2 ★★☆☆☆ (Moyen)</option>
+                                    <option value="1">1 ★☆☆☆☆ (Mauvais)</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <textarea name="commentaire" class="form-control" rows="3" placeholder="Votre avis sur cette colocation..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-outline-primary btn-sm">Publier mon avis</button>
+                        </form>
+                    <?php else: ?>
+                        <div class="alert alert-light border py-2 px-3 small">
+                            <i class="fas fa-info-circle me-1"></i> <a href="<?php echo Config::url('auth/login'); ?>">Connectez-vous</a> pour laisser un commentaire.
                         </div>
                     <?php endif; ?>
                 </div>
@@ -148,37 +121,22 @@ $photo = $annonce->getPhoto() ? (strpos($annonce->getPhoto(), 'http') === 0 ? $a
                     <p class="text-muted small mb-4">Envoyez un message au propriétaire pour poser vos questions ou organiser une visite.</p>
                     
                     <?php if (!empty($_SESSION['isLoggedin'])): ?>
-                        <a href="/coLocation/pages/messages.php?annonce_id=<?php echo $id; ?>&with_user=<?php echo $annonce->getOwnerId(); ?>" class="btn btn-primary w-100 py-2 mb-3 shadow-sm">
+                        <a href="<?php echo Config::url('pages/messages.php?annonce_id=' . $annonce->getId() . '&with_user=' . $annonce->getOwnerId()); ?>" class="btn btn-primary w-100 py-2 mb-3 shadow-sm">
                             <i class="fas fa-paper-plane me-2"></i> 
                             <?php echo ($_SESSION['user_id'] == $annonce->getOwnerId()) ? "M'envoyer un message (Test)" : "Contacter le propriétaire"; ?>
                         </a>
                     <?php else: ?>
-                        <a href="/coLocation/auth/login?redirect=annonce/show?id=<?php echo $id; ?>" class="btn btn-primary w-100 py-2 mb-3">
+                        <a href="<?php echo Config::url('auth/login?redirect=annonce/show?id=' . $id); ?>" class="btn btn-primary w-100 py-2 mb-3">
                             <i class="fas fa-sign-in-alt me-2"></i> Se connecter
                         </a>
                         <div class="alert alert-info py-2 px-3 small mb-3">
                             <i class="fas fa-info-circle me-1"></i> Vous devez être connecté pour contacter le propriétaire.
                         </div>
                     <?php endif; ?>
-                    
-                    <div class="border-top pt-3 mt-3">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fas fa-check-circle text-success me-2"></i>
-                            <span class="small text-muted">Annonce vérifiée par l'équipe</span>
-                        </div>
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-clock text-muted me-2"></i>
-                            <span class="small text-muted">Réponse sous 24h en moyenne</span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<style>
-    .last-child-border-0:last-child { border-bottom: 0 !important; }
-</style>
-
-<?php require_once(__DIR__ . "/../app/Views/partials/footer.php"); ?>
+<?php include __DIR__ . "/../partials/footer.php"; ?>

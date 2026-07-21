@@ -3,10 +3,10 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once "../includes/dbConnection.php";
+require_once(__DIR__ . "/../init.php"); use App\Core\Database; $dbConn = Database::getDbConnection();
 
 if (empty($_SESSION['user_id'])) {
-    header("Location: connexion.phperror=erreur_connexion");
+    header("Location: /coLocation/auth/login?error=error_connexion");
     exit();
 }
 
@@ -33,7 +33,7 @@ if (!$annonce) {
 
 
 
-include("../includes/header.php");
+require_once(__DIR__ . "/../init.php"); require_once(__DIR__ . "/../app/Views/partials/header.php");
 
 ?>
 
@@ -194,7 +194,7 @@ include("../includes/header.php");
 </main>
 
 <?php
-	include("../includes/footer.php");
+	require_once(__DIR__ . "/../app/Views/partials/footer.php");
 	?>
 	<script>
 	document.addEventListener('DOMContentLoaded', function() {

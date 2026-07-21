@@ -4,25 +4,22 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once __DIR__ . '/classes/Database.php';
-require_once __DIR__ . '/classes/DAO.class.php';
-require_once __DIR__ . '/classes/User.class.php';
-require_once __DIR__ . '/classes/Message.class.php';
-require_once __DIR__ . '/classes/Annonce.class.php';
-require_once __DIR__ . '/pages/be/common.php';
+require_once __DIR__ . '/app/Core/Autoloader.php';
+require_once __DIR__ . '/app/Models/User.php';
+require_once __DIR__ . '/app/Models/Message.php';
+require_once __DIR__ . '/app/Models/Annonce.php';
+require_once __DIR__ . '/app/Models/Comment.php';
 
-use colocation\UserDAO;
-use colocation\MessageDAO;
-use colocation\AnnonceDAO;
+use App\Models\UserDAO;
+use App\Models\MessageDAO;
+use App\Models\AnnonceDAO;
+use App\Models\CommentDAO;
 
 try {
     $userDAO = new UserDAO();
     $messageDAO = new MessageDAO();
     $annonceDAO = new AnnonceDAO();
+    $commentDAO = new CommentDAO();
 } catch (Exception $e) {
     error_log("Initialization error: " . $e->getMessage());
 }
-require_once __DIR__ . '/classes/Comment.class.php';
-
-use colocation\CommentDAO;
-$commentDAO = new CommentDAO();
