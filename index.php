@@ -96,15 +96,13 @@ if ($url === '' || $url === 'home') {
     $controller = new AnnonceController();
     $controller->deletePhoto();
 } elseif (file_exists(__DIR__ . '/pages/' . $url . '.php')) {
-    // Handle pages without .php extension (e.g., /connexion)
     require_once __DIR__ . '/pages/' . $url . '.php';
     exit;
 } elseif (file_exists(__DIR__ . '/pages/' . $url)) {
-    // Handle pages with explicit path (e.g., /pages//coLocation/auth/login)
     require_once __DIR__ . '/pages/' . $url;
     exit;
 } else {
-    // Simple 404
     header("HTTP/1.0 404 Not Found");
-    echo "404 Not Found: " . htmlspecialchars($url);
+    $controller = new HomeController();
+    $controller->notFound($url);
 }

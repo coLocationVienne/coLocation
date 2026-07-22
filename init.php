@@ -4,22 +4,32 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once __DIR__ . '/app/Core/Autoloader.php';
-require_once __DIR__ . '/app/Models/User.php';
-require_once __DIR__ . '/app/Models/Message.php';
-require_once __DIR__ . '/app/Models/Annonce.php';
-require_once __DIR__ . '/app/Models/Comment.php';
+if (!defined('COLOCATION_INIT_LOADED')) {
+    define('COLOCATION_INIT_LOADED', true);
 
-use App\Models\UserDAO;
-use App\Models\MessageDAO;
-use App\Models\AnnonceDAO;
-use App\Models\CommentDAO;
+    require_once __DIR__ . '/app/Core/Autoloader.php';
+    require_once __DIR__ . '/app/Models/User.php';
+    require_once __DIR__ . '/app/Models/Message.php';
+    require_once __DIR__ . '/app/Models/Annonce.php';
+    require_once __DIR__ . '/app/Models/Comment.php';
 
-try {
-    $userDAO = new UserDAO();
-    $messageDAO = new MessageDAO();
-    $annonceDAO = new AnnonceDAO();
-    $commentDAO = new CommentDAO();
-} catch (Exception $e) {
-    error_log("Initialization error: " . $e->getMessage());
+    try {
+        $GLOBALS['userDAO'] = new \App\Models\UserDAO();
+        $GLOBALS['messageDAO'] = new \App\Models\MessageDAO();
+        $GLOBALS['annonceDAO'] = new \App\Models\AnnonceDAO();
+        $GLOBALS['commentDAO'] = new \App\Models\CommentDAO();
+        
+        $userDAO = $GLOBALS['userDAO'];
+        $messageDAO = $GLOBALS['messageDAO'];
+        $annonceDAO = $GLOBALS['annonceDAO'];
+        $commentDAO = $GLOBALS['commentDAO'];
+        
+    } catch (Exception $e) {
+        error_log("Initialization error: " . $e->getMessage());
+    }
+} else {
+    $userDAO = $GLOBALS['userDAO'] ?? null;
+    $messageDAO = $GLOBALS['messageDAO'] ?? null;
+    $annonceDAO = $GLOBALS['annonceDAO'] ?? null;
+    $commentDAO = $GLOBALS['commentDAO'] ?? null;
 }

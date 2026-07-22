@@ -7,6 +7,8 @@ use App\Core\Config;
 
 // Ensure global variables are accessible
 global $userDAO, $messageDAO;
+if (!isset($userDAO)) { $userDAO = $GLOBALS['userDAO'] ?? null; }
+if (!isset($messageDAO)) { $messageDAO = $GLOBALS['messageDAO'] ?? null; }
 
 function getUserAvatar($user_id, $userDAO) {
     if (!$userDAO || !is_int($user_id) || $user_id <= 0) {

@@ -1,12 +1,14 @@
 <?php
+global $annonceDAO;
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
 require_once '../init.php';
+require_once(__DIR__ . "/../app/Views/partials/header.php");
 
 if (empty($_SESSION['user_id'])) {
-    header("Location: /coLocation/auth/login?error=erreur_connexion");
+    header("Location: " . \App\Core\Config::url('auth/login') . "?error=erreur_connexion");
     exit();
 }
 
@@ -17,7 +19,6 @@ $success = $_GET['success'] ?? '';
 // Fetch announcements using the DAO
 $annonces = $annonceDAO->getAllAnouncesByUserId($userId);
 
-require_once(__DIR__ . "/../init.php"); require_once(__DIR__ . "/../app/Views/partials/header.php");
 ?>
 
 <div class="container" style="margin-top: 100px; margin-bottom: 50px; max-width: 1200px;">
@@ -27,7 +28,7 @@ require_once(__DIR__ . "/../init.php"); require_once(__DIR__ . "/../app/Views/pa
             <h1 style="font-size: 1.75rem; font-weight: 700; color: #333; margin: 0;">Mes annonces</h1>
             <p class="text-muted mb-0">Gérez vos publications et suivez leur statut.</p>
         </div>
-        <a href="creer_annonce.php" class="btn btn-primary" style="border-radius: 8px; padding: 10px 20px; font-weight: 600;">
+        <a href="<?php echo \App\Core\Config::url('/annonce/create'); ?>" class="btn btn-primary" style="border-radius: 8px; padding: 10px 20px; font-weight: 600;">
             <i class="fas fa-plus me-2"></i> Nouvelle annonce
         </a>
     </div>
@@ -72,7 +73,7 @@ require_once(__DIR__ . "/../init.php"); require_once(__DIR__ . "/../app/Views/pa
             <div class="mb-3"><i class="fas fa-home fa-3x text-light-emphasis"></i></div>
             <h4>Aucune annonce pour le moment</h4>
             <p class="text-muted">Commencez par créer votre première annonce de colocation.</p>
-            <a href="creer_annonce.php" class="btn btn-outline-primary mt-2">Créer une annonce</a>
+            <a href="<?php echo \App\Core\Config::url('/annonce/create'); ?>" class="btn btn-outline-primary mt-2">Créer une annonce</a>
         </div>
     <?php else: ?>
         <div class="row g-4" id="manageGrid">
@@ -104,7 +105,7 @@ require_once(__DIR__ . "/../init.php"); require_once(__DIR__ . "/../app/Views/pa
                             <h5 class="card-title text-dark" style="font-weight: 600; font-size: 1.1rem;"><?php echo htmlspecialchars($a->getTitre()); ?></h5>
                             
                             <div class="mt-auto pt-3 border-top d-flex gap-2">
-                                <a href="/coLocation/annonce/edit?id=<?php echo $a->getId(); ?>" class="btn btn-sm btn-light border flex-grow-1" style="font-weight: 500;">
+                                <a href="<?php echo \App\Core\Config::url('annonce/edit?id=' . $a->getId()); ?>" class="btn btn-sm btn-light border flex-grow-1" style="font-weight: 500;">
                                     <i class="fas fa-edit me-1 text-primary"></i> Editer
                                 </a>
                                 <a href="modifier_photos.php?id_annonce=<?php echo $a->getId(); ?>" class="btn btn-sm btn-light border" title="Photos">

@@ -13,4 +13,10 @@ class HomeController extends Controller {
             'annoncesFromDb' => $annoncesFromDb
         ]);
     }
+
+    public function notFound($url) {
+        $this->render('errors/404', [
+            'url' => $url
+        ]);
+    }
 }
