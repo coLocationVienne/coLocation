@@ -1,12 +1,14 @@
 <?php
+global $annonceDAO;
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
 require_once '../init.php';
+require_once(__DIR__ . "/../app/Views/partials/header.php");
 
 if (empty($_SESSION['user_id'])) {
-    header("Location: connexion.php?error=erreur_connexion");
+    header("Location: " . \App\Core\Config::url('auth/login') . "?error=erreur_connexion");
     exit();
 }
 
@@ -17,7 +19,6 @@ $success = $_GET['success'] ?? '';
 // Fetch announcements using the DAO
 $annonces = $annonceDAO->getAllAnouncesByUserId($userId);
 
-include("../includes/header.php");
 ?>
 
 <div class="container" style="margin-top: 100px; margin-bottom: 50px; max-width: 1200px;">
@@ -27,7 +28,7 @@ include("../includes/header.php");
             <h1 style="font-size: 1.75rem; font-weight: 700; color: #333; margin: 0;">Mes annonces</h1>
             <p class="text-muted mb-0">Gérez vos publications et suivez leur statut.</p>
         </div>
-        <a href="creer_annonce.php" class="btn btn-primary" style="border-radius: 8px; padding: 10px 20px; font-weight: 600;">
+        <a href="<?php echo \App\Core\Config::url('/annonce/create'); ?>" class="btn btn-primary" style="border-radius: 8px; padding: 10px 20px; font-weight: 600;">
             <i class="fas fa-plus me-2"></i> Nouvelle annonce
         </a>
     </div>
@@ -72,7 +73,7 @@ include("../includes/header.php");
             <div class="mb-3"><i class="fas fa-home fa-3x text-light-emphasis"></i></div>
             <h4>Aucune annonce pour le moment</h4>
             <p class="text-muted">Commencez par créer votre première annonce de colocation.</p>
-            <a href="creer_annonce.php" class="btn btn-outline-primary mt-2">Créer une annonce</a>
+            <a href="<?php echo \App\Core\Config::url('/annonce/create'); ?>" class="btn btn-outline-primary mt-2">Créer une annonce</a>
         </div>
     <?php else: ?>
         <div class="row g-4" id="manageGrid">
@@ -80,7 +81,7 @@ include("../includes/header.php");
                 <?php
                     $photoUrl = $a->getPhoto();
                     $image = !empty($photoUrl)
-                        ? (strpos($photoUrl, 'http') === 0 ? $photoUrl : '../' . $photoUrl)
+                        ? (strpos($photoUrl, 'http') === 0 ? $photoUrl : '/coLocation/' . $photoUrl)
                         : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400&q=80';
                     
                     $searchText = strtolower($a->getTitre() . ' ' . $a->getVille());
@@ -104,7 +105,7 @@ include("../includes/header.php");
                             <h5 class="card-title text-dark" style="font-weight: 600; font-size: 1.1rem;"><?php echo htmlspecialchars($a->getTitre()); ?></h5>
                             
                             <div class="mt-auto pt-3 border-top d-flex gap-2">
-                                <a href="formulaire_modifier_annonce.php?id_annonce=<?php echo $a->getId(); ?>" class="btn btn-sm btn-light border flex-grow-1" style="font-weight: 500;">
+                                <a href="<?php echo \App\Core\Config::url('annonce/edit?id=' . $a->getId()); ?>" class="btn btn-sm btn-light border flex-grow-1" style="font-weight: 500;">
                                     <i class="fas fa-edit me-1 text-primary"></i> Editer
                                 </a>
                                 <a href="modifier_photos.php?id_annonce=<?php echo $a->getId(); ?>" class="btn btn-sm btn-light border" title="Photos">
@@ -113,7 +114,7 @@ include("../includes/header.php");
                                 <a href="voir_annonce.php?id=<?php echo $a->getId(); ?>" class="btn btn-sm btn-light border" title="Voir l'aperçu">
                                     <i class="fas fa-external-link-alt text-info"></i>
                                 </a>
-                                <form action="be/supprimer_annonce.php" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer cette annonce ?');" class="d-inline">
+                                <form action="/coLocation/annonce/delete" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer cette annonce ?');" class="d-inline">
                                     <input type="hidden" name="id_annonce" value="<?php echo $a->getId(); ?>">
                                     <button type="submit" class="btn btn-sm btn-light border text-danger" title="Supprimer">
                                         <i class="fas fa-trash-alt"></i>
@@ -164,4 +165,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<?php include("../includes/footer.php"); ?>
+<?php require_once(__DIR__ . "/../app/Views/partials/footer.php"); ?>

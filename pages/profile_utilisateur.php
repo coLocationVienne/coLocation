@@ -6,7 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (empty($_SESSION['isLoggedin']) || empty($_SESSION['user_id'])) {
-    header("Location: connexion.php?error=login_required");
+    header("Location: /coLocation/auth/login?error=login_required");
     exit();
 }
 
@@ -14,7 +14,7 @@ $user = $userDAO->getById((int)$_SESSION['user_id']);
 
 if (!$user) {
     session_destroy();
-    header("Location: connexion.php?error=login_required");
+    header("Location: /coLocation/auth/login?error=login_required");
     exit();
 }
 
@@ -44,7 +44,7 @@ $profileStatus = $_GET['status'] ?? '';
 $profileError = $_GET['error'] ?? '';
 
 include("be/common.php");
-include("../includes/header.php");
+require_once(__DIR__ . "/../init.php"); require_once(__DIR__ . "/../app/Views/partials/header.php");
 
 // Add this after your existing error/status message handling
 $openPasswordModal = isset($_GET['passwordModal']) && $_GET['passwordModal'] === '1' && isset($profileError);
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h2 class="modal-title fs-5" id="passwordModalLabel">Changer le mot de passe</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
-            <form action="be/update_password.php" method="POST">
+            <form action="/coLocation/auth/update-password" method="POST">
                 <div class="modal-body">
                     <input type="hidden" name="user_id" value="<?php echo escapeProfileValue($_SESSION['user_id']); ?>">
                     <div class="form-group mb-3">
@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h2 class="modal-title fs-5" id="photoModalLabel">Photo de profil</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
-            <form action="be/update_profile_photo.php" method="POST" enctype="multipart/form-data">
+            <form action="/coLocation/auth/update-photo" method="POST" enctype="multipart/form-data">
                 <div class="modal-body">
                     <div class="profile-photo-preview">
                         <?php if ($profilePhotoSrc !== ''): ?>
@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h2 class="modal-title fs-5" id="editProfileModalLabel">Modifier mes informations</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
-            <form action="be/update_user_profile.php" method="POST">
+            <form action="/coLocation/auth/update-profile" method="POST">
                 <div class="modal-body">
                     <input type="hidden" name="user_id" value="<?php echo escapeProfileValue($_SESSION['user_id']); ?>">
                     
@@ -313,5 +313,5 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="../assets/style/js/profile.js"></script>
 
 <?php
-include("../includes/footer.php");
+require_once(__DIR__ . "/../app/Views/partials/footer.php");
 ?>

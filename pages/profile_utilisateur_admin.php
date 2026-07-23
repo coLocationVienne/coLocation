@@ -63,7 +63,7 @@ if (($adminUser->getIdRole() !== null) && $adminUser->getIdRole() === 1): ?>
                     <h5 class="modal-title" id="editUserModalLabel">Modifier l'utilisateur</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                 </div>
-                <form id="editUserForm" action="be/admin_update_user.php" method="POST">
+                <form id="editUserForm" action="/coLocation/admin/update-user" method="POST">
                     <div class="modal-body">
                         <input type="hidden" id="edit_user_id" name="user_id">
                         
@@ -127,7 +127,7 @@ if (($adminUser->getIdRole() !== null) && $adminUser->getIdRole() === 1): ?>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <form action="be/admin_delete_user.php" method="POST">
+                    <form action="/coLocation/admin/delete-user" method="POST">
                         <input type="hidden" id="delete_user_id" name="user_id">
                         <button type="submit" class="btn btn-danger">Supprimer</button>
                     </form>
@@ -145,7 +145,7 @@ if (($adminUser->getIdRole() !== null) && $adminUser->getIdRole() === 1): ?>
             const search = document.getElementById('userSearch')?.value || '';
             const role = document.getElementById('roleFilter')?.value || '';
             
-            fetch(`be/admin_get_users.php?page=${page}&search=${encodeURIComponent(search)}&role=${encodeURIComponent(role)}`)
+            fetch(`/coLocation/admin/get-users?page=${page}&search=${encodeURIComponent(search)}&role=${encodeURIComponent(role)}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {

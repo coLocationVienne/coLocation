@@ -1,5 +1,7 @@
 <?php 
-require_once "../includes/header.php"; 
+require_once(__DIR__ . "/../init.php"); 
+use App\Core\Config;
+require_once(__DIR__ . "/../app/Views/partials/header.php"); 
 ?>
 
 <!-- Leaflet CSS -->
@@ -82,7 +84,7 @@ require_once "../includes/header.php";
     }
 
     function fetchAnnonces() {
-        fetch('be/get_annonces_json.php')
+        fetch('<?php echo Config::url('annonce/json'); ?>')
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
@@ -105,14 +107,14 @@ require_once "../includes/header.php";
                 const coords = a.gps.split(',').map(c => parseFloat(c.trim()));
                 if (coords.length === 2 && !isNaN(coords[0])) {
                     const marker = L.marker(coords).addTo(map);
-                    
-                    const photoPath = a.photo ? (a.photo.startsWith('http') ? a.photo : '../' + a.photo) : '';
+                    console.log(a.photo);
+                    const photoPath = a.photo ? (a.photo.startsWith('http') ? a.photo : '/coLocation/' + a.photo) : '';
                     const popupContent = `
                         <div class="popup-card" style="width: 200px;">
                             ${photoPath ? `<img src="${photoPath}">` : ''}
                             <h6 class="mt-2">${a.titre}</h6>
                             <p class="mb-1 text-primary"><strong>${a.loyer}€ / mois</strong></p>
-                            <a href="voir_annonce.php?id=${a.id}" class="btn btn-sm btn-outline-primary w-100">Voir détails</a>
+                            <a href="<?php echo Config::url('annonce/show'); ?>?id=${a.id}" class="btn btn-sm btn-outline-primary w-100">Voir détails</a>
                         </div>
                     `;
                     marker.bindPopup(popupContent);
@@ -120,7 +122,7 @@ require_once "../includes/header.php";
                 }
             }
 
-            const photoPath = a.photo ? (a.photo.startsWith('http') ? a.photo : '../' + a.photo) : '';
+            const photoPath = a.photo ? (a.photo.startsWith('http') ? a.photo : '/coLocation/' + a.photo) : '';
             const card = document.createElement('div');
             card.className = 'annonce-card';
             card.innerHTML = `
@@ -155,4 +157,4 @@ require_once "../includes/header.php";
     document.addEventListener('DOMContentLoaded', initMap);
 </script>
 
-<?php require_once "../includes/footer.php"; ?>
+<?php require_once(__DIR__ . "/../app/Views/partials/footer.php"); ?>
