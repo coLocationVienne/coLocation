@@ -155,7 +155,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h2 class="modal-title fs-5" id="passwordModalLabel">Changer le mot de passe</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
-            <form action="/coLocation/auth/update-password" method="POST">
+            
+            <form action="/coLocation/auth/update-password" method="POST"><!--il est ici-->
                 <div class="modal-body">
                     <input type="hidden" name="user_id" value="<?php echo escapeProfileValue($_SESSION['user_id']); ?>">
                     <div class="form-group mb-3">

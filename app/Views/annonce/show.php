@@ -1,6 +1,7 @@
 <?php 
 
 use App\Core\Config;
+use App\core\Token;
 
 include __DIR__ . "/../partials/header.php"; 
 ?>
@@ -87,6 +88,7 @@ $photo = $annonce->getPhoto() ? (strpos($annonce->getPhoto(), 'http') === 0 ? $a
                     <h6 class="mb-3">Laisser un commentaire</h6>
                     <?php if (!empty($_SESSION['isLoggedin'])): ?>
                         <form action="<?php echo Config::url('comment/add'); ?>" method="POST">
+                            <input type="hidden" name="token" value="<?php echo htmlspecialchars($_SESSION['token']);?>">
                             <input type="hidden" name="id_annonce" value="<?php echo $id; ?>">
                             <input type="hidden" name="id_owner" value="<?php echo $annonce->getOwnerId(); ?>">
                             <div class="mb-3">
