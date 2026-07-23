@@ -27,7 +27,6 @@ class AuthController extends Controller {
             $password = $_POST['password'];
             $redirect = !empty($_POST['redirect']) ? $_POST['redirect'] : "/coLocation/home";
 
-            echo $redirect;
             $users = $userDAO->findBy(['email' => $email]);
             $user = !empty($users) ? $users[0] : null;
 
@@ -38,7 +37,7 @@ class AuthController extends Controller {
                 $_SESSION['user_nom'] = $user->getNom();
                 $_SESSION['isLoggedin'] = true;
                 $_SESSION['user_role'] = $user->getIdRole();
-                
+               
                 header("Location: " . Config::url($redirect));
                 exit();
             } else {
