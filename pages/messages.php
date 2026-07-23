@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . "/../init.php"); require_once(__DIR__ . "/../app/Views/partials/header.php");
-
+use App\Core\Config;
 if (empty($_SESSION['isLoggedin'])) {
     header("Location: /coLocation/auth/login");
     exit();
@@ -54,7 +54,7 @@ $conversations = $messageDAO->getUserConversations($_SESSION['user_id']);
                             <br>
                             <small>
                                 À propos de : 
-                                <a href="voir_annonce.php?id=<?php echo $currentAnnonce->getId(); ?>" class="text-white text-decoration-underline">
+                                <a href="<?php echo Config::url('annonce/show') . '?id=' . $currentAnnonce->getId(); ?>" class="text-white text-decoration-underline">
                                     <?php echo htmlspecialchars($currentAnnonce->getTitre()); ?>
                                 <sup><i class="fas fa-external-link-alt fa-xs"></i></sup>
                                 </a>
