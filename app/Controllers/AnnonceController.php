@@ -18,9 +18,12 @@ class AnnonceController extends Controller {
         
         $comments = $commentDAO->getByAnnonceId($id);
         
+        $photos = $annonceDAO->getPhotos($id);
+        
         $this->render('annonce/show', [
             'annonce' => $annonce,
             'comments' => $comments,
+            'photos' => $photos,
             'id' => $id
         ]);
     }
