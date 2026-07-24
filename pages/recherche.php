@@ -95,6 +95,7 @@ require_once(__DIR__ . "/../app/Views/partials/header.php");
             .catch(err => console.error("Error fetching annonces:", err));
     }
 
+
     function displayAnnonces(annonces) {
         markers.forEach(m => map.removeLayer(m));
         markers = [];
