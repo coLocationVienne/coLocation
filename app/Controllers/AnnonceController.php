@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
+use App\Core\Token;
 
 class AnnonceController extends Controller {
     public function show($id) {
@@ -30,6 +31,12 @@ class AnnonceController extends Controller {
         
         if (empty($_SESSION['isLoggedin'])) {
             header("Location: /coLocation/auth/login");
+            exit();
+        }
+
+        if (!Token::check($_POST['token'] ?? '')) {
+            $id_annonce = (int)($_POST['id_annonce'] ?? 0);
+            header("Location: " . \App\Core\Config::url('annonce/show') . "?id=$id_annonce&error=invalid_token");
             exit();
         }
 
@@ -75,6 +82,11 @@ class AnnonceController extends Controller {
 
         if (empty($_SESSION['isLoggedin']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
             header("Location: " . \App\Core\Config::url('auth/login'));
+            exit();
+        }
+
+        if (!Token::check($_POST['token'] ?? '')) {
+            header("Location: " . \App\Core\Config::url('annonce/create') . "?error=invalid_token");
             exit();
         }
 
@@ -147,6 +159,11 @@ class AnnonceController extends Controller {
             exit();
         }
 
+        if (!Token::check($_POST['token'] ?? '')) {
+            header("Location: " . \App\Core\Config::url('pages/page_annonce.php') . "?error=invalid_token");
+            exit();
+        }
+
         $id = (int)($_POST['id_annonce'] ?? 0);
         $annonce = $annonceDAO->getById($id);
 
@@ -200,6 +217,11 @@ class AnnonceController extends Controller {
             exit();
         }
 
+        if (!Token::check($_POST['token'] ?? '')) {
+            header("Location: " . \App\Core\Config::url('pages/page_annonce.php') . "?error=invalid_token");
+            exit();
+        }
+
         $id = (int)($_POST['id_annonce'] ?? 0);
         
         if ($annonceDAO->supprimerAnnonce($id, $_SESSION['user_id'])) {
@@ -215,6 +237,12 @@ class AnnonceController extends Controller {
 
         if (empty($_SESSION['isLoggedin']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
             header("Location: " . \App\Core\Config::url('auth/login'));
+            exit();
+        }
+
+        if (!Token::check($_POST['token'] ?? '')) {
+            $idAnnonce = (int)($_POST['id_annonce'] ?? 0);
+            header("Location: /coLocation/pages/modifier_photos.php?id_annonce=$idAnnonce&error=invalid_token");
             exit();
         }
 
@@ -252,6 +280,12 @@ class AnnonceController extends Controller {
 
         if (empty($_SESSION['isLoggedin']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
             header("Location: " . \App\Core\Config::url('auth/login'));
+            exit();
+        }
+
+        if (!Token::check($_POST['token'] ?? '')) {
+            $idAnnonce = (int)($_POST['id_annonce'] ?? 0);
+            header("Location: /coLocation/pages/modifier_photos.php?id_annonce=$idAnnonce&error=invalid_token");
             exit();
         }
 

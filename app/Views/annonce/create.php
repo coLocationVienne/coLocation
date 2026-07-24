@@ -1,7 +1,7 @@
 ﻿<?php
 	
 	use App\Core\Config;
-	use App\core\Token;
+	use App\Core\Token;
 
 	include __DIR__ . "/../partials/header.php";
 	
@@ -37,7 +37,7 @@
 	        <?php endif; ?>
 	
 	        <form action="<?php echo Config::url('annonce/create'); ?>" method="POST" class="annonce-form">
-				<input type="hidden" name="token" value="<?php echo htmlspecialchars($_SESSION['token']);?>">
+				<?php echo Token::field(); ?>
 	            <fieldset>
 	                <legend>Informations du logement</legend>
 	

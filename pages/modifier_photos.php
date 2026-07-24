@@ -113,6 +113,7 @@ $photos = $annonceDAO->getPhotos($idAnnonce);
         <div class="upload-section">
             <h3 style="margin-top: 0;">Ajouter une nouvelle photo</h3>
             <form action="/coLocation/annonce/upload-photo" method="POST" enctype="multipart/form-data" class="mt-3">
+                <?php echo \App\Core\Token::field(); ?>
                 <input type="hidden" name="id_annonce" value="<?php echo $idAnnonce; ?>">
                 <div class="mb-3" style="margin-bottom: 15px;">
                     <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">Sélectionnez une image (JPG, PNG)</label>
@@ -142,6 +143,7 @@ $photos = $annonceDAO->getPhotos($idAnnonce);
                     <div class="photo-card">
                         <img src="<?php echo htmlspecialchars($displayPath); ?>" alt="Photo annonce">
                         <form action="/coLocation/annonce/delete-photo" method="POST" onsubmit="return confirm('Supprimer cette photo ?');">
+                            <?php echo \App\Core\Token::field(); ?>
                             <input type="hidden" name="id_photo" value="<?php echo $p['id_photo']; ?>">
                             <input type="hidden" name="id_annonce" value="<?php echo $idAnnonce; ?>">
                             <button type="submit" class="delete-btn" title="Supprimer">

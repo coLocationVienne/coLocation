@@ -1,6 +1,6 @@
 <?php
 use App\Core\Config;
-use App\core\Token;
+use App\Core\Token;
 include __DIR__ . "/../partials/header.php";
 ?>
 
@@ -21,7 +21,7 @@ include __DIR__ . "/../partials/header.php";
     <section class="annonce-form-section container"> <!--il est ici-->
         <form action="<?php echo Config::url('annonce/update'); ?>" method="POST" class="annonce-form card p-4 shadow-sm">
             <input type="hidden" name="id_annonce" value="<?php echo $annonce->getId(); ?>">
-            <input type="hidden" name="Token" value="<?php echo htmlspecialchars($_SESSION['token']);?>">
+            <?php echo Token::field(); ?>
    
             <fieldset class="mb-4">
                 <legend class="h5 mb-3 border-bottom pb-2">Informations du logement</legend>

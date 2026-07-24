@@ -157,6 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             
             <form action="/coLocation/auth/update-password" method="POST"><!--il est ici-->
+                <?php echo \App\Core\Token::field(); ?>
                 <div class="modal-body">
                     <input type="hidden" name="user_id" value="<?php echo escapeProfileValue($_SESSION['user_id']); ?>">
                     <div class="form-group mb-3">
@@ -190,6 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
             <form action="/coLocation/auth/update-photo" method="POST" enctype="multipart/form-data">
+                <?php echo \App\Core\Token::field(); ?>
                 <div class="modal-body">
                     <div class="profile-photo-preview">
                         <?php if ($profilePhotoSrc !== ''): ?>
@@ -225,6 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
             <form action="/coLocation/auth/update-profile" method="POST">
+                <?php echo \App\Core\Token::field(); ?>
                 <div class="modal-body">
                     <input type="hidden" name="user_id" value="<?php echo escapeProfileValue($_SESSION['user_id']); ?>">
                     

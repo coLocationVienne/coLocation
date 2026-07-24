@@ -115,6 +115,7 @@ $annonces = $annonceDAO->getAllAnouncesByUserId($userId);
                                     <i class="fas fa-external-link-alt text-info"></i>
                                 </a>
                                 <form action="/coLocation/annonce/delete" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer cette annonce ?');" class="d-inline">
+                                    <?php echo \App\Core\Token::field(); ?>
                                     <input type="hidden" name="id_annonce" value="<?php echo $a->getId(); ?>">
                                     <button type="submit" class="btn btn-sm btn-light border text-danger" title="Supprimer">
                                         <i class="fas fa-trash-alt"></i>

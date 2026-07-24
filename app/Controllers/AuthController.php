@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
+use App\Core\Token;
 
 class AuthController extends Controller {
     public function showLogin() {
@@ -66,6 +67,11 @@ class AuthController extends Controller {
             exit();
         }
 
+        if (!Token::check($_POST['token'] ?? '')) {
+            header("Location: /coLocation/pages/profile_utilisateur.php?error=invalid_token");
+            exit();
+        }
+
         $userId = (int)($_POST['user_id'] ?? 0);
         $currentPassword = $_POST['current_password'] ?? '';
         $newPassword = $_POST['new_password'] ?? '';
@@ -106,6 +112,11 @@ class AuthController extends Controller {
         
         if (empty($_SESSION['isLoggedin']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
             header("Location: /coLocation/auth/login");
+            exit();
+        }
+
+        if (!Token::check($_POST['token'] ?? '')) {
+            header("Location: /coLocation/pages/profile_utilisateur.php?error=invalid_token");
             exit();
         }
 
@@ -153,6 +164,11 @@ class AuthController extends Controller {
         
         if (empty($_SESSION['isLoggedin']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
             header("Location: /coLocation/auth/login");
+            exit();
+        }
+
+        if (!Token::check($_POST['token'] ?? '')) {
+            header("Location: /coLocation/pages/profile_utilisateur.php?error=invalid_token");
             exit();
         }
 

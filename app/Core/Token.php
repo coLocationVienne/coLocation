@@ -1,33 +1,29 @@
-<?php 
+<?php
 
 namespace App\Core;
 
-class Token{
+class Token
+{
+    public static function generate()
+    {
+        if (empty($_SESSION['token'])) {
+            $_SESSION['token'] = bin2hex(random_bytes(32));
+        }
 
-    public function CheckExistToken() : bool {
-
-       print_r($_POST['token']);
-                     exit;
-        if(!isset($_SESSION['token']) || !isset($_POST['token'])){
-
-            header("Location: /coLocation/auth/login?error=login_required");
-             exit();
-        }// si le token n'existe pas dans la session ou n'existe pas dans le formulaire
+        return $_SESSION['token'];
     }
 
-    public function matchingToken(){
-      if($_SESSION['token'] !== $_POST['token']){
-        header("Location: /coLocation/auth/login?error=login_required");
-        exit();
-      }
+    public static function check($token)
+    {
+        if (empty($_SESSION['token']) || empty($token)) {
+            return false;
+        }
+
+        return hash_equals($_SESSION['token'], $token);
+    }
+
+    public static function field()
+    {
+        return '<input type="hidden" name="token" value="' . htmlspecialchars(self::generate(), ENT_QUOTES, 'UTF-8') . '">';
     }
 }
-
-
- 
-
-
-
-
-
-?>
