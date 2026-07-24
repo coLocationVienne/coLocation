@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Core\Config;
 use App\Core\Controller;
 
 class AuthController extends Controller {
@@ -36,8 +37,8 @@ class AuthController extends Controller {
                 $_SESSION['user_nom'] = $user->getNom();
                 $_SESSION['isLoggedin'] = true;
                 $_SESSION['user_role'] = $user->getIdRole();
-
-                header("Location: " . $redirect);
+               
+                header("Location: " . Config::url($redirect));
                 exit();
             } else {
                 $redirectParam = !empty($_POST['redirect']) ? "&redirect=" . urlencode($_POST['redirect']) : "";
