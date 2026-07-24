@@ -6,7 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (empty($_SESSION['isLoggedin']) || empty($_SESSION['user_id'])) {
-    header("Location: connexion.php?error=login_required");
+    header("Location: /coLocation/auth/login?error=login_required");
     exit();
 }
 
@@ -14,7 +14,7 @@ $user = $userDAO->getById((int)$_SESSION['user_id']);
 
 if (!$user) {
     session_destroy();
-    header("Location: connexion.php?error=login_required");
+    header("Location: /coLocation/auth/login?error=login_required");
     exit();
 }
 
@@ -44,7 +44,7 @@ $profileStatus = $_GET['status'] ?? '';
 $profileError = $_GET['error'] ?? '';
 
 include("be/common.php");
-include("../includes/header.php");
+require_once(__DIR__ . "/../init.php"); require_once(__DIR__ . "/../app/Views/partials/header.php");
 
 // Add this after your existing error/status message handling
 $openPasswordModal = isset($_GET['passwordModal']) && $_GET['passwordModal'] === '1' && isset($profileError);
@@ -114,10 +114,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     <dd><?php echo $birthDate; ?></dd>
                 </div>
                 <div>
-                    <dt>Garant</dt>
-                    <dd><?php echo $hasGarant; ?></dd>
-                </div>
-            </dl>
+	                    <dt>Garant</dt>
+	                    <dd><?php echo $hasGarant; ?></dd>
+	                </div>
+	                <div>
+	                    <dt>Type de compte</dt>
+	                    <dd>
+	                        <span class="badge <?php echo ($user->getTypeCompte() === 'propriétaire') ? 'bg-primary' : 'bg-success'; ?>" style="padding: 5px 10px; border-radius: 4px; color: white; background-color: <?php echo ($user->getTypeCompte() === 'propriétaire') ? '#007bff' : '#28a745'; ?>;">
+	                            <?php echo ucfirst($user->getTypeCompte()); ?>
+	                        </span>
+	                    </dd>
+	                </div>
+	            </dl>
         </article>
 
         <article class="profile-card">
@@ -147,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h2 class="modal-title fs-5" id="passwordModalLabel">Changer le mot de passe</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
-            <form action="be/update_password.php" method="POST">
+            <form action="/coLocation/auth/update-password" method="POST">
                 <div class="modal-body">
                     <input type="hidden" name="user_id" value="<?php echo escapeProfileValue($_SESSION['user_id']); ?>">
                     <div class="form-group mb-3">
@@ -180,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h2 class="modal-title fs-5" id="photoModalLabel">Photo de profil</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
-            <form action="be/update_profile_photo.php" method="POST" enctype="multipart/form-data">
+            <form action="/coLocation/auth/update-photo" method="POST" enctype="multipart/form-data">
                 <div class="modal-body">
                     <div class="profile-photo-preview">
                         <?php if ($profilePhotoSrc !== ''): ?>
@@ -215,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h2 class="modal-title fs-5" id="editProfileModalLabel">Modifier mes informations</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
-            <form action="be/update_user_profile.php" method="POST">
+            <form action="/coLocation/auth/update-profile" method="POST">
                 <div class="modal-body">
                     <input type="hidden" name="user_id" value="<?php echo escapeProfileValue($_SESSION['user_id']); ?>">
                     
@@ -250,10 +258,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         <input type="number" step="0.01" id="edit_revenu_fiscal" name="revenu_fiscal" class="form-control" value="<?php echo escapeProfileValue($user->getRevenuFiscal()); ?>" placeholder="0.00">
                     </div>
 
-                    <div class="form-group mb-3">
-                        <label for="edit_date_naissance">Date de naissance</label>
-                        <input type="date" id="edit_date_naissance" name="date_naissance" class="form-control" value="<?php echo !empty($user->getDateNaissance()) ? date('Y-m-d', strtotime($user->getDateNaissance())) : ''; ?>">
-                    </div>
+<div class="form-group mb-3">
+	                        <label for="edit_date_naissance">Date de naissance</label>
+	                        <input type="date" id="edit_date_naissance" name="date_naissance" class="form-control" value="<?php echo !empty($user->getDateNaissance()) ? date('Y-m-d', strtotime($user->getDateNaissance())) : ''; ?>">
+	                    </div>
+
+	                    <div class="form-group mb-3">
+	                        <label for="edit_type_compte">Type de compte</label>
+	                        <select id="edit_type_compte" name="type_compte" class="form-control">
+	                            <option value="colocataire" <?php echo ($user->getTypeCompte() === 'colocataire') ? 'selected' : ''; ?>>Colocataire</option>
+	                            <option value="propriétaire" <?php echo ($user->getTypeCompte() === 'propriétaire') ? 'selected' : ''; ?>>Propriétaire</option>
+	                        </select>
+	                    </div>
 
                     <hr>
                     <p class="text-muted small">Les champs optionnels peuvent être laissés vides.</p>
@@ -297,5 +313,5 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="../assets/style/js/profile.js"></script>
 
 <?php
-include("../includes/footer.php");
+require_once(__DIR__ . "/../app/Views/partials/footer.php");
 ?>

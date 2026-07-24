@@ -58,3 +58,9 @@ $profileErrorMessages = [
     'password_too_short' => 'Le mot de passe doit contenir au moins 6 caractères.',
     'database_error' => 'Erreur de connexion à la base de données.',
 ];
+
+$errorMessages = [
+    'missing_fields' => 'Veuillez remplir tous les champs obligatoires.',
+    'server_error' => 'Une erreur est survenue pendant la modification de l annonce.',
+    'invalid_image' => 'Veuillez saisir une adresse dâ€™image valide.'
+];

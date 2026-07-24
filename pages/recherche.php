@@ -1,4 +1,8 @@
-<?php require_once "../includes/header.php"; ?>
+<?php 
+require_once(__DIR__ . "/../init.php"); 
+use App\Core\Config;
+require_once(__DIR__ . "/../app/Views/partials/header.php"); 
+?>
 
 <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -80,7 +84,7 @@
     }
 
     function fetchAnnonces() {
-        fetch('be/get_annonces_json.php')
+        fetch('<?php echo Config::url('annonce/json'); ?>')
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
@@ -103,13 +107,14 @@
                 const coords = a.gps.split(',').map(c => parseFloat(c.trim()));
                 if (coords.length === 2 && !isNaN(coords[0])) {
                     const marker = L.marker(coords).addTo(map);
-                    
+                    console.log(a.photo);
+                    const photoPath = a.photo ? (a.photo.startsWith('http') ? a.photo : '/coLocation/' + a.photo) : '';
                     const popupContent = `
                         <div class="popup-card" style="width: 200px;">
-                            ${a.photo ? `<img src="${a.photo}">` : ''}
+                            ${photoPath ? `<img src="${photoPath}">` : ''}
                             <h6 class="mt-2">${a.titre}</h6>
                             <p class="mb-1 text-primary"><strong>${a.loyer}€ / mois</strong></p>
-                            <a href="formulaire_modifier_annonce.php?id=${a.id}" class="btn btn-sm btn-outline-primary w-100">Voir détails</a>
+                            <a href="<?php echo Config::url('annonce/show'); ?>?id=${a.id}" class="btn btn-sm btn-outline-primary w-100">Voir détails</a>
                         </div>
                     `;
                     marker.bindPopup(popupContent);
@@ -117,10 +122,11 @@
                 }
             }
 
+            const photoPath = a.photo ? (a.photo.startsWith('http') ? a.photo : '/coLocation/' + a.photo) : '';
             const card = document.createElement('div');
             card.className = 'annonce-card';
             card.innerHTML = `
-                ${a.photo ? `<img src="${a.photo}">` : '<div style="height:150px; background:#eee; display:flex; align-items:center; justify-content:center;">Pas de photo</div>'}
+                ${photoPath ? `<img src="${photoPath}">` : '<div style="height:150px; background:#eee; display:flex; align-items:center; justify-content:center;">Pas de photo</div>'}
                 <div class="annonce-info">
                     <h6>${a.titre}</h6>
                     <p class="text-muted mb-1">${a.ville}</p>
@@ -151,4 +157,4 @@
     document.addEventListener('DOMContentLoaded', initMap);
 </script>
 
-<?php require_once "../includes/footer.php"; ?>
+<?php require_once(__DIR__ . "/../app/Views/partials/footer.php"); ?>
