@@ -5,15 +5,89 @@ use App\Core\Token;
 
 include __DIR__ . "/../partials/header.php"; 
 ?>
-<?php
-$photo = $annonce->getPhoto() ? (strpos($annonce->getPhoto(), 'http') === 0 ? $annonce->getPhoto() : Config::url($annonce->getPhoto())) : "https://via.placeholder.com/800x400?text=Pas+de+photo";
-?>
+
+<style>
+    .carousel-item img {
+        cursor: zoom-in;
+    }
+    .modal-full-image {
+        max-width: 95vw;
+        max-height: 85vh;
+        object-fit: contain;
+    }
+    .modal-content.transparent-modal {
+        background: transparent;
+        border: none;
+    }
+    .lightbox-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0,0,0,0.5);
+        color: white;
+        border: none;
+        padding: 15px 20px;
+        font-size: 24px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: background 0.3s;
+        z-index: 1060;
+    }
+    .lightbox-nav:hover {
+        background: rgba(0,0,0,0.8);
+    }
+    .lightbox-prev { left: 20px; }
+    .lightbox-next { right: 20px; }
+    .lightbox-counter {
+        position: absolute;
+        bottom: -40px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-weight: 600;
+    }
+</style>
 
 <div class="container mt-5 pt-5">
     <div class="row">
         <div class="col-md-8">
             <div class="card mb-4 shadow-sm">
-                <img src="<?php echo $photo; ?>" class="card-img-top" alt="<?php echo htmlspecialchars($annonce->getTitre()); ?>" style="height: 400px; object-fit: cover;">
+                <?php if (count($photos) > 1): ?>
+                    <!-- Bootstrap Image Carousel -->
+                    <div id="annonceCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-indicators">
+                            <?php foreach ($photos as $index => $p): ?>
+                                <button type="button" data-bs-target="#annonceCarousel" data-bs-slide-to="<?php echo $index; ?>" class="<?php echo $index === 0 ? 'active' : ''; ?>" aria-current="<?php echo $index === 0 ? 'true' : 'false'; ?>" aria-label="Slide <?php echo $index + 1; ?>"></button>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="carousel-inner">
+                            <?php foreach ($photos as $index => $p): ?>
+                                <?php 
+                                    $pUrl = $p['url'];
+                                    $displayPath = (strpos($pUrl, 'http') === 0 ? $pUrl : Config::url($pUrl));
+                                ?>
+                                <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                                    <img src="<?php echo $displayPath; ?>" class="d-block w-100" alt="Photo <?php echo $index + 1; ?>" style="height: 400px; object-fit: cover;" onclick="openGallery(<?php echo $index; ?>)">
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#annonceCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Précédent</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#annonceCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Suivant</span>
+                        </button>
+                    </div>
+                <?php else: ?>
+                    <?php 
+                        $mainPhoto = !empty($photos) ? $photos[0]['url'] : null;
+                        $displayPhoto = $mainPhoto ? (strpos($mainPhoto, 'http') === 0 ? $mainPhoto : Config::url($mainPhoto)) : "https://via.placeholder.com/800x400?text=Pas+de+photo";
+                    ?>
+                    <img src="<?php echo $displayPhoto; ?>" class="card-img-top" alt="<?php echo htmlspecialchars($annonce->getTitre()); ?>" style="height: 400px; object-fit: cover; cursor: zoom-in;" onclick="openGallery(0)">
+                <?php endif; ?>
+
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
@@ -140,5 +214,68 @@ $photo = $annonce->getPhoto() ? (strpos($annonce->getPhoto(), 'http') === 0 ? $a
         </div>
     </div>
 </div>
+
+<!-- Gallery Lightbox Modal -->
+<div class="modal fade" id="imageLightbox" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content transparent-modal">
+            <div class="modal-body p-0 text-center position-relative">
+                <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close" style="z-index: 1070;"></button>
+                
+                <?php if (count($photos) > 1): ?>
+                    <button class="lightbox-nav lightbox-prev" onclick="changeImage(-1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="lightbox-nav lightbox-next" onclick="changeImage(1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                <?php endif; ?>
+
+                <img src="" id="lightboxImage" class="modal-full-image img-fluid rounded shadow" alt="Enlarged view">
+                
+                <div class="lightbox-counter" id="lightboxCounter"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentPhotoIndex = 0;
+const allPhotos = <?php echo json_encode(array_map(function($p) {
+    $pUrl = $p['url'];
+    return (strpos($pUrl, 'http') === 0 ? $pUrl : Config::url($pUrl));
+}, $photos)); ?>;
+
+function openGallery(index) {
+    if (allPhotos.length === 0) return;
+    currentPhotoIndex = index;
+    updateLightbox();
+    const lightbox = new bootstrap.Modal(document.getElementById('imageLightbox'));
+    lightbox.show();
+}
+
+function changeImage(direction) {
+    currentPhotoIndex += direction;
+    if (currentPhotoIndex >= allPhotos.length) currentPhotoIndex = 0;
+    if (currentPhotoIndex < 0) currentPhotoIndex = allPhotos.length - 1;
+    updateLightbox();
+}
+
+function updateLightbox() {
+    const img = document.getElementById('lightboxImage');
+    const counter = document.getElementById('lightboxCounter');
+    img.src = allPhotos[currentPhotoIndex];
+    counter.innerText = (currentPhotoIndex + 1) + " / " + allPhotos.length;
+}
+
+// Support keyboard navigation
+document.addEventListener('keydown', function(e) {
+    const modal = document.getElementById('imageLightbox');
+    if (modal.classList.contains('show')) {
+        if (e.key === 'ArrowLeft') changeImage(-1);
+        if (e.key === 'ArrowRight') changeImage(1);
+    }
+});
+</script>
 
 <?php include __DIR__ . "/../partials/footer.php"; ?>

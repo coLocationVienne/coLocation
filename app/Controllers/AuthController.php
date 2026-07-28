@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Core\Config;
 use App\Core\Controller;
 use App\Core\Token;
 
@@ -37,10 +38,11 @@ class AuthController extends Controller {
                 $_SESSION['user_nom'] = $user->getNom();
                 $_SESSION['isLoggedin'] = true;
                 $_SESSION['user_role'] = $user->getIdRole();
-                $_SESSION['token']= bin2hex(random_bytes(32));
-                
 
-                header("Location: " . $redirect);
+                $_SESSION['token']= bin2hex(random_bytes(32));
+            
+                header("Location: " . Config::url($redirect));
+
                 exit();
             } else {
                 $redirectParam = !empty($_POST['redirect']) ? "&redirect=" . urlencode($_POST['redirect']) : "";
