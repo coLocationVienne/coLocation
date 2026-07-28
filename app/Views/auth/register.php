@@ -1,6 +1,7 @@
 <?php 
 
 use App\Core\Config;
+use App\core\Token;
 
 include __DIR__ . "/../partials/header.php"; 
 ?>

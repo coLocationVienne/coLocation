@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Core\Config;
 use App\Core\Controller;
+use App\Core\Token;
 
 class AuthController extends Controller {
     public function showLogin() {
@@ -37,8 +38,12 @@ class AuthController extends Controller {
                 $_SESSION['user_nom'] = $user->getNom();
                 $_SESSION['isLoggedin'] = true;
                 $_SESSION['user_role'] = $user->getIdRole();
-               
+
+
+                $_SESSION['token']= bin2hex(random_bytes(32));
+            
                 header("Location: " . Config::url($redirect));
+
                 exit();
             } else {
                 $redirectParam = !empty($_POST['redirect']) ? "&redirect=" . urlencode($_POST['redirect']) : "";
@@ -62,6 +67,11 @@ class AuthController extends Controller {
         
         if (empty($_SESSION['isLoggedin']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
             header("Location: /coLocation/auth/login");
+            exit();
+        }
+
+        if (!Token::check($_POST['token'] ?? '')) {
+            header("Location: /coLocation/pages/profile_utilisateur.php?error=invalid_token");
             exit();
         }
 
@@ -105,6 +115,11 @@ class AuthController extends Controller {
         
         if (empty($_SESSION['isLoggedin']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
             header("Location: /coLocation/auth/login");
+            exit();
+        }
+
+        if (!Token::check($_POST['token'] ?? '')) {
+            header("Location: /coLocation/pages/profile_utilisateur.php?error=invalid_token");
             exit();
         }
 
@@ -152,6 +167,11 @@ class AuthController extends Controller {
         
         if (empty($_SESSION['isLoggedin']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
             header("Location: /coLocation/auth/login");
+            exit();
+        }
+
+        if (!Token::check($_POST['token'] ?? '')) {
+            header("Location: /coLocation/pages/profile_utilisateur.php?error=invalid_token");
             exit();
         }
 
