@@ -39,6 +39,7 @@ class AuthController extends Controller {
                 $_SESSION['isLoggedin'] = true;
                 $_SESSION['user_role'] = $user->getIdRole();
 
+
                 $_SESSION['token']= bin2hex(random_bytes(32));
             
                 header("Location: " . Config::url($redirect));

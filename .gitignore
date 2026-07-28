@@ -5,3 +5,5 @@
 .idea/s
 *.iml
 .idea/
+vendor/
+.phpunit.result.cache
