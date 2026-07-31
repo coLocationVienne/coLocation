@@ -74,3 +74,65 @@ The application uses a front controller (`index.php`) to route requests. Common 
 
 ---
 *Developed as part of the coLocation platform.*
+
+## 🐳 Docker Setup
+
+This project can be run using Docker and Docker Compose, providing a consistent development and deployment environment.
+
+### Prerequisites
+- Docker Desktop (or Docker Engine and Docker Compose) installed on your system.
+
+### Running with Docker Compose
+1.  **Build and Start Services**:
+    Navigate to the project root directory and run:
+    ```bash
+    docker-compose up --build -d
+    ```
+    This command will:
+    -   Build the PHP application image based on the `Dockerfile`.
+    -   Start the `app` service (PHP/Apache) and the `db` service (MySQL).
+    -   Initialize the MySQL database with the `SQL/colocation.sql` schema.
+
+2.  **Access the Application**:
+    Once the services are up, the application will be accessible at `http://localhost` (or `http://localhost:80` if port 80 is not in use by another service).
+
+3.  **Run Composer Commands (if needed)**:
+    To run Composer commands inside the app container (e.g., `composer install` or `composer update`):
+    ```bash
+    docker-compose exec app composer install
+    ```
+
+4.  **Run PHPUnit Tests**:
+    To execute the PHPUnit test suite:
+    ```bash
+    docker-compose exec app php ./vendor/bin/phpunit
+    ```
+
+5.  **Stop Services**:
+    To stop and remove the containers, networks, and volumes created by `up`:
+    ```bash
+    docker-compose down
+    ```
+
+## 🧪 Testing
+
+Unit and integration tests are implemented using PHPUnit. The test suite can be run locally via Docker Compose as described above, or directly if you have PHP and Composer set up on your host machine.
+
+-   **Test Directory**: `tests/`
+-   **Configuration**: `phpunit.xml`
+
+## 🚀 GitHub Actions Workflow
+
+This project includes a GitHub Actions workflow for Continuous Integration (CI) to automate the build and test process on every push and pull request to the `main` and `develop` branches.
+
+-   **Workflow File**: `.github/workflows/ci.yml`
+-   **Key Steps**:
+    -   **Checkout code**: Fetches the repository content.
+    -   **Build Docker image**: Creates the application's Docker image.
+    -   **Run Docker Compose**: Starts the application and database services.
+    -   **Wait for MySQL**: Ensures the database is ready before running tests.
+    -   **Run Composer install**: Installs PHP dependencies within the container.
+    -   **Run PHPUnit tests**: Executes the defined test suite.
+    -   **Stop Docker Compose**: Tears down the Docker environment after tests complete.
+
+This workflow helps ensure code quality and prevents regressions by automatically validating changes.

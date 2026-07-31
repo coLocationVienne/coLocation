@@ -1,0 +1,44 @@
+
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Build Docker image
+      run: docker build -t colocation-app .
+
+    - name: Run Docker Compose
+      run: docker-compose up -d
+
+    - name: Wait for MySQL to be ready
+      run: |
+        for i in $(seq 1 10); do
+          docker-compose exec db mysql -uroot -proot_password -e "SELECT 1" >/dev/null 2>&1 && break
+          echo "Waiting for MySQL..."
+          sleep 5
+        done
+
+    - name: Run Composer install
+      run: docker-compose exec app composer install
+
+    - name: Run PHPUnit tests
+      run: docker-compose exec app php ./vendor/bin/phpunit
+
+    - name: Stop Docker Compose
+      if: always()
+      run: docker-compose down

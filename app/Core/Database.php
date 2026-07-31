@@ -13,10 +13,10 @@ class Database {
     private ?PDO $conn = null;
 
     private function __construct() {
-        $this->host = "localhost";
-        $this->db_name = "colocation";
-        $this->username = "root";
-        $this->password = "";
+        $this->host = getenv("MYSQL_HOST") ?: "localhost";
+        $this->db_name = getenv("MYSQL_DATABASE") ?: "colocation";
+        $this->username = getenv("MYSQL_USER") ?: "root";
+        $this->password = getenv("MYSQL_PASSWORD") ?: "";
 
         try {
             $this->conn = new PDO("mysql:host={$this->host};dbname={$this->db_name};charset=utf8", $this->username, $this->password);
