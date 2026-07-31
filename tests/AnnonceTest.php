@@ -33,8 +33,8 @@ class AnnonceTest extends TestCase {
         // Insert dummy data for foreign key constraints and basic tests
         $this->pdo->exec("INSERT INTO role (id_role, role) VALUES (1, 'admin'), (2, 'owner'), (3, 'colocataire')");
         $this->pdo->exec("INSERT INTO utilisateur (id_utilisateur, prenom, nom, email, mot_de_passe, situation_professionnel, garant, retraite, caisse_allocation_familial, date_naissance, photo_profil, salaire_mensuel_net, revenu_fiscal, id_role, type_compte) VALUES (1, 'Test', 'User', 'test@example.com', 'password_hash', 'student', 1, 0, 0, '2000-01-01', '', 0, 0, 3, 'colocataire')");
-        $this->pdo->exec("INSERT INTO mode_vie (id_mode_vie, nom_mode_vie) VALUES (1, 'Calme'), (2, 'Fêtard')");
-        $this->pdo->exec("INSERT INTO regime_alimentaire (id_regime_alimentaire, nom_regime) VALUES (1, 'Végétarien'), (2, 'Vegan')");
+        $this->pdo->exec("INSERT INTO mode_vie (id_mode_vie, mode_avis) VALUES (1, 'Calme'), (2, 'Fêtard')");
+        $this->pdo->exec("INSERT INTO regime_alimentaire (id_regime_alimentaire, regime_alimentaire) VALUES (1, 'Végétarien'), (2, 'Vegan')");
     }
 
     public function testConstructorAndGetters(): void {
@@ -183,7 +183,7 @@ class AnnonceTest extends TestCase {
             'loyer_colocation' => 450.0
         ];
         $annonce2 = new Annonce($data2);
-        $this->annonceDAO->ajouterAnnonce($annonce2, 1, [], []);
+        $id2 = $this->annonceDAO->ajouterAnnonce($annonce2, 1, [], []);
 
         $annonces = $this->annonceDAO->getAllWithPhotos();
         $this->assertCount(2, $annonces);
