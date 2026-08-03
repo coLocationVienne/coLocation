@@ -7,34 +7,33 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  build-and-test:
+  tests:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout
       uses: actions/checkout@v4
 
     - name: Start Docker Compose
       run: docker compose up -d --build
 
-    - name: Wait for MySQL (robuste)
+    - name: Wait for MySQL
       run: |
         echo "Waiting for MySQL..."
-        for i in {1..50}; do
-          if docker compose exec -T db mysqladmin ping -h 127.0.0.1 -uroot --password=root_password --silent; then
-            echo "MySQL is ready!"
+        for i in {1..30}; do
+          if docker compose exec -T db mysqladmin ping -uroot -proot_password --silent; then
+            echo "MySQL is ready"
             break
           fi
-          echo "MySQL not ready yet..."
-          sleep 5
+          sleep 2
         done
 
     - name: Install Composer inside container
       run: docker compose exec -T app composer install --no-interaction --prefer-dist
 
-    - name: Run PHPUnit tests inside container
-      run: docker compose exec -T app php ./vendor/bin/phpunit --testdox
+    - name: Run PHPUnit inside container
+      run: docker compose exec -T app ./vendor/bin/phpunit --testdox
 
-    - name: Stop Docker Compose
+    - name: Stop Docker
       if: always()
       run: docker compose down -v
