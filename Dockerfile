@@ -1,5 +1,5 @@
 
-FROM php:8.2-apache
+FROM php:7.4-apache
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
