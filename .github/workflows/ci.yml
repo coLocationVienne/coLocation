@@ -1,15 +1,10 @@
-
 name: CI/CD
 
 on:
   push:
-    branches:
-      - main
-      - develop
+    branches: [ main, develop ]
   pull_request:
-    branches:
-      - main
-      - develop
+    branches: [ main, develop ]
 
 jobs:
   build-and-test:
@@ -19,26 +14,27 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Build Docker image
-      run: docker build -t colocation-app .
+    - name: Start Docker Compose
+      run: docker compose up -d --build
 
-    - name: Run Docker Compose
-      run: docker compose up -d
-
-    - name: Wait for MySQL to be ready
+    - name: Wait for MySQL (robuste)
       run: |
-        for i in $(seq 1 10); do
-          docker compose exec db mysql -uroot -proot_password -e "SELECT 1" >/dev/null 2>&1 && break
-          echo "Waiting for MySQL..."
+        echo "Waiting for MySQL..."
+        for i in {1..50}; do
+          if docker compose exec -T db mysqladmin ping -h 127.0.0.1 -uroot --password=root_password --silent; then
+            echo "MySQL is ready!"
+            break
+          fi
+          echo "MySQL not ready yet..."
           sleep 5
         done
 
-    - name: Run Composer install
-      run: docker compose exec app composer install
+    - name: Install Composer inside container
+      run: docker compose exec -T app composer install --no-interaction --prefer-dist
 
-    - name: Run PHPUnit tests
-      run: docker compose exec app php ./vendor/bin/phpunit
+    - name: Run PHPUnit tests inside container
+      run: docker compose exec -T app php ./vendor/bin/phpunit --testdox
 
     - name: Stop Docker Compose
       if: always()
-      run: docker compose down
+      run: docker compose down -v
