@@ -1,4 +1,5 @@
-name: PHP Unit Tests
+name: CI — Tests & Docker
+
 on:
   push:
     branches: [ main, develop ]
@@ -6,16 +7,50 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  phpunit:
+
+  tests-unitaires:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up PHP
+
+      - name: Installer PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          coverage: none
-      - name: Install dependencies
+
+      - name: Installer les dépendances
         run: composer install --no-interaction --prefer-dist
-      - name: Run PHPUnit tests
-        run: vendor/bin/phpunit --testdox
+
+      - name: Lancer les tests unitaires
+        run: ./vendor/bin/phpunit --exclude-group integration
+
+  tests-integration:
+    runs-on: ubuntu-latest
+    needs: tests-unitaires
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Démarrer Docker
+        run: docker compose up -d --build
+
+      - name: Attendre MySQL
+        run: |
+          for i in {1..50}; do
+            if docker exec colocation_db mysqladmin ping -h 127.0.0.1 -uroot --password=root_password --silent; then
+              echo "MySQL prêt"
+              break
+            fi
+            echo "Attente..."
+            sleep 5
+          done
+
+      - name: Installer Composer dans le conteneur
+        run: docker compose exec -T app composer install --no-interaction --prefer-dist
+
+      - name: Lancer les tests d’intégration
+        run: docker compose exec -T app ./vendor/bin/phpunit --testdox
+
+      - name: Arrêter Docker
+        if: always()
+        run: docker compose down -v

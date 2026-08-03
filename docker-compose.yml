@@ -17,7 +17,6 @@ services:
     networks:
       - colocation_network
     restart: unless-stopped
-
   db:
     image: mysql:8.0
     container_name: colocation_db
@@ -30,16 +29,13 @@ services:
       - db_data:/var/lib/mysql
       - ./SQL/colocation.sql:/docker-entrypoint-initdb.d/colocation.sql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "--password=root_password"]
       interval: 10s
       timeout: 10s
       retries: 50
-    ports:
-      - "3306:3306"
     networks:
       - colocation_network
     restart: unless-stopped
-
   phpmyadmin:
     image: phpmyadmin:latest
     container_name: colocation_phpmyadmin
@@ -54,11 +50,8 @@ services:
     networks:
       - colocation_network
     restart: unless-stopped
-
 volumes:
   db_data:
-
 networks:
   colocation_network:
     driver: bridge
-
