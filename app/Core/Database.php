@@ -18,12 +18,23 @@ class Database {
         $this->username = getenv("MYSQL_USER") ?: "root";
         $this->password = getenv("MYSQL_PASSWORD") ?: "";
 
-        try {
-            $this->conn = new PDO("mysql:host={$this->host};dbname={$this->db_name};charset=utf8", $this->username, $this->password);
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-        } catch (PDOException $exception) {
-            throw new \RuntimeException("Connection error: " . $exception->getMessage());
+        $max_retries = 5;
+        $retry_count = 0;
+        $connected = false;
+
+        while (!$connected && $retry_count < $max_retries) {
+            try {
+                $this->conn = new PDO("mysql:host={$this->host};dbname={$this->db_name};charset=utf8", $this->username, $this->password);
+                $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+                $connected = true;
+            } catch (PDOException $exception) {
+                $retry_count++;
+                if ($retry_count >= $max_retries) {
+                    throw new \RuntimeException("Connection error (Host: {$this->host}): " . $exception->getMessage());
+                }
+                sleep(2);
+            }
         }
     }
 

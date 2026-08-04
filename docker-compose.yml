@@ -16,7 +16,8 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: root_password
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - colocation_network
     restart: unless-stopped
@@ -33,6 +34,11 @@ services:
       - db_data:/var/lib/mysql
     ports:
       - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-uroot", "-proot_password"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     networks:
       - colocation_network
     restart: unless-stopped
@@ -47,7 +53,8 @@ services:
     ports:
       - "8081:80"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - colocation_network
     restart: unless-stopped

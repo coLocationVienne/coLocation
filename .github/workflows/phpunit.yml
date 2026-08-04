@@ -60,13 +60,14 @@ jobs:
 
       - name: Attendre MySQL
         run: |
-          for i in {1..50}; do
-            if docker exec colocation_db mysqladmin ping -h 127.0.0.1 -uroot --password=root_password --silent; then
-              echo "MySQL prêt"
+          echo "Attente de la santé de MySQL..."
+          for i in {1..60}; do
+            if [ "$(docker inspect --format='{{.State.Health.Status}}' colocation_db)" == "healthy" ]; then
+              echo "MySQL est sain !"
               break
             fi
-            echo "Attente..."
-            sleep 5
+            echo "Attente... ($i/60)"
+            sleep 2
           done
 
       - name: Installer Composer dans le conteneur
