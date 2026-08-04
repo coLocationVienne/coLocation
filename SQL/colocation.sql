@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : lun. 03 août 2026 à 14:45
+-- Généré le : lun. 03 août 2026 à 16:13
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -23,6 +23,7 @@ SET time_zone = "+00:00";
 
 CREATE database if not exists colocation;
 use colocation;
+
 --
 -- Structure de la table `age_recherche`
 --
@@ -272,6 +273,21 @@ INSERT INTO `annonce_utilisateur` (`id_utilisateur`, `id_annonce`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `creneau_visite`
+--
+
+CREATE TABLE `creneau_visite` (
+  `id_creneauVisite` int(11) NOT NULL,
+  `date_visite` date NOT NULL,
+  `heure_debut` time NOT NULL,
+  `heure_fin` time NOT NULL,
+  `nb_personne` int(11) NOT NULL,
+  `id_annonce` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `envoi_message`
 --
 
@@ -306,6 +322,18 @@ INSERT INTO `envoi_message` (`id_utilisateur`, `id_utilisateur_1`, `id_annonce`,
 (7, 7, 11, '2026-07-13', 'hi'),
 (7, 7, 12, '2026-07-13', 'hu'),
 (10, 7, 12, '2026-07-22', 'coucou');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `favoris`
+--
+
+CREATE TABLE `favoris` (
+  `id_favoris` int(11) NOT NULL,
+  `id_listeFavoris` int(11) DEFAULT NULL,
+  `id_annonce` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -423,6 +451,21 @@ INSERT INTO `role` (`id_role`, `role`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `signalement`
+--
+
+CREATE TABLE `signalement` (
+  `id_signalement` int(11) NOT NULL,
+  `statue` varchar(50) NOT NULL,
+  `motif` varchar(50) NOT NULL,
+  `commentaire` text NOT NULL,
+  `id_annonce` int(11) DEFAULT NULL,
+  `id_utilisateur` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `utilisateur`
 --
 
@@ -457,6 +500,19 @@ INSERT INTO `utilisateur` (`id_utilisateur`, `nom`, `email`, `mot_de_passe`, `si
 (8, 'non', 'non@non.no', '$2y$10$037.PyC14.MKHB1YCxgHZ.c2qdmhYHghRh5Lc3QPl0Uhac5xcjNVO', 'Étudiant', 1, 0.00, 0.00, '2026-07-02', '', 233.00, 'non', '3333', 3, 'colocataire'),
 (9, 'safi', 'sroheed@gmail.com', '$2y$10$3/DCjH0CJMtItkcDFU/R9O2UC49BNBDzzxvrTu/pFga/6MULuYK3C', 'Salarié', 0, 0.00, 0.00, '2026-07-02', 'uploads/profile_photos/user_9_1783514015.jpg', 112.00, 'rohid', '888', 3, 'colocataire'),
 (10, 'said', 'issintyasaid@gmail.com', '$2y$10$VF.6NgLI.2TDOwQNW/5rgur4TsOZ5OKuZXtkL5FSUo.siI2ZDcRry', 'Salarié', 1, 0.00, 0.00, '2006-01-20', '', 555.00, 'issintya', '333', 3, 'colocataire');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `visite`
+--
+
+CREATE TABLE `visite` (
+  `id_visite` int(11) NOT NULL,
+  `statue` varchar(50) NOT NULL,
+  `id_role` int(11) DEFAULT NULL,
+  `id_creneauVisite` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Index pour les tables déchargées
@@ -519,12 +575,27 @@ ALTER TABLE `annonce_utilisateur`
   ADD KEY `id_annonce` (`id_annonce`);
 
 --
+-- Index pour la table `creneau_visite`
+--
+ALTER TABLE `creneau_visite`
+  ADD PRIMARY KEY (`id_creneauVisite`),
+  ADD KEY `fk_annonce_creneauVisite` (`id_annonce`);
+
+--
 -- Index pour la table `envoi_message`
 --
 ALTER TABLE `envoi_message`
   ADD KEY `id_utilisateur` (`id_utilisateur`),
   ADD KEY `id_utilisateur_1` (`id_utilisateur_1`),
   ADD KEY `id_annonce` (`id_annonce`);
+
+--
+-- Index pour la table `favoris`
+--
+ALTER TABLE `favoris`
+  ADD PRIMARY KEY (`id_favoris`),
+  ADD KEY `fk_favoris_listeFavoris` (`id_listeFavoris`),
+  ADD KEY `fk_annonce_favoris` (`id_annonce`);
 
 --
 -- Index pour la table `liste_favoris`
@@ -558,11 +629,27 @@ ALTER TABLE `role`
   ADD PRIMARY KEY (`id_role`);
 
 --
+-- Index pour la table `signalement`
+--
+ALTER TABLE `signalement`
+  ADD PRIMARY KEY (`id_signalement`),
+  ADD KEY `fk_annonce_signalement` (`id_annonce`),
+  ADD KEY `fk_signalement_utilisateur` (`id_utilisateur`);
+
+--
 -- Index pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
   ADD PRIMARY KEY (`id_utilisateur`),
   ADD KEY `id_role` (`id_role`);
+
+--
+-- Index pour la table `visite`
+--
+ALTER TABLE `visite`
+  ADD PRIMARY KEY (`id_visite`),
+  ADD KEY `fk_visite_creneauVisite` (`id_creneauVisite`),
+  ADD KEY `fk_visite_role` (`id_role`);
 
 --
 -- AUTO_INCREMENT pour les tables déchargées
@@ -585,6 +672,18 @@ ALTER TABLE `annonce`
 --
 ALTER TABLE `annonce_avis`
   MODIFY `id_avis` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT pour la table `creneau_visite`
+--
+ALTER TABLE `creneau_visite`
+  MODIFY `id_creneauVisite` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `favoris`
+--
+ALTER TABLE `favoris`
+  MODIFY `id_favoris` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `liste_favoris`
@@ -617,10 +716,22 @@ ALTER TABLE `role`
   MODIFY `id_role` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT pour la table `signalement`
+--
+ALTER TABLE `signalement`
+  MODIFY `id_signalement` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
   MODIFY `id_utilisateur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT pour la table `visite`
+--
+ALTER TABLE `visite`
+  MODIFY `id_visite` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Contraintes pour les tables déchargées
@@ -670,6 +781,12 @@ ALTER TABLE `annonce_utilisateur`
   ADD CONSTRAINT `annonce_utilisateur_ibfk_2` FOREIGN KEY (`id_annonce`) REFERENCES `annonce` (`id_annonce`);
 
 --
+-- Contraintes pour la table `creneau_visite`
+--
+ALTER TABLE `creneau_visite`
+  ADD CONSTRAINT `fk_annonce_creneauVisite` FOREIGN KEY (`id_annonce`) REFERENCES `annonce` (`id_annonce`);
+
+--
 -- Contraintes pour la table `envoi_message`
 --
 ALTER TABLE `envoi_message`
@@ -678,18 +795,40 @@ ALTER TABLE `envoi_message`
   ADD CONSTRAINT `envoi_message_ibfk_3` FOREIGN KEY (`id_annonce`) REFERENCES `annonce` (`id_annonce`);
 
 --
+-- Contraintes pour la table `favoris`
+--
+ALTER TABLE `favoris`
+  ADD CONSTRAINT `fk_annonce_favoris` FOREIGN KEY (`id_annonce`) REFERENCES `annonce` (`id_annonce`),
+  ADD CONSTRAINT `fk_favoris_listeFavoris` FOREIGN KEY (`id_listeFavoris`) REFERENCES `liste_favoris` (`id_listeFavoris`);
+
+--
 -- Contraintes pour la table `liste_favoris`
 --
 ALTER TABLE `liste_favoris`
   ADD CONSTRAINT `fk_listeFavoris_utilisateur` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateur` (`id_utilisateur`);
 
 --
+-- Contraintes pour la table `signalement`
+--
+ALTER TABLE `signalement`
+  ADD CONSTRAINT `fk_annonce_signalement` FOREIGN KEY (`id_annonce`) REFERENCES `annonce` (`id_annonce`),
+  ADD CONSTRAINT `fk_signalement_utilisateur` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateur` (`id_utilisateur`);
+
+--
 -- Contraintes pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
   ADD CONSTRAINT `utilisateur_ibfk_1` FOREIGN KEY (`id_role`) REFERENCES `role` (`id_role`);
+
+--
+-- Contraintes pour la table `visite`
+--
+ALTER TABLE `visite`
+  ADD CONSTRAINT `fk_visite_creneauVisite` FOREIGN KEY (`id_creneauVisite`) REFERENCES `creneau_visite` (`id_creneauVisite`),
+  ADD CONSTRAINT `fk_visite_role` FOREIGN KEY (`id_role`) REFERENCES `role` (`id_role`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
