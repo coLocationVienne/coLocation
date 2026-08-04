@@ -76,7 +76,7 @@ if ($url === '' || $url === 'home') {
     $id = isset($_GET['id']) ? $_GET['id'] : 0;
     $controller = new AnnonceController();
     $controller->edit($id);
-} elseif ($url === 'annonce/create') {
+} elseif ($url === 'annonce/create' || $url === 'create') {
     $controller = new AnnonceController();
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $controller->store();

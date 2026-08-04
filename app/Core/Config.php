@@ -9,7 +9,7 @@ class Config {
      * In XAMPP, it might be '/coLocation'.
      */
     public static function getBaseUrl() {
-        return getenv('APP_BASE_URL') ?: '/coLocation';
+        return getenv('APP_BASE_URL') ?: '/';
     }
 
     public static function url($path = '') {

@@ -82,7 +82,7 @@ $annonces = $annonceDAO->getAllAnouncesByUserId($userId);
                 <?php
                     $photoUrl = $a->getPhoto();
                     $image = !empty($photoUrl)
-                        ? (strpos($photoUrl, 'http') === 0 ? $photoUrl : '/coLocation/' . $photoUrl)
+                        ? (strpos($photoUrl, 'http') === 0 ? $photoUrl : Config::url($photoUrl))
                         : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400&q=80';
                     
                     $searchText = strtolower($a->getTitre() . ' ' . $a->getVille());
@@ -115,7 +115,7 @@ $annonces = $annonceDAO->getAllAnouncesByUserId($userId);
                                 <a href="<?php echo Config::url("annonce/show?id="). $a->getId(); ?>" class="btn btn-sm btn-light border" title="Voir l'aperçu">
                                     <i class="fas fa-external-link-alt text-info"></i>
                                 </a>
-                                <form action="/coLocation/annonce/delete" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer cette annonce ?');" class="d-inline">
+                                <form action="<?php echo Config::url('annonce/delete'); ?>" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer cette annonce ?');" class="d-inline">
                                     <?php echo \App\Core\Token::field(); ?>
                                     <input type="hidden" name="id_annonce" value="<?php echo $a->getId(); ?>">
                                     <button type="submit" class="btn btn-sm btn-light border text-danger" title="Supprimer">

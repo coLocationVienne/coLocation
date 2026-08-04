@@ -28,8 +28,15 @@ class UserDAO extends \App\Models\DAO {
             'salaire_mensuel_net' => $user->getSalaireMensuelNet(),
             'revenu_fiscal' => $user->getRevenuFiscal(),
             'id_role' => $user->getIdRole(),
-            'type_compte' => $user->getTypeCompte()
+            'type_compte' => $user->getTypeCompte(),
+            'last_activity' => $user->getLastActivity()
         ];
+    }
+
+    public function updateLastActivity(int $userId): void {
+        $query = "UPDATE utilisateur SET last_activity = NOW() WHERE id_utilisateur = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([':id' => $userId]);
     }
 
     public function searchPaginated(string $search = '', string $role = '', int $page = 1, int $limit = 10): array {

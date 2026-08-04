@@ -484,7 +484,8 @@ CREATE TABLE `utilisateur` (
   `prenom` varchar(40) NOT NULL,
   `revenu_fiscal` varchar(50) NOT NULL,
   `id_role` int(11) NOT NULL,
-  `type_compte` enum('colocataire','propriétaire') DEFAULT 'colocataire'
+  `type_compte` enum('colocataire','propriétaire') DEFAULT 'colocataire',
+  `last_activity` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --

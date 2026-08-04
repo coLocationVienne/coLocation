@@ -2,7 +2,7 @@
 require_once(__DIR__ . "/../init.php"); require_once(__DIR__ . "/../app/Views/partials/header.php");
 use App\Core\Config;
 if (empty($_SESSION['isLoggedin'])) {
-    header("Location: /coLocation/auth/login");
+    header("Location: " . Config::url('auth/login'));
     exit();
 }
 
@@ -51,7 +51,14 @@ $conversations = $messageDAO->getUserConversations($_SESSION['user_id']);
 	                            <span class="badge ms-2" style="font-size: 0.7em; padding: 4px 8px; color: white; background-color: <?php echo ($otherUser->getTypeCompte() === 'propriétaire') ? '#007bff' : '#28a745'; ?>;">
 	                                <?php echo ucfirst($otherUser->getTypeCompte()); ?>
 	                            </span>
-                            <br>
+                                <span class="ms-2" style="font-size: 0.75em;">
+                                    <?php if ($otherUser->isOnline()): ?>
+                                        <span class="text-success"><i class="fas fa-circle fa-xs"></i> En ligne</span>
+                                    <?php else: ?>
+                                        <span class="text-light opacity-75"><i class="fas fa-circle fa-xs"></i> Hors ligne</span>
+                                    <?php endif; ?>
+                                </span>
+	                            <br>
                             <small>
                                 À propos de : 
                                 <a href="<?php echo Config::url('annonce/show') . '?id=' . $currentAnnonce->getId(); ?>" class="text-white text-decoration-underline">
@@ -80,7 +87,7 @@ $conversations = $messageDAO->getUserConversations($_SESSION['user_id']);
                         <?php endif; ?>
                     </div>
                     <div class="card-footer bg-white">
-                        <form action="/coLocation/message/send" method="POST">
+                        <form action="<?php echo Config::url('message/send'); ?>" method="POST">
                             <input type="hidden" name="id_annonce" value="<?php echo $_GET['annonce_id']; ?>">
                             <input type="hidden" name="id_receiver" value="<?php echo $_GET['with_user']; ?>">
                             <div class="input-group">

@@ -202,7 +202,7 @@ include __DIR__ . "/../partials/header.php";
                             <?php echo ($_SESSION['user_id'] == $annonce->getOwnerId()) ? "M'envoyer un message (Test)" : "Contacter le propriétaire"; ?>
                         </a>
                     <?php else: ?>
-                        <a href="<?php echo Config::url('auth/login?redirect=annonce/show?id=' . $id); ?>" class="btn btn-primary w-100 py-2 mb-3">
+                        <a href="<?php echo Config::url('auth/login') . '?redirect=annonce/show?id=' . $id; ?>" class="btn btn-primary w-100 py-2 mb-3">
                             <i class="fas fa-sign-in-alt me-2"></i> Se connecter
                         </a>
                         <div class="alert alert-info py-2 px-3 small mb-3">

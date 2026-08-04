@@ -2,7 +2,7 @@
 require_once(__DIR__ . "/../init.php");
 
 if (empty($_SESSION['user_id'])) {
-    header('Location: /coLocation/auth/login');
+    header('Location: ' . \App\Core\Config::url('auth/login'));
     exit();
 }
 
@@ -89,7 +89,7 @@ $photos = $annonceDAO->getPhotos($idAnnonce);
 
         <div class="d-flex justify-content-between align-items-center mb-4" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
             <h1 style="margin: 0;">Gérer les photos : <?php echo htmlspecialchars($annonce->getTitre()); ?></h1>
-            <a href="/coLocation/annonce/edit?id=<?php echo $idAnnonce; ?>" class="btn btn-outline-secondary" style="border: 1px solid #ccc; padding: 8px 15px; border-radius: 4px; text-decoration: none; color: #333; font-size: 14px;">
+            <a href="<?php echo \App\Core\Config::url('annonce/edit') . '?id=' . $idAnnonce; ?>" class="btn btn-outline-secondary" style="border: 1px solid #ccc; padding: 8px 15px; border-radius: 4px; text-decoration: none; color: #333; font-size: 14px;">
                 <i class="fas fa-edit"></i> Retour à la modification
             </a>
         </div>
@@ -112,7 +112,7 @@ $photos = $annonceDAO->getPhotos($idAnnonce);
 
         <div class="upload-section">
             <h3 style="margin-top: 0;">Ajouter une nouvelle photo</h3>
-            <form action="/coLocation/annonce/upload-photo" method="POST" enctype="multipart/form-data" class="mt-3">
+            <form action="<?php echo \App\Core\Config::url('annonce/upload-photo'); ?>" method="POST" enctype="multipart/form-data" class="mt-3">
                 <?php echo \App\Core\Token::field(); ?>
                 <input type="hidden" name="id_annonce" value="<?php echo $idAnnonce; ?>">
                 <div class="mb-3" style="margin-bottom: 15px;">
@@ -138,11 +138,11 @@ $photos = $annonceDAO->getPhotos($idAnnonce);
                         // Determine the correct path
                         $url = $p['url'];
                         $isExternal = (strpos($url, 'http') === 0);
-                        $displayPath = $isExternal ? $url : "/coLocation/" . $url;
+                        $displayPath = $isExternal ? $url : \App\Core\Config::url($url);
                     ?>
                     <div class="photo-card">
                         <img src="<?php echo htmlspecialchars($displayPath); ?>" alt="Photo annonce">
-                        <form action="/coLocation/annonce/delete-photo" method="POST" onsubmit="return confirm('Supprimer cette photo ?');">
+                        <form action="<?php echo \App\Core\Config::url('annonce/delete-photo'); ?>" method="POST" onsubmit="return confirm('Supprimer cette photo ?');">
                             <?php echo \App\Core\Token::field(); ?>
                             <input type="hidden" name="id_photo" value="<?php echo $p['id_photo']; ?>">
                             <input type="hidden" name="id_annonce" value="<?php echo $idAnnonce; ?>">

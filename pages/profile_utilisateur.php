@@ -6,7 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (empty($_SESSION['isLoggedin']) || empty($_SESSION['user_id'])) {
-    header("Location: /coLocation/auth/login?error=login_required");
+    header("Location: /auth/login?error=login_required");
     exit();
 }
 
@@ -14,7 +14,7 @@ $user = $userDAO->getById((int)$_SESSION['user_id']);
 
 if (!$user) {
     session_destroy();
-    header("Location: /coLocation/auth/login?error=login_required");
+    header("Location: /auth/login?error=login_required");
     exit();
 }
 
@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
             
-            <form action="/coLocation/auth/update-password" method="POST"><!--il est ici-->
+            <form action="<?php echo \App\Core\Config::url('auth/update-password'); ?>" method="POST"><!--il est ici-->
                 <?php echo \App\Core\Token::field(); ?>
                 <div class="modal-body">
                     <input type="hidden" name="user_id" value="<?php echo escapeProfileValue($_SESSION['user_id']); ?>">
@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h2 class="modal-title fs-5" id="photoModalLabel">Photo de profil</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
-            <form action="/coLocation/auth/update-photo" method="POST" enctype="multipart/form-data">
+            <form action="<?php echo \App\Core\Config::url('auth/update-photo'); ?>" method="POST" enctype="multipart/form-data">
                 <?php echo \App\Core\Token::field(); ?>
                 <div class="modal-body">
                     <div class="profile-photo-preview">
@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h2 class="modal-title fs-5" id="editProfileModalLabel">Modifier mes informations</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
-            <form action="/coLocation/auth/update-profile" method="POST">
+            <form action="<?php echo \App\Core\Config::url('auth/update-profile'); ?>" method="POST">
                 <?php echo \App\Core\Token::field(); ?>
                 <div class="modal-body">
                     <input type="hidden" name="user_id" value="<?php echo escapeProfileValue($_SESSION['user_id']); ?>">
