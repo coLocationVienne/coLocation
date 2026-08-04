@@ -21,7 +21,7 @@ SET time_zone = "+00:00";
 -- Base de données : `colocation`
 --
 
-CREATE database if not exists colocation;
+-- CREATE database if not exists colocation;
 use colocation;
 
 --
@@ -281,7 +281,7 @@ CREATE TABLE `creneau_visite` (
   `date_visite` date NOT NULL,
   `heure_debut` time NOT NULL,
   `heure_fin` time NOT NULL,
-  `nb_personne` int(11) NOT NULL,
+  `nb_personne_max` int(11) NOT NULL,
   `id_annonce` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -510,9 +510,13 @@ INSERT INTO `utilisateur` (`id_utilisateur`, `nom`, `email`, `mot_de_passe`, `si
 
 CREATE TABLE `visite` (
   `id_visite` int(11) NOT NULL,
-  `statue` varchar(50) NOT NULL,
-  `id_role` int(11) DEFAULT NULL,
-  `id_creneauVisite` int(11) DEFAULT NULL
+  `id_creneauVisite` int(11) NOT NULL,
+  `id_utilisateur` int(11) NOT NULL,
+  `statut` enum('en_attente', 'confirme', 'refuse', 'annule') DEFAULT 'en_attente',
+  `date_demande` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `message` text,
+  `date_annulation` timestamp NULL DEFAULT NULL,
+  `rappel_envoye` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -650,7 +654,7 @@ ALTER TABLE `utilisateur`
 ALTER TABLE `visite`
   ADD PRIMARY KEY (`id_visite`),
   ADD KEY `fk_visite_creneauVisite` (`id_creneauVisite`),
-  ADD KEY `fk_visite_role` (`id_role`);
+  ADD KEY `fk_visite_utilisateur` (`id_utilisateur`);
 
 --
 -- AUTO_INCREMENT pour les tables déchargées
@@ -825,8 +829,8 @@ ALTER TABLE `utilisateur`
 -- Contraintes pour la table `visite`
 --
 ALTER TABLE `visite`
-  ADD CONSTRAINT `fk_visite_creneauVisite` FOREIGN KEY (`id_creneauVisite`) REFERENCES `creneau_visite` (`id_creneauVisite`),
-  ADD CONSTRAINT `fk_visite_role` FOREIGN KEY (`id_role`) REFERENCES `role` (`id_role`);
+  ADD CONSTRAINT `fk_visite_creneauVisite` FOREIGN KEY (`id_creneauVisite`) REFERENCES `creneau_visite` (`id_creneauVisite`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_visite_utilisateur` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateur` (`id_utilisateur`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

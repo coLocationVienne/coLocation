@@ -6,6 +6,7 @@ use App\Models\AnnonceDAO;
 use App\Core\Database;
 
 /**
+ * @group integration
  * @group database
  */
 class AnnonceTest extends TestCase {

@@ -22,11 +22,15 @@ if (!defined('COLOCATION_INIT_LOADED')) {
         $GLOBALS['messageDAO'] = new \App\Models\MessageDAO();
         $GLOBALS['annonceDAO'] = new \App\Models\AnnonceDAO();
         $GLOBALS['commentDAO'] = new \App\Models\CommentDAO();
+        $GLOBALS['visitSlotDAO'] = new \App\Models\VisitSlotDAO();
+        $GLOBALS['visitDAO'] = new \App\Models\VisitDAO();
         
         $userDAO = $GLOBALS['userDAO'];
         $messageDAO = $GLOBALS['messageDAO'];
         $annonceDAO = $GLOBALS['annonceDAO'];
         $commentDAO = $GLOBALS['commentDAO'];
+        $visitSlotDAO = $GLOBALS['visitSlotDAO'];
+        $visitDAO = $GLOBALS['visitDAO'];
 
         // Update last activity for logged in user
         if (!empty($_SESSION['isLoggedin']) && !empty($_SESSION['user_id'])) {
@@ -41,4 +45,6 @@ if (!defined('COLOCATION_INIT_LOADED')) {
     $messageDAO = $GLOBALS['messageDAO'] ?? null;
     $annonceDAO = $GLOBALS['annonceDAO'] ?? null;
     $commentDAO = $GLOBALS['commentDAO'] ?? null;
+    $visitSlotDAO = $GLOBALS['visitSlotDAO'] ?? null;
+    $visitDAO = $GLOBALS['visitDAO'] ?? null;
 }
