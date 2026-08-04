@@ -28,7 +28,8 @@ WORKDIR /var/www/html
 COPY . /var/www/html
 
 # Install Composer dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Ensure we have a fresh vendor directory in the image
+RUN rm -rf vendor && composer install --no-dev --optimize-autoloader
 
 # Enable Apache modules
 RUN a2enmod rewrite

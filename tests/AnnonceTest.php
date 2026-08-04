@@ -15,17 +15,20 @@ class AnnonceTest extends TestCase {
         $this->pdo = Database::getInstance()->getConnection();
         $this->annonceDAO = new AnnonceDAO();
 
-        // Clear tables before each test
+        // Disable foreign key checks to clear tables
+        $this->pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
         $this->pdo->exec("DELETE FROM annonce_photo");
         $this->pdo->exec("DELETE FROM annonce_utilisateur");
         $this->pdo->exec("DELETE FROM annonce_mode_vie");
         $this->pdo->exec("DELETE FROM annonce_regime_alimentaire");
+        $this->pdo->exec("DELETE FROM annonce_age");
         $this->pdo->exec("DELETE FROM photo");
         $this->pdo->exec("DELETE FROM annonce");
         $this->pdo->exec("DELETE FROM utilisateur");
         $this->pdo->exec("DELETE FROM role");
         $this->pdo->exec("DELETE FROM mode_vie");
         $this->pdo->exec("DELETE FROM regime_alimentaire");
+        $this->pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // Insert dummy data for foreign key constraints and basic tests
         $this->pdo->exec("INSERT INTO role (id_role, role) VALUES (1, 'admin'), (2, 'owner'), (3, 'colocataire')");
@@ -113,12 +116,9 @@ class AnnonceTest extends TestCase {
         $id = $this->pdo->lastInsertId();
 
         $annonce->setTitre('Annonce Updated');
-        // Manually set ID for update operation as it's not part of the constructor data array for new objects
-        $updatedData = $this->annonceDAO->dehydrate($annonce);
-        $updatedData['id_annonce'] = $id;
-        $updatedAnnonce = new Annonce($updatedData);
+        $annonce->setId($id);
 
-        $this->assertTrue($this->annonceDAO->update($updatedAnnonce));
+        $this->assertTrue($this->annonceDAO->update($annonce));
 
         $fetchedAnnonce = $this->annonceDAO->getById($id);
         $this->assertEquals('Annonce Updated', $fetchedAnnonce->getTitre());
@@ -348,13 +348,11 @@ class AnnonceTest extends TestCase {
 
         // Test modifierAnnonce
         $annonce->setTitre('Annonce Relations Modified');
-        $updatedData = $this->annonceDAO->dehydrate($annonce);
-        $updatedData['id_annonce'] = $idAnnonce;
-        $updatedAnnonce = new Annonce($updatedData);
+        $annonce->setId($idAnnonce);
 
         $newModesVie = [2]; // Fêtard
         $newRegimes = [2]; // Vegan
-        $this->assertTrue($this->annonceDAO->modifierAnnonce($updatedAnnonce, 1, $newModesVie, $newRegimes));
+        $this->assertTrue($this->annonceDAO->modifierAnnonce($annonce, 1, $newModesVie, $newRegimes));
 
         $fetchedModesVie = $this->annonceDAO->avoirModeVie($idAnnonce);
         $this->assertCount(1, $fetchedModesVie);

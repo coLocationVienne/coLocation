@@ -1,0 +1,8 @@
+
+FROM mysql:8.0
+
+# Copy the SQL initialization script into the image
+COPY ./SQL/colocation.sql /docker-entrypoint-initdb.d/
+
+# Optional: Add any custom MySQL configuration if needed
+# COPY ./my.cnf /etc/mysql/conf.d/
