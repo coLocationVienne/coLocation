@@ -59,17 +59,17 @@ CREATE TABLE `annonce` (
   `adresse_4` varchar(255) DEFAULT NULL,
   `ville` varchar(50) NOT NULL,
   `code_postal` int(11) NOT NULL,
-  `loyer_location_chez_habitant` decimal(5,2) NOT NULL,
+  `loyer_location_chez_habitant` decimal(10,2) NOT NULL,
   `description` text NOT NULL,
-  `surface_logement` decimal(5,2) NOT NULL,
-  `surface_chambres` decimal(5,2) NOT NULL,
+  `surface_logement` decimal(10,2) NOT NULL,
+  `surface_chambres` decimal(10,2) NOT NULL,
   `nombre_chambre` int(11) NOT NULL,
   `date_expiration` date DEFAULT NULL,
   `date_publication` date NOT NULL,
   `date_modification` date NOT NULL,
   `carte_coordonnee_GPS` varchar(40) DEFAULT NULL,
-  `date_cloture` date NOT NULL,
-  `loyer_colocation` decimal(5,2) NOT NULL
+  `date_cloture` date DEFAULT NULL,
+  `loyer_colocation` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -89,7 +89,7 @@ INSERT INTO `annonce` (`id_annonce`, `titre`, `adresse_1`, `adresse_2`, `adresse
 (11, 'Studio Etudiant', '5 Place Saint-Louis', '', '', '', 'Vienne', 38200, 350.00, 'Studio calme proche gare.', 25.00, 20.00, 1, '2026-07-26', '2026-07-16', '2026-07-16', '', '2026-08-01', 350.00),
 (12, 'Chambre en Colocation', '24 Avenue Gambetta', '', '', '', 'Vienne', 38200, 400.00, 'Chambre meublée.', 80.00, 12.00, 3, '2026-07-14', '2026-07-16', '2026-07-16', '', '2026-08-01', 400.00),
 (14, 'Chambre lumineuse dans appartement spacieux', '12 Rue des Acacias', 'UKML', 'Bâtiment 2', 'Résidence calme, proche des commerces et des transports.', 'Amberre', 86100, 500.00, 'Chambre lumineuse dans un appartement spacieux avec vue sur mer.', 20.00, 10.00, 1, '2026-08-18', '2026-07-23', '2026-07-23', '', '2026-08-01', 500.00),
-(15, 'Chambre lumineuse dans appartement spacieux', '12 Rue des Acacias', 'UKML', 'Bâtiment 2', 'Résidence calme, proche des commerces et des transports.', 'Chauvigny', 86100, 500.00, 'belle residence ', 20.00, 10.00, 1, '2026-08-05', '2026-07-23', '2026-07-23', NULL, '0000-00-00', 500.00);
+(15, 'Chambre lumineuse dans appartement spacieux', '12 Rue des Acacias', 'UKML', 'Bâtiment 2', 'Résidence calme, proche des commerces et des transports.', 'Chauvigny', 86100, 500.00, 'belle residence ', 20.00, 10.00, 1, '2026-08-05', '2026-07-23', '2026-07-23', NULL, NULL, 500.00);
 
 -- --------------------------------------------------------
 
@@ -120,7 +120,7 @@ INSERT INTO `annonce_age` (`id_annonce`, `id_age`) VALUES
 
 CREATE TABLE `annonce_avis` (
   `id_avis` int(11) NOT NULL,
-  `note` decimal(3,2) DEFAULT NULL,
+  `note` decimal(5,2) DEFAULT NULL,
   `date_` date NOT NULL,
   `commentaire` text NOT NULL,
   `id_annonce` int(11) DEFAULT NULL,
@@ -476,11 +476,11 @@ CREATE TABLE `utilisateur` (
   `mot_de_passe` varchar(100) NOT NULL,
   `situation_professionnel` varchar(40) NOT NULL,
   `garant` tinyint(1) NOT NULL,
-  `retraite` decimal(5,2) NOT NULL,
-  `caisse_allocation_familial` decimal(5,2) NOT NULL,
+  `retraite` decimal(10,2) NOT NULL,
+  `caisse_allocation_familial` decimal(10,2) NOT NULL,
   `date_naissance` date NOT NULL,
   `photo_profil` varchar(250) NOT NULL,
-  `salaire_mensuel_net` decimal(5,2) NOT NULL,
+  `salaire_mensuel_net` decimal(10,2) NOT NULL,
   `prenom` varchar(40) NOT NULL,
   `revenu_fiscal` varchar(50) NOT NULL,
   `id_role` int(11) NOT NULL,

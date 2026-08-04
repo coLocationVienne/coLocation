@@ -5,6 +5,9 @@ use App\Models\Annonce;
 use App\Models\AnnonceDAO;
 use App\Core\Database;
 
+/**
+ * @group database
+ */
 class AnnonceTest extends TestCase {
     private AnnonceDAO $annonceDAO;
     private \PDO $pdo;
