@@ -608,6 +608,10 @@ ALTER TABLE `favoris`
 ALTER TABLE `liste_favoris`
   ADD PRIMARY KEY (`id_listeFavoris`),
   ADD KEY `fk_listeFavoris_utilisateur` (`id_utilisateur`);
+ 
+
+ ALTER TABLE liste_favoris ADD date_creation date NOT NULL;
+
 
 --
 -- Index pour la table `mode_vie`
