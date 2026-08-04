@@ -7,10 +7,10 @@ use App\Models\Message;
 
 class MessageController extends Controller {
     public function send() {
-        global $messageDAO;
+        global $messageDAO, $userDAO, $annonceDAO;
         
         if (empty($_SESSION['isLoggedin'])) {
-            header("Location: /coLocation/auth/login");
+            header("Location: /auth/login");
             exit();
         }
 
@@ -30,13 +30,25 @@ class MessageController extends Controller {
 
                 $message = new Message($messageData);
                 if ($messageDAO->save($message)) {
-                    header("Location: /coLocation/pages/messages.php?annonce_id=$id_annonce&with_user=$id_receiver");
+                    // Check if receiver is offline to send email notification
+                    $receiver = $userDAO->getById($id_receiver);
+                    if ($receiver && !$receiver->isOnline()) {
+                        $annonce = $annonceDAO->getById($id_annonce);
+                        \App\Core\MailService::sendNotification(
+                            $receiver->getEmail(),
+                            $receiver->getPrenom(),
+                            $annonce ? $annonce->getTitre() : 'Annonce',
+                            $_SESSION['user_prenom'] . ' ' . $_SESSION['user_nom']
+                        );
+                    }
+
+                    header("Location: /pages/messages.php?annonce_id=$id_annonce&with_user=$id_receiver");
                     exit();
                 }
             }
         }
         
-        header("Location: /coLocation/pages/messages.php?error=send_failed");
+        header("Location: /pages/messages.php?error=send_failed");
         exit();
     }
 }

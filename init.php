@@ -7,13 +7,17 @@ if (session_status() === PHP_SESSION_NONE) {
 if (!defined('COLOCATION_INIT_LOADED')) {
     define('COLOCATION_INIT_LOADED', true);
 
+    require_once __DIR__ . '/vendor/autoload.php';
     require_once __DIR__ . '/app/Core/Autoloader.php';
-    require_once __DIR__ . '/app/Models/User.php';
-    require_once __DIR__ . '/app/Models/Message.php';
-    require_once __DIR__ . '/app/Models/Annonce.php';
-    require_once __DIR__ . '/app/Models/Comment.php';
+
+    // Load environment variables
+    if (file_exists(__DIR__ . '/.env')) {
+        $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__);
+        $dotenv->load();
+    }
 
     try {
+        // Classes are now auto-loaded via App\Core\Autoloader
         $GLOBALS['userDAO'] = new \App\Models\UserDAO();
         $GLOBALS['messageDAO'] = new \App\Models\MessageDAO();
         $GLOBALS['annonceDAO'] = new \App\Models\AnnonceDAO();
@@ -23,6 +27,11 @@ if (!defined('COLOCATION_INIT_LOADED')) {
         $messageDAO = $GLOBALS['messageDAO'];
         $annonceDAO = $GLOBALS['annonceDAO'];
         $commentDAO = $GLOBALS['commentDAO'];
+
+        // Update last activity for logged in user
+        if (!empty($_SESSION['isLoggedin']) && !empty($_SESSION['user_id'])) {
+            $userDAO->updateLastActivity((int)$_SESSION['user_id']);
+        }
         
     } catch (Exception $e) {
         error_log("Initialization error: " . $e->getMessage());

@@ -9,7 +9,7 @@ use App\Core\Token;
 class AuthController extends Controller {
     public function showLogin() {
         if (!empty($_SESSION['isLoggedin'])) {
-            header("Location: /coLocation/home");
+            header("Location: /home");
             exit();
         }
         
@@ -26,7 +26,7 @@ class AuthController extends Controller {
         if (isset($_POST['email']) && isset($_POST['password'])) {
             $email = trim($_POST['email']);
             $password = $_POST['password'];
-            $redirect = !empty($_POST['redirect']) ? $_POST['redirect'] : "/coLocation/home";
+            $redirect = !empty($_POST['redirect']) ? $_POST['redirect'] : "/home";
 
             $users = $userDAO->findBy(['email' => $email]);
             $user = !empty($users) ? $users[0] : null;
@@ -47,18 +47,18 @@ class AuthController extends Controller {
                 exit();
             } else {
                 $redirectParam = !empty($_POST['redirect']) ? "&redirect=" . urlencode($_POST['redirect']) : "";
-                header("Location: /coLocation/auth/login?error=invalid_credentials" . $redirectParam);
+                header("Location: /auth/login?error=invalid_credentials" . $redirectParam);
                 exit();
             }
         } else {
-            header("Location: /coLocation/auth/login?error=missing_fields");
+            header("Location: /auth/login?error=missing_fields");
             exit();
         }
     }
 
     public function logout() {
         session_destroy();
-        header("Location: /coLocation/home");
+        header("Location: /home");
         exit();
     }
 
@@ -66,12 +66,12 @@ class AuthController extends Controller {
         global $userDAO;
         
         if (empty($_SESSION['isLoggedin']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header("Location: /coLocation/auth/login");
+            header("Location: /auth/login");
             exit();
         }
 
         if (!Token::check($_POST['token'] ?? '')) {
-            header("Location: /coLocation/pages/profile_utilisateur.php?error=invalid_token");
+            header("Location: /pages/profile_utilisateur.php?error=invalid_token");
             exit();
         }
 
@@ -81,31 +81,31 @@ class AuthController extends Controller {
         $confirmPassword = $_POST['new_password_confirm'] ?? '';
 
         if ($userId !== (int)$_SESSION['user_id']) {
-            header("Location: /coLocation/pages/profile_utilisateur.php?error=unauthorized");
+            header("Location: /pages/profile_utilisateur.php?error=unauthorized");
             exit();
         }
 
         $user = $userDAO->getById($userId);
         if (!$user || !$user->verifierMotDePasse($currentPassword)) {
-            header("Location: /coLocation/pages/profile_utilisateur.php?error=invalid_current_password&passwordModal=1");
+            header("Location: /pages/profile_utilisateur.php?error=invalid_current_password&passwordModal=1");
             exit();
         }
 
         if ($newPassword !== $confirmPassword) {
-            header("Location: /coLocation/pages/profile_utilisateur.php?error=password_mismatch&passwordModal=1");
+            header("Location: /pages/profile_utilisateur.php?error=password_mismatch&passwordModal=1");
             exit();
         }
 
         if (strlen($newPassword) < 6) {
-            header("Location: /coLocation/pages/profile_utilisateur.php?error=password_too_short&passwordModal=1");
+            header("Location: /pages/profile_utilisateur.php?error=password_too_short&passwordModal=1");
             exit();
         }
 
         $user->setMotDePasse(password_hash($newPassword, PASSWORD_DEFAULT));
         if ($userDAO->update($user)) {
-            header("Location: /coLocation/pages/profile_utilisateur.php?status=password_updated");
+            header("Location: /pages/profile_utilisateur.php?status=password_updated");
         } else {
-            header("Location: /coLocation/pages/profile_utilisateur.php?error=update_failed");
+            header("Location: /pages/profile_utilisateur.php?error=update_failed");
         }
         exit();
     }
@@ -114,12 +114,12 @@ class AuthController extends Controller {
         global $userDAO;
         
         if (empty($_SESSION['isLoggedin']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header("Location: /coLocation/auth/login");
+            header("Location: /auth/login");
             exit();
         }
 
         if (!Token::check($_POST['token'] ?? '')) {
-            header("Location: /coLocation/pages/profile_utilisateur.php?error=invalid_token");
+            header("Location: /pages/profile_utilisateur.php?error=invalid_token");
             exit();
         }
 
@@ -127,14 +127,14 @@ class AuthController extends Controller {
         $user = $userDAO->getById($userId);
 
         if (!$user) {
-            header("Location: /coLocation/pages/profile_utilisateur.php?error=user_not_found");
+            header("Location: /pages/profile_utilisateur.php?error=user_not_found");
             exit();
         }
 
         if (isset($_POST['remove_photo']) && $_POST['remove_photo'] == '1') {
             $user->setPhotoProfil('');
             $userDAO->update($user);
-            header("Location: /coLocation/pages/profile_utilisateur.php?status=photo_removed");
+            header("Location: /pages/profile_utilisateur.php?status=photo_removed");
             exit();
         }
 
@@ -152,13 +152,13 @@ class AuthController extends Controller {
                 $dbPath = 'uploads/profile_photos/' . $filename;
                 $user->setPhotoProfil($dbPath);
                 if ($userDAO->update($user)) {
-                    header("Location: /coLocation/pages/profile_utilisateur.php?status=photo_updated");
+                    header("Location: /pages/profile_utilisateur.php?status=photo_updated");
                     exit();
                 }
             }
         }
 
-        header("Location: /coLocation/pages/profile_utilisateur.php?error=upload_failed");
+        header("Location: /pages/profile_utilisateur.php?error=upload_failed");
         exit();
     }
 
@@ -166,24 +166,24 @@ class AuthController extends Controller {
         global $userDAO;
         
         if (empty($_SESSION['isLoggedin']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header("Location: /coLocation/auth/login");
+            header("Location: /auth/login");
             exit();
         }
 
         if (!Token::check($_POST['token'] ?? '')) {
-            header("Location: /coLocation/pages/profile_utilisateur.php?error=invalid_token");
+            header("Location: /pages/profile_utilisateur.php?error=invalid_token");
             exit();
         }
 
         $userId = (int)($_POST['user_id'] ?? 0);
         if ($userId !== (int)$_SESSION['user_id']) {
-            header("Location: /coLocation/pages/profile_utilisateur.php?error=unauthorized");
+            header("Location: /pages/profile_utilisateur.php?error=unauthorized");
             exit();
         }
 
         $user = $userDAO->getById($userId);
         if (!$user) {
-            header("Location: /coLocation/pages/profile_utilisateur.php?error=user_not_found");
+            header("Location: /pages/profile_utilisateur.php?error=user_not_found");
             exit();
         }
 
@@ -195,9 +195,9 @@ class AuthController extends Controller {
         $user->setTypeCompte($_POST['type_compte'] ?? $user->getTypeCompte());
 
         if ($userDAO->update($user)) {
-            header("Location: /coLocation/pages/profile_utilisateur.php?status=profile_updated");
+            header("Location: /pages/profile_utilisateur.php?status=profile_updated");
         } else {
-            header("Location: /coLocation/pages/profile_utilisateur.php?error=update_failed");
+            header("Location: /pages/profile_utilisateur.php?error=update_failed");
         }
         exit();
     }
@@ -225,14 +225,14 @@ class AuthController extends Controller {
         global $userDAO;
         
         if (empty($_SESSION['isLoggedin']) || (int)$_SESSION['user_role'] !== 1 || $_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header("Location: /coLocation/auth/login");
+            header("Location: /auth/login");
             exit();
         }
 
         $userId = (int)($_POST['user_id'] ?? 0);
         $user = $userDAO->getById($userId);
         if (!$user) {
-            header("Location: /coLocation/pages/profile_utilisateur.php?error=user_not_found");
+            header("Location: /pages/profile_utilisateur.php?error=user_not_found");
             exit();
         }
 
@@ -246,9 +246,9 @@ class AuthController extends Controller {
         }
 
         if ($userDAO->update($user)) {
-            header("Location: /coLocation/pages/profile_utilisateur.php?status=admin_update_success");
+            header("Location: /pages/profile_utilisateur.php?status=admin_update_success");
         } else {
-            header("Location: /coLocation/pages/profile_utilisateur.php?error=admin_update_failed");
+            header("Location: /pages/profile_utilisateur.php?error=admin_update_failed");
         }
         exit();
     }
@@ -257,15 +257,15 @@ class AuthController extends Controller {
         global $userDAO;
 
         if (empty($_SESSION['isLoggedin']) || (int)$_SESSION['user_role'] !== 1 || $_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header("Location: /coLocation/auth/login");
+            header("Location: /auth/login");
             exit();
         }
 
         $userId = (int)($_POST['user_id'] ?? 0);
         if ($userDAO->delete($userId)) {
-            header("Location: /coLocation/pages/profile_utilisateur.php?status=admin_delete_success");
+            header("Location: /pages/profile_utilisateur.php?status=admin_delete_success");
         } else {
-            header("Location: /coLocation/pages/profile_utilisateur.php?error=admin_delete_failed");
+            header("Location: /pages/profile_utilisateur.php?error=admin_delete_failed");
         }
         exit();
     }
@@ -280,32 +280,32 @@ class AuthController extends Controller {
         global $userDAO;
         
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header("Location: /coLocation/auth/register");
+            header("Location: /auth/register");
             exit();
         }
         
         $requiredFields = ['prenom', 'nom', 'email', 'password', 'password_confirm', 'date_naissance', 'situation_professionnel'];
         foreach ($requiredFields as $field) {
             if (empty($_POST[$field])) {
-                header("Location: /coLocation/auth/register?error=missing_fields");
+                header("Location: /auth/register?error=missing_fields");
                 exit();
             }
         }
         
         $email = trim(htmlspecialchars($_POST['email']));
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            header("Location: /coLocation/auth/register?error=invalid_email");
+            header("Location: /auth/register?error=invalid_email");
             exit();
         }
         
         if ($_POST['password'] !== $_POST['password_confirm']) {
-            header("Location: /coLocation/auth/register?error=password_mismatch");
+            header("Location: /auth/register?error=password_mismatch");
             exit();
         }
         
         $existing = $userDAO->findBy(['email' => $email]);
         if (!empty($existing)) {
-            header("Location: /coLocation/auth/register?error=email_exists");
+            header("Location: /auth/register?error=email_exists");
             exit();
         }
         
@@ -325,10 +325,10 @@ class AuthController extends Controller {
         $newUser = new \App\Models\User($userData);
         
         if ($userDAO->save($newUser)) {
-            header("Location: /coLocation/auth/login?registered=1");
+            header("Location: /auth/login?registered=1");
             exit();
         } else {
-            header("Location: /coLocation/auth/register?error=server_error");
+            header("Location: /auth/register?error=server_error");
             exit();
         }
     }

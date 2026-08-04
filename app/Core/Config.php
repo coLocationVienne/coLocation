@@ -3,13 +3,20 @@
 namespace App\Core;
 
 class Config {
-    const BASE_URL = '/coLocation';
+    /**
+     * The base URL of the application.
+     * In Docker, this defaults to '/' (root).
+     * In XAMPP, it might be '/coLocation'.
+     */
+    public static function getBaseUrl() {
+        return getenv('APP_BASE_URL') ?: '/';
+    }
 
     public static function url($path = '') {
-        return self::BASE_URL . '/' . ltrim($path, '/');
+        return rtrim(self::getBaseUrl(), '/') . '/' . ltrim($path, '/');
     }
 
     public static function asset($path = '') {
-        return self::BASE_URL . '/assets/' . ltrim($path, '/');
+        return rtrim(self::getBaseUrl(), '/') . '/assets/' . ltrim($path, '/');
     }
 }

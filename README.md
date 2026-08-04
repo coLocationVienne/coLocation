@@ -1,76 +1,68 @@
 # coLocation Project
 
-A web application designed to facilitate roommate searching and room listings in the Vienne region. The project has recently been migrated to a modern **MVC (Model-View-Controller)** architecture to improve maintainability and scalability.
+A standalone web application designed to facilitate roommate searching and room listings. This project is fully containerized using Docker, making it independent of local installations like XAMPP.
 
-## 🚀 Architecture Overview
+## 🚀 Standalone Architecture
 
-The project follows a custom MVC pattern with a clear separation of concerns:
+The project is built with a modern **MVC (Model-View-Controller)** architecture and is designed to run in a self-contained environment:
 
--   **Models (`/app/Models`)**: Contains entity classes (e.g., `User`, `Annonce`, `Message`) and their corresponding **DAO (Data Access Object)** classes which handle all database interactions using PDO.
--   **Views (`/app/Views`)**: PHP templates for the user interface, organized by module (e.g., `auth`, `annonce`, `home`, `partials`).
--   **Controllers (`/app/Controllers`)**: Logic handlers that process user requests, interact with DAOs, and render the appropriate views.
--   **Core (`/app/Core`)**: Essential system components including the `Autoloader`, `Database` singleton, base `Controller`, and `Config` helper.
+-   **App Container**: PHP 8.2 + Apache, pre-configured with all necessary extensions and dependencies.
+-   **DB Container**: MySQL 8.0, pre-loaded with the application schema and seed data.
+-   **Independence**: No need to install PHP, Apache, or MySQL on your host machine. Docker handles everything.
 
 ## 📂 Project Structure
 
 ```text
 coLocation/
-├── app/
-│   ├── Controllers/    # Request handlers (AuthController, AnnonceController, etc.)
-│   ├── Core/           # System core (Autoloader, Database, Config)
-│   ├── Models/         # Data entities and DAOs (User, Annonce, Message)
-│   └── Views/          # UI templates (auth, annonce, home, partials)
+├── app/                # Core logic, Models, Views, Controllers
 ├── assets/             # Static files (CSS, JS, images)
-├── pages/              # Legacy procedural pages (being migrated)
-├── photos/             # Uploaded announcement photos
-├── SQL/                # Database schema and seed data
-├── index.php           # Front Controller (entry point)
-├── init.php            # System initialization and DAO instantiation
-└── .htaccess           # URL rewriting for MVC routing
+├── SQL/                # Database schema (colocation.sql)
+├── Dockerfile          # App image definition
+├── Dockerfile.db       # Database image definition (with auto-import)
+├── docker-compose.yml  # Service orchestration
+└── index.php           # Entry point
 ```
 
-## 🛠 Technologies Used
-
--   **Backend**: PHP 8.x
--   **Database**: MySQL (MariaDB) with PDO
--   **Frontend**: HTML5, CSS3, JavaScript, Bootstrap 5, FontAwesome 6
--   **Architecture**: Custom MVC with Front Controller pattern
--   **Server**: Optimized for XAMPP/Apache
-
-## 🚦 Getting Started
+## 🐳 Getting Started (Standalone)
 
 ### Prerequisites
--   XAMPP or any WAMP/LAMP stack with PHP 8.0+ and MySQL.
+-   **Docker Desktop** installed and running.
 
-### Installation
-1.  Clone or move the project to your `htdocs` folder.
-2.  Import the database schema from `SQL/colocation.sql` into your MySQL server.
-3.  Ensure the `RewriteBase` in `.htaccess` matches your project folder name (default is `/coLocation/`).
-4.  Update database credentials in `app/Core/Database.php` if necessary.
+### 1. Setup File Sharing (First Time Only)
+To allow Docker to access your project files (for development):
+1.  Open **Docker Desktop Settings**.
+2.  Navigate to **Resources** -> **File Sharing**.
+3.  Add the path to this project folder.
+4.  Click **Apply & Restart**.
 
-## 🔗 Key MVC Routes
+### 2. Launch the Application
+Navigate to the project root and run:
+```bash
+docker-compose up --build -d
+```
 
-The application uses a front controller (`index.php`) to route requests. Common routes include:
+### 3. Access the Services
+-   **Web App**: [http://localhost](http://localhost)
+-   **Database Manager (phpMyAdmin)**: [http://localhost:8081](http://localhost:8081)
+    -   *Username*: `root`
+    -   *Password*: `root_password`
 
--   **Home**: `/coLocation/home`
--   **Authentication**:
-    -   Login: `/coLocation/auth/login`
-    -   Register: `/coLocation/auth/register`
-    -   Logout: `/coLocation/auth/logout`
--   **Announcements**:
-    -   Listings: `/coLocation/home`
-    -   Create: `/coLocation/annonce/create`
-    -   Show: `/coLocation/annonce/show?id={id}`
-    -   Edit: `/coLocation/annonce/edit?id={id}`
--   **User Profile**:
-    -   View/Edit: `/coLocation/pages/profile_utilisateur.php` (Legacy integration)
+## 🧪 Testing & CI/CD
 
-## 📝 Recent Updates
+### Local Testing
+Run the test suite inside the standalone container:
+```bash
+docker-compose exec app php ./vendor/bin/phpunit
+```
 
--   **MVC Migration**: Transitioned core authentication and announcement features to the MVC structure.
--   **Routing**: Implemented a central routing system via `index.php` and `.htaccess`.
--   **DAO Pattern**: Standardized database access through abstract and concrete DAO classes.
--   **Bug Fixes**: Resolved issues with photo uploads and legacy page redirects.
+### GitHub Actions
+Every push to `main` or `develop` triggers an automated build and test cycle via GitHub Actions, ensuring the standalone image remains stable and functional.
+
+## 🛠 Configuration
+
+The application is now environment-aware. Key settings are managed in `docker-compose.yml`:
+-   `APP_BASE_URL`: Set to `/` for Docker (root) or `/coLocation` for legacy XAMPP.
+-   `MYSQL_HOST`: Set to `db` to connect to the internal Docker database.
 
 ---
-*Developed as part of the coLocation platform.*
+*Developed as a modern, standalone solution for coLocation.*

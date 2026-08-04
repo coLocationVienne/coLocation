@@ -1,0 +1,41 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Start Docker Compose
+      run: docker compose up -d --build
+
+    - name: Wait for MySQL
+      run: |
+        echo "Waiting for MySQL to be healthy..."
+        # Wait for the healthcheck defined in docker-compose.yml
+        for i in {1..60}; do
+          if [ "$(docker inspect --format='{{.State.Health.Status}}' colocation_db)" == "healthy" ]; then
+            echo "MySQL is healthy!"
+            break
+          fi
+          echo "Waiting... ($i/60)"
+          sleep 2
+        done
+
+    - name: Install Composer inside container
+      run: docker compose exec -T app composer install --no-interaction --prefer-dist
+
+    - name: Run PHPUnit inside container
+      run: docker compose exec -T app ./vendor/bin/phpunit --testdox
+
+    - name: Stop Docker
+      if: always()
+      run: docker compose down -v

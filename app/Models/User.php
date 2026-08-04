@@ -18,6 +18,7 @@ class User {
     private float $revenu_fiscal;
     private int $id_role;
     private string $type_compte; 
+    private ?string $last_activity;
 
     public function __construct(array $data) {
         $this->id_utilisateur = $data['id_utilisateur'] ?? null;
@@ -35,6 +36,7 @@ class User {
         $this->revenu_fiscal = (float)($data['revenu_fiscal'] ?? 0);
         $this->id_role = (int)($data['id_role'] ?? 3);
         $this->type_compte = $data['type_compte'] ?? 'colocataire';
+        $this->last_activity = $data['last_activity'] ?? null;
     }   
 
     // Getters
@@ -53,6 +55,15 @@ class User {
     public function getRevenuFiscal(): float { return $this->revenu_fiscal; }
     public function getIdRole(): int { return $this->id_role; }
     public function getTypeCompte(): string { return $this->type_compte; }
+    public function getLastActivity(): ?string { return $this->last_activity; }
+
+    public function isOnline(): bool {
+        if (!$this->last_activity) return false;
+        $last = new \DateTime($this->last_activity);
+        $now = new \DateTime();
+        $diff = $now->getTimestamp() - $last->getTimestamp();
+        return $diff < 300; // 5 minutes
+    }
 
     // Setters
     public function setMotDePasse(string $password): void { $this->mot_de_passe = $password; }
@@ -72,82 +83,5 @@ class User {
 
     public function verifierMotDePasse(string $mot_de_passe): bool {
         return password_verify($mot_de_passe, $this->mot_de_passe);
-    }
-}
-
-class UserDAO extends \App\Models\DAO {
-    public function __construct() {
-        parent::__construct('utilisateur', 'id_utilisateur');
-    }
-
-    protected function hydrate(array $row): User {
-        return new User($row);
-    }
-
-    protected function dehydrate(object $user): array {
-        return [
-            'id_utilisateur' => $user->getIdUtilisateur(),
-            'prenom' => $user->getPrenom(),
-            'nom' => $user->getNom(),
-            'email' => $user->getEmail(),
-            'mot_de_passe' => $user->getMotDePasse(),
-            'situation_professionnel' => $user->getSituationProfessionnel(),
-            'garant' => $user->isGarant() ? 1 : 0,
-            'retraite' => $user->getRetraite(),
-            'caisse_allocation_familial' => $user->getCaisseAllocationFamilial(),
-            'date_naissance' => $user->getDateNaissance(),
-            'photo_profil' => $user->getPhotoProfil(),
-            'salaire_mensuel_net' => $user->getSalaireMensuelNet(),
-            'revenu_fiscal' => $user->getRevenuFiscal(),
-            'id_role' => $user->getIdRole(),
-            'type_compte' => $user->getTypeCompte()
-        ];
-    }
-
-    public function searchPaginated(string $search = '', string $role = '', int $page = 1, int $limit = 10): array {
-        $offset = ($page - 1) * $limit;
-        $where = ["1=1"];
-        $params = [];
-
-        if (!empty($search)) {
-            $where[] = "(u.nom LIKE :search OR u.prenom LIKE :search OR u.email LIKE :search)";
-            $params[':search'] = "%$search%";
-        }
-
-        if (!empty($role)) {
-            $where[] = "LOWER(r.role) = LOWER(:role)";
-            $params[':role'] = $role;
-        }
-
-        $whereClause = implode(" AND ", $where);
-
-        $countQuery = "SELECT COUNT(*) FROM utilisateur u LEFT JOIN role r ON u.id_role = r.id_role WHERE $whereClause";
-        $stmtCount = $this->db->prepare($countQuery);
-        $stmtCount->execute($params);
-        $total = (int)$stmtCount->fetchColumn();
-
-        $query = "SELECT u.*, r.role as role_name 
-                  FROM utilisateur u 
-                  LEFT JOIN role r ON u.id_role = r.id_role 
-                  WHERE $whereClause 
-                  ORDER BY u.id_utilisateur DESC 
-                  LIMIT $limit OFFSET $offset";
-        
-        $stmt = $this->db->prepare($query);
-        $stmt->execute($params);
-        $rows = $stmt->fetchAll();
-
-        $users = [];
-        foreach ($rows as $row) {
-            $row['role'] = $row['role_name']; 
-            $users[] = $row; 
-        }
-
-        return [
-            'users' => $users,
-            'total' => $total,
-            'totalPages' => ceil($total / $limit),
-            'currentPage' => $page
-        ];
     }
 }

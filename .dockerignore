@@ -1,0 +1,12 @@
+
+.git
+.gitignore
+.env
+.idea/
+vendor/
+node_modules/
+Dockerfile
+docker-compose.yml
+README.md
+*.sql
+*.dist

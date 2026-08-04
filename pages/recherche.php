@@ -109,7 +109,7 @@ require_once(__DIR__ . "/../app/Views/partials/header.php");
                 if (coords.length === 2 && !isNaN(coords[0])) {
                     const marker = L.marker(coords).addTo(map);
                     console.log(a.photo);
-                    const photoPath = a.photo ? (a.photo.startsWith('http') ? a.photo : '/coLocation/' + a.photo) : '';
+                    const photoPath = a.photo ? (a.photo.startsWith('http') ? a.photo : '<?php echo Config::url(""); ?>' + a.photo) : '';
                     const popupContent = `
                         <div class="popup-card" style="width: 200px;">
                             ${photoPath ? `<img src="${photoPath}">` : ''}
@@ -123,7 +123,7 @@ require_once(__DIR__ . "/../app/Views/partials/header.php");
                 }
             }
 
-            const photoPath = a.photo ? (a.photo.startsWith('http') ? a.photo : '/coLocation/' + a.photo) : '';
+            const photoPath = a.photo ? (a.photo.startsWith('http') ? a.photo : '<?php echo Config::url(""); ?>' + a.photo) : '';
             const card = document.createElement('div');
             card.className = 'annonce-card';
             card.innerHTML = `
