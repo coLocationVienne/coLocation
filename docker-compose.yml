@@ -1,41 +1,42 @@
+
 services:
   app:
     build: .
     container_name: colocation_app
     ports:
       - "80:80"
+    # For standalone use, we don't strictly need the volume, 
+    # but it's kept here for development convenience.
     volumes:
       - ./:/var/www/html
     environment:
+      APP_BASE_URL: "/"
       MYSQL_HOST: db
       MYSQL_DATABASE: colocation
       MYSQL_USER: root
       MYSQL_PASSWORD: root_password
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     networks:
       - colocation_network
     restart: unless-stopped
+
   db:
-    image: mysql:8.0
+    build:
+      context: .
+      dockerfile: Dockerfile.db
     container_name: colocation_db
     environment:
       MYSQL_ROOT_PASSWORD: root_password
       MYSQL_DATABASE: colocation
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root_password
     volumes:
       - db_data:/var/lib/mysql
-      - ./SQL/colocation.sql:/docker-entrypoint-initdb.d/colocation.sql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "--password=root_password"]
-      interval: 10s
-      timeout: 10s
-      retries: 50
+    ports:
+      - "3306:3306"
     networks:
       - colocation_network
     restart: unless-stopped
+
   phpmyadmin:
     image: phpmyadmin:latest
     container_name: colocation_phpmyadmin
@@ -50,8 +51,10 @@ services:
     networks:
       - colocation_network
     restart: unless-stopped
+
 volumes:
   db_data:
+
 networks:
   colocation_network:
     driver: bridge
