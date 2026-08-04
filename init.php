@@ -8,12 +8,9 @@ if (!defined('COLOCATION_INIT_LOADED')) {
     define('COLOCATION_INIT_LOADED', true);
 
     require_once __DIR__ . '/app/Core/Autoloader.php';
-    require_once __DIR__ . '/app/Models/User.php';
-    require_once __DIR__ . '/app/Models/Message.php';
-    require_once __DIR__ . '/app/Models/Annonce.php';
-    require_once __DIR__ . '/app/Models/Comment.php';
 
     try {
+        // Classes are now auto-loaded via App\Core\Autoloader
         $GLOBALS['userDAO'] = new \App\Models\UserDAO();
         $GLOBALS['messageDAO'] = new \App\Models\MessageDAO();
         $GLOBALS['annonceDAO'] = new \App\Models\AnnonceDAO();
