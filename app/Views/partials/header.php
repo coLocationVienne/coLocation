@@ -104,10 +104,10 @@ if (!empty($_SESSION['isLoggedin']) && isset($_SESSION['user_id'])) {
             <a class="nav-link" aria-current="page" href="<?php echo Config::url('home'); ?>">Accueil</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/coLocation/pages/recherche.php">Rechercher une colocation</a>
+            <a class="nav-link" href="<?php echo Config::url('pages/recherche.php'); ?>">Rechercher une colocation</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo Config::url('annonce/create'); ?>">Créer et publier des annonces</a>
+            <a class="nav-link" href="<?php echo Config::url('create'); ?>">Créer et publier des annonces</a>
           </li>
         </ul>
         
@@ -134,10 +134,11 @@ if (!empty($_SESSION['isLoggedin']) && isset($_SESSION['user_id'])) {
                 <?php echo htmlspecialchars($_SESSION['user_prenom'] ?? 'Mon compte'); ?>
               </a>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                <li><a class="dropdown-item" href="/coLocation/pages/profile_utilisateur.php">Mon profil</a></li>
-                <li><a class="dropdown-item" href="/coLocation/pages/page_annonce.php">Mes annonces</a></li>
+                <li><a class="dropdown-item" href="<?php echo Config::url('pages/profile_utilisateur.php'); ?>">Mon profil</a></li>
+                <li><a class="dropdown-item" href="<?php echo Config::url('pages/page_annonce.php'); ?>">Mes annonces</a></li>
+                <li><a class="dropdown-item" href="<?php echo Config::url('visit/dashboard'); ?>">Mes visites</a></li>
                 <li>
-                  <a class="dropdown-item d-flex justify-content-between align-items-center" href="/coLocation/pages/messages.php">
+                  <a class="dropdown-item d-flex justify-content-between align-items-center" href="<?php echo Config::url('pages/messages.php'); ?>">
                     Messages
                     <span class="badge bg-danger rounded-pill"><?php echo $messageDAO ? $messageDAO->countUnread($_SESSION['user_id']) : 0; ?></span>
                   </a>

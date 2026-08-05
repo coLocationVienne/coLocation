@@ -47,14 +47,19 @@ class MessageDAO extends \App\Models\DAO {
     }
 
     public function getUserConversations(int $userId): array {
-        $query = "SELECT m.*, u.prenom, u.nom, a.titre as annonce_titre
+        $query = "SELECT m.id_annonce, 
+                         ANY_VALUE(m.id_utilisateur) as id_utilisateur, 
+                         ANY_VALUE(m.id_utilisateur_1) as id_utilisateur_1, 
+                         u.prenom, u.nom, a.titre as annonce_titre,
+                         MAX(m.date_) as date_,
+                         ANY_VALUE(m.contenu) as contenu
                   FROM envoi_message m
                   JOIN utilisateur u ON (m.id_utilisateur = u.id_utilisateur OR m.id_utilisateur_1 = u.id_utilisateur)
                   JOIN annonce a ON m.id_annonce = a.id_annonce
                   WHERE (m.id_utilisateur = :userId OR m.id_utilisateur_1 = :userId)
                   AND u.id_utilisateur != :userId
-                  GROUP BY m.id_annonce, u.id_utilisateur
-                  ORDER BY m.date_ DESC";
+                  GROUP BY m.id_annonce, u.id_utilisateur, u.prenom, u.nom, a.titre
+                  ORDER BY date_ DESC";
         
         $stmt = $this->db->prepare($query);
         $stmt->execute(['userId' => $userId]);

@@ -75,8 +75,11 @@ include __DIR__ . "/../partials/header.php";
                             <span><i class="fa-regular fa-calendar"></i> Publiée le <?php echo date('d/m/Y', strtotime($a->getDatePublication())); ?></span>
                             <span><i class="fa-solid fa-ruler-combined"></i> <?php echo $a->getSurfaceChambre(); ?> m²</span>
                         </div>
-                        <div class="mt-3">
-                            <a href="<?php echo Config::url('annonce/show?id=' . $a->getId()); ?>" class="btn btn-primary btn-sm w-100">Voir l'annonce</a>
+                        <div class="mt-3 d-flex gap-2">
+                            <a href="<?php echo Config::url('annonce/show?id=' . $a->getId()); ?>" class="btn btn-primary btn-sm flex-grow-1">Voir l'annonce</a>
+                            <a href="<?php echo Config::url('annonce/show?id=' . $a->getId()); ?>#visite" class="btn btn-outline-success btn-sm" title="Planifier une visite">
+                                <i class="fas fa-calendar-check"></i>
+                            </a>
                         </div>
                     </div>
                 </article>

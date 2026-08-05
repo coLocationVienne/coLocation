@@ -201,8 +201,40 @@ include __DIR__ . "/../partials/header.php";
                             <i class="fas fa-paper-plane me-2"></i> 
                             <?php echo ($_SESSION['user_id'] == $annonce->getOwnerId()) ? "M'envoyer un message (Test)" : "Contacter le propriétaire"; ?>
                         </a>
+                        
+                        <?php if ($_SESSION['user_id'] == $annonce->getOwnerId()): ?>
+                            <a href="<?php echo Config::url('pages/page_annonce.php'); ?>" class="btn btn-outline-success w-100 py-2 mb-3">
+                                <i class="fas fa-calendar-check me-2"></i> Gérer les visites
+                            </a>
+                        <?php endif; ?>
+                        
+                        <?php if ($_SESSION['user_id'] != $annonce->getOwnerId()): ?>
+                            <hr id="visite">
+                            <h6 class="mb-3">Planifier une visite</h6>
+                            <?php if (empty($visitSlots)): ?>
+                                <p class="text-muted small">Aucun créneau de visite disponible pour le moment.</p>
+                            <?php else: ?>
+                                <form action="<?php echo Config::url('visit/request'); ?>" method="POST">
+                                    <div class="mb-3">
+                                        <label class="form-label small text-muted">Choisir un créneau</label>
+                                        <select name="id_creneauVisite" class="form-select form-select-sm" required>
+                                            <?php foreach ($visitSlots as $slot): ?>
+                                                <option value="<?php echo $slot->getId(); ?>">
+                                                    <?php echo date('d/m/Y', strtotime($slot->getDateVisite())); ?> 
+                                                    (<?php echo $slot->getHeureDebut(); ?> - <?php echo $slot->getHeureFin(); ?>)
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <textarea name="message" class="form-control form-control-sm" rows="2" placeholder="Un petit message pour le propriétaire..."></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-outline-primary w-100 btn-sm">Demander une visite</button>
+                                </form>
+                            <?php endif; ?>
+                        <?php endif; ?>
                     <?php else: ?>
-                        <a href="<?php echo Config::url('auth/login?redirect=annonce/show?id=' . $id); ?>" class="btn btn-primary w-100 py-2 mb-3">
+                        <a href="<?php echo Config::url('auth/login') . '?redirect=annonce/show?id=' . $id; ?>" class="btn btn-primary w-100 py-2 mb-3">
                             <i class="fas fa-sign-in-alt me-2"></i> Se connecter
                         </a>
                         <div class="alert alert-info py-2 px-3 small mb-3">

@@ -7,7 +7,7 @@ use App\Core\Token;
 
 class AnnonceController extends Controller {
     public function show($id) {
-        global $annonceDAO, $commentDAO;
+        global $annonceDAO, $commentDAO, $visitSlotDAO;
         
         $id = (int)$id;
         $annonce = $annonceDAO->getFullById($id);
@@ -18,13 +18,14 @@ class AnnonceController extends Controller {
         }
         
         $comments = $commentDAO->getByAnnonceId($id);
-        
         $photos = $annonceDAO->getPhotos($id);
+        $visitSlots = $visitSlotDAO->getByAnnonce($id);
         
         $this->render('annonce/show', [
             'annonce' => $annonce,
             'comments' => $comments,
             'photos' => $photos,
+            'visitSlots' => $visitSlots,
             'id' => $id
         ]);
     }
@@ -33,7 +34,7 @@ class AnnonceController extends Controller {
         global $commentDAO;
         
         if (empty($_SESSION['isLoggedin'])) {
-            header("Location: /coLocation/auth/login");
+            header("Location: /auth/login");
             exit();
         }
 
@@ -110,7 +111,7 @@ class AnnonceController extends Controller {
             'date_publication' => date('Y-m-d'),
             'date_modification' => date('Y-m-d'),
             'carte_coordonnee_GPS' => $_POST['carte_coordonnee_GPS'] ?? null,
-            'date_cloture' => $_POST['date_cloture'] ?? '0000-00-00',
+            'date_cloture' => !empty($_POST['date_cloture']) ? $_POST['date_cloture'] : null,
             'loyer_colocation' => (float)$_POST['loyer']
         ];
 
@@ -121,7 +122,7 @@ class AnnonceController extends Controller {
         $idAnnonce = $annonceDAO->ajouterAnnonce($annonce, $_SESSION['user_id'], $modesVie, $regimes);
 
         if ($idAnnonce > 0) {
-            header("Location: /coLocation/pages/modifier_photos.php?id_annonce=$idAnnonce&success=annonce_created");
+            header("Location: /pages/modifier_photos.php?id_annonce=$idAnnonce&success=annonce_created");
         } else {
             header("Location: " . \App\Core\Config::url('annonce/create') . "?error=server_error");
         }
@@ -196,7 +197,7 @@ class AnnonceController extends Controller {
             'date_publication' => $annonce->getDatePublication(),
             'date_modification' => date('Y-m-d'),
             'carte_coordonnee_GPS' => $_POST['carte_coordonnee_GPS'],
-            'date_cloture' => $_POST['date_cloture'],
+            'date_cloture' => !empty($_POST['date_cloture']) ? $_POST['date_cloture'] : null,
             'loyer_colocation' => (float)$_POST['loyer'] 
         ];
 
@@ -245,13 +246,13 @@ class AnnonceController extends Controller {
 
         if (!Token::check($_POST['token'] ?? '')) {
             $idAnnonce = (int)($_POST['id_annonce'] ?? 0);
-            header("Location: /coLocation/pages/modifier_photos.php?id_annonce=$idAnnonce&error=invalid_token");
+            header("Location: /pages/modifier_photos.php?id_annonce=$idAnnonce&error=invalid_token");
             exit();
         }
 
         $idAnnonce = (int)($_POST['id_annonce'] ?? 0);
         if (!$annonceDAO->appartientAUtilisateur($idAnnonce, $_SESSION['user_id'])) {
-            header("Location: /coLocation/pages/modifier_photos.php?id_annonce=$idAnnonce&error=unauthorized");
+            header("Location: /pages/modifier_photos.php?id_annonce=$idAnnonce&error=unauthorized");
             exit();
         }
 
@@ -268,13 +269,13 @@ class AnnonceController extends Controller {
             if (move_uploaded_file($_FILES['photo']['tmp_name'], $targetPath)) {
                 $dbPath = 'photos/' . $filename;
                 if ($annonceDAO->addPhoto($idAnnonce, $dbPath)) {
-                    header("Location: /coLocation/pages/modifier_photos.php?id_annonce=$idAnnonce&success=uploaded");
+                    header("Location: /pages/modifier_photos.php?id_annonce=$idAnnonce&success=uploaded");
                     exit();
                 }
             }
         }
 
-        header("Location: /coLocation/pages/modifier_photos.php?id_annonce=$idAnnonce&error=upload_failed");
+        header("Location: /pages/modifier_photos.php?id_annonce=$idAnnonce&error=upload_failed");
         exit();
     }
 
@@ -288,7 +289,7 @@ class AnnonceController extends Controller {
 
         if (!Token::check($_POST['token'] ?? '')) {
             $idAnnonce = (int)($_POST['id_annonce'] ?? 0);
-            header("Location: /coLocation/pages/modifier_photos.php?id_annonce=$idAnnonce&error=invalid_token");
+            header("Location: /pages/modifier_photos.php?id_annonce=$idAnnonce&error=invalid_token");
             exit();
         }
 
@@ -296,14 +297,14 @@ class AnnonceController extends Controller {
         $idPhoto = (int)($_POST['id_photo'] ?? 0);
 
         if (!$annonceDAO->appartientAUtilisateur($idAnnonce, $_SESSION['user_id'])) {
-            header("Location: /coLocation/pages/modifier_photos.php?id_annonce=$idAnnonce&error=unauthorized");
+            header("Location: /pages/modifier_photos.php?id_annonce=$idAnnonce&error=unauthorized");
             exit();
         }
 
         if ($annonceDAO->deletePhoto($idPhoto)) {
-            header("Location: /coLocation/pages/modifier_photos.php?id_annonce=$idAnnonce&success=deleted");
+            header("Location: /pages/modifier_photos.php?id_annonce=$idAnnonce&success=deleted");
         } else {
-            header("Location: /coLocation/pages/modifier_photos.php?id_annonce=$idAnnonce&error=delete_failed");
+            header("Location: /pages/modifier_photos.php?id_annonce=$idAnnonce&error=delete_failed");
         }
         exit();
     }

@@ -24,6 +24,11 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=10
+      mail:
+        image: axllent/mailpit:latest
+        ports:
+          - 1025:1025
+          - 8025:8025
 
     steps:
       - uses: actions/checkout@v4
@@ -46,6 +51,10 @@ jobs:
           MYSQL_DATABASE: colocation
           MYSQL_USER: root
           MYSQL_PASSWORD: root_password
+          SMTP_HOST: 127.0.0.1
+          SMTP_PORT: 1025
+          SMTP_AUTH: "false"
+          SMTP_SECURE: "none"
         run: ./vendor/bin/phpunit --exclude-group integration
 
   tests-integration:

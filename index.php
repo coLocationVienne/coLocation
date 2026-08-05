@@ -7,6 +7,7 @@ use App\Controllers\HomeController;
 use App\Controllers\AnnonceController;
 use App\Controllers\AuthController;
 use App\Controllers\MessageController;
+use App\Controllers\VisitController;
 
 // Get the URL from the query string (provided by .htaccess) or fallback to root
 $url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : '';
@@ -76,7 +77,7 @@ if ($url === '' || $url === 'home') {
     $id = isset($_GET['id']) ? $_GET['id'] : 0;
     $controller = new AnnonceController();
     $controller->edit($id);
-} elseif ($url === 'annonce/create') {
+} elseif ($url === 'annonce/create' || $url === 'create') {
     $controller = new AnnonceController();
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $controller->store();
@@ -101,8 +102,23 @@ if ($url === '' || $url === 'home') {
 } elseif (file_exists(__DIR__ . '/pages/' . $url)) {
     require_once __DIR__ . '/pages/' . $url;
     exit;
-} else {
-    header("HTTP/1.0 404 Not Found");
-    $controller = new HomeController();
-    $controller->notFound($url);
-}
+    } elseif ($url === 'visit/dashboard') {
+        $controller = new VisitController();
+        $controller->dashboard();
+    } elseif ($url === 'visit/slot/add') {
+        $controller = new VisitController();
+        $controller->addSlot();
+    } elseif ($url === 'visit/request') {
+        $controller = new VisitController();
+        $controller->requestVisit();
+    } elseif ($url === 'visit/respond') {
+        $controller = new VisitController();
+        $controller->respondToVisit();
+    } elseif ($url === 'visit/cancel') {
+        $controller = new VisitController();
+        $controller->cancelVisit();
+    } else {
+        header("HTTP/1.0 404 Not Found");
+        $controller = new HomeController();
+        $controller->notFound($url);
+    }

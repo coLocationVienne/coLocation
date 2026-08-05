@@ -18,6 +18,7 @@ class User {
     private float $revenu_fiscal;
     private int $id_role;
     private string $type_compte; 
+    private ?string $last_activity;
 
     public function __construct(array $data) {
         $this->id_utilisateur = $data['id_utilisateur'] ?? null;
@@ -35,6 +36,7 @@ class User {
         $this->revenu_fiscal = (float)($data['revenu_fiscal'] ?? 0);
         $this->id_role = (int)($data['id_role'] ?? 3);
         $this->type_compte = $data['type_compte'] ?? 'colocataire';
+        $this->last_activity = $data['last_activity'] ?? null;
     }   
 
     // Getters
@@ -53,6 +55,15 @@ class User {
     public function getRevenuFiscal(): float { return $this->revenu_fiscal; }
     public function getIdRole(): int { return $this->id_role; }
     public function getTypeCompte(): string { return $this->type_compte; }
+    public function getLastActivity(): ?string { return $this->last_activity; }
+
+    public function isOnline(): bool {
+        if (!$this->last_activity) return false;
+        $last = new \DateTime($this->last_activity);
+        $now = new \DateTime();
+        $diff = $now->getTimestamp() - $last->getTimestamp();
+        return $diff < 300; // 5 minutes
+    }
 
     // Setters
     public function setMotDePasse(string $password): void { $this->mot_de_passe = $password; }
