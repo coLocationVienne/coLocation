@@ -8,6 +8,7 @@ use App\Controllers\AnnonceController;
 use App\Controllers\AuthController;
 use App\Controllers\MessageController;
 use App\Controllers\VisitController;
+use App\Controllers\ListeFavorisController;
 
 // Get the URL from the query string (provided by .htaccess) or fallback to root
 $url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : '';
@@ -117,7 +118,41 @@ if ($url === '' || $url === 'home') {
     } elseif ($url === 'visit/cancel') {
         $controller = new VisitController();
         $controller->cancelVisit();
-    } else {
+    } elseif ($url === 'annonce/addList') {
+    $controller = new ListeFavorisController();
+    $controller->addList();
+}
+
+elseif ($url === 'addList/create') {
+    $controller = new ListeFavorisController();
+    $controller->create();
+}
+
+elseif (strpos($url, 'addList/delete') === 0) {
+    $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+    $controller = new ListeFavorisController();
+    $controller->delete($id);
+}
+
+elseif ($url === 'addList/getAnnoncesJson') {
+    $controller = new ListeFavorisController();
+    $controller->getAnnoncesJson();
+}
+
+elseif ($url === 'ListeFavoris/removeAnnonceAjax') {
+    $controller = new ListeFavorisController();
+    $controller->removeAnnonceAjax();
+}
+
+elseif ($url === 'addList/addAnnonce') {
+    $controller = new ListeFavorisController();
+    $controller->addAnnonce();
+}elseif ($url === 'annonce/addAnnonce') {
+    $controller = new ListeFavorisController();
+    $controller->addAnnonce();
+}
+
+else {
         header("HTTP/1.0 404 Not Found");
         $controller = new HomeController();
         $controller->notFound($url);

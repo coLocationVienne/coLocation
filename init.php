@@ -10,11 +10,11 @@ if (!defined('COLOCATION_INIT_LOADED')) {
     require_once __DIR__ . '/vendor/autoload.php';
     require_once __DIR__ . '/app/Core/Autoloader.php';
 
-    // Load environment variables
-    if (file_exists(__DIR__ . '/.env')) {
-        $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__);
-        $dotenv->load();
-    }
+    // // Load environment variables
+    // if (file_exists(__DIR__ . '/.env')) {
+    //     $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__);
+    //     $dotenv->load();
+    // }
 
     try {
         // Classes are now auto-loaded via App\Core\Autoloader
@@ -24,6 +24,10 @@ if (!defined('COLOCATION_INIT_LOADED')) {
         $GLOBALS['commentDAO'] = new \App\Models\CommentDAO();
         $GLOBALS['visitSlotDAO'] = new \App\Models\VisitSlotDAO();
         $GLOBALS['visitDAO'] = new \App\Models\VisitDAO();
+        
+        // Initialisation des nouveaux DAOs pour les favoris
+        $GLOBALS['listeFavorisDAO'] = new \App\Models\ListeFavorisDAO();
+      
         
         $userDAO = $GLOBALS['userDAO'];
         $messageDAO = $GLOBALS['messageDAO'];
@@ -37,6 +41,10 @@ if (!defined('COLOCATION_INIT_LOADED')) {
             $userDAO->updateLastActivity((int)$_SESSION['user_id']);
         }
         
+        // Variables locales pour les favoris
+        $listeFavorisDAO = $GLOBALS['listeFavorisDAO'];
+      
+        
     } catch (Exception $e) {
         error_log("Initialization error: " . $e->getMessage());
     }
@@ -45,6 +53,13 @@ if (!defined('COLOCATION_INIT_LOADED')) {
     $messageDAO = $GLOBALS['messageDAO'] ?? null;
     $annonceDAO = $GLOBALS['annonceDAO'] ?? null;
     $commentDAO = $GLOBALS['commentDAO'] ?? null;
+
     $visitSlotDAO = $GLOBALS['visitSlotDAO'] ?? null;
     $visitDAO = $GLOBALS['visitDAO'] ?? null;
+
+    
+    // Récupération des favoris si déjà chargés
+    $listeFavorisDAO = $GLOBALS['listeFavorisDAO'] ?? null;
+    
+
 }
