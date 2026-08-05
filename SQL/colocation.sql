@@ -21,8 +21,8 @@ SET time_zone = "+00:00";
 -- Base de données : `colocation`
 --
 
-CREATE database if not exists colocation;
-use colocation;
+-- CREATE database if not exists colocation;
+-- use colocation;
 
 --
 -- Structure de la table `age_recherche`
