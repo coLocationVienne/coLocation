@@ -19,7 +19,6 @@ class VisitSlot {
         $this->id_annonce = $data['id_annonce'] ?? null;
     }
 
-    // Getters
     public function getId(): ?int { return $this->id_creneauVisite; }
     public function getDateVisite(): string { return $this->date_visite; }
     public function getHeureDebut(): string { return $this->heure_debut; }
@@ -27,7 +26,6 @@ class VisitSlot {
     public function getNbPersonneMax(): int { return $this->nb_personne_max; }
     public function getIdAnnonce(): ?int { return $this->id_annonce; }
 
-    // Setters
     public function setId(?int $id): void { $this->id_creneauVisite = $id; }
     public function setDateVisite(string $date): void { $this->date_visite = $date; }
     public function setHeureDebut(string $time): void { $this->heure_debut = $time; }
