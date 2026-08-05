@@ -167,7 +167,8 @@ public function __construct()
                 exit();
             }
 
-         
+           
+
             $idAnnonce = (int)($_POST["id_annonce"] ?? 0);
             $userId = $_SESSION["user_id"];
             

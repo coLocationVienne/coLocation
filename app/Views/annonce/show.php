@@ -219,9 +219,10 @@ include __DIR__ . "/../partials/header.php";
 
 
 
+
         </div>
 
-        <!-- Sidebar -->
+      
         <div class="col-md-4">
             <div class="card shadow-sm sticky-top" style="top: 100px; border-top: 4px solid #0d6efd;">
                 <div class="card-body p-4">
@@ -279,7 +280,7 @@ include __DIR__ . "/../partials/header.php";
     </div>
 </div>
 
-<!-- Gallery Lightbox Modal -->
+
 <div class="modal fade" id="imageLightbox" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content transparent-modal">
@@ -385,8 +386,8 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="modal-header">
                 <h5 class="modal-title" id="addToListeModalLabel">Ajouter à mes favoris</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
             <form action="<?php echo Config::url('annonce/addAnnonce'); ?>" method="POST">
+    
                 <div class="modal-body">
                     <?php echo Token::field(); ?>
                     <input type="hidden" name="id_annonce" value="<?php echo $annonce->getId(); ?>">
@@ -404,7 +405,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             <label for="id_liste" class="form-label">Choisir une liste existante :</label>
                             <select name="id_liste" id="id_liste" class="form-select">
                                 <?php foreach ($mesListes as $liste): ?>
+
                                     <option value="<?php echo $liste->getIdListeFavoris(); ?>"><?php echo htmlspecialchars($liste->getTitreListe()); ?></option>
+
+                                
+
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -412,8 +417,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     <?php endif; ?>
 
                     <div class="mb-3">
-                        <label for="new_liste_titre" class="form-label">Créer une nouvelle liste :</label>
-                        <input type="text" name="new_liste_titre" id="new_liste_titre" class="form-control" placeholder="Nom de la nouvelle liste (ex: Colocs avec jardin)">
+                        <label for="new_liste_nom" class="form-label">Créer une nouvelle liste :</label>
+                        <input type="text" name="new_liste_nom" id="new_liste_nom" class="form-control" placeholder="Nom de la nouvelle liste (ex: Colocs avec jardin)">
+
                     </div>
                     <small class="text-muted">Si vous choisissez une liste existante ET que vous entrez un nom pour une nouvelle liste, la nouvelle liste sera prioritaire.</small>
                 </div>
