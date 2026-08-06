@@ -153,7 +153,7 @@ CREATE TABLE `annonce_mode_vie` (
 
 --
 -- Déchargement des données de la table `annonce_mode_vie`
---
+
 
 INSERT INTO `annonce_mode_vie` (`id_annonce`, `id_mode_vie`) VALUES
 (1, 1),
