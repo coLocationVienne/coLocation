@@ -7,6 +7,8 @@ use App\Controllers\HomeController;
 use App\Controllers\AnnonceController;
 use App\Controllers\AuthController;
 use App\Controllers\MessageController;
+use App\Controllers\VisitController;
+use App\Controllers\ListeFavorisController;
 
 // Get the URL from the query string (provided by .htaccess) or fallback to root
 $url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : '';
@@ -101,6 +103,41 @@ if ($url === '' || $url === 'home') {
 } elseif (file_exists(__DIR__ . '/pages/' . $url)) {
     require_once __DIR__ . '/pages/' . $url;
     exit;
+} elseif ($url === 'visit/dashboard') {
+    $controller = new VisitController();
+    $controller->dashboard();
+} elseif ($url === 'visit/slot/add') {
+    $controller = new VisitController();
+    $controller->addSlot();
+} elseif ($url === 'visit/request') {
+    $controller = new VisitController();
+    $controller->requestVisit();
+} elseif ($url === 'visit/respond') {
+    $controller = new VisitController();
+    $controller->respondToVisit();
+} elseif ($url === 'visit/cancel') {
+    $controller = new VisitController();
+    $controller->cancelVisit();
+} elseif ($url === 'favoris/index') {
+    $controller = new ListeFavorisController();
+    $controller->index();
+} elseif ($url === 'favoris/create') {
+    $controller = new ListeFavorisController();
+    $controller->create();
+} elseif ($url === 'favoris/showListe') {
+    $id = isset($_GET['id']) ? $_GET['id'] : 0;
+    $controller = new ListeFavorisController();
+    $controller->showListe($id);
+} elseif ($url === 'favoris/delete') {
+    $id = isset($_GET['id']) ? $_GET['id'] : 0;
+    $controller = new ListeFavorisController();
+    $controller->delete($id);
+} elseif ($url === 'favoris/addAnnonce') {
+    $controller = new ListeFavorisController();
+    $controller->addAnnonce();
+} elseif ($url === 'favoris/removeAnnonce') {
+    $controller = new ListeFavorisController();
+    $controller->removeAnnonce();
 } else {
     header("HTTP/1.0 404 Not Found");
     $controller = new HomeController();

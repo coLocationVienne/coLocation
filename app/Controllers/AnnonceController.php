@@ -7,7 +7,7 @@ use App\Core\Token;
 
 class AnnonceController extends Controller {
     public function show($id) {
-        global $annonceDAO, $commentDAO;
+        global $annonceDAO, $commentDAO, $visitSlotDAO;
         
         $id = (int)$id;
         $annonce = $annonceDAO->getFullById($id);
@@ -18,13 +18,14 @@ class AnnonceController extends Controller {
         }
         
         $comments = $commentDAO->getByAnnonceId($id);
-        
         $photos = $annonceDAO->getPhotos($id);
+        $visitSlots = $visitSlotDAO->getByAnnonce($id);
         
         $this->render('annonce/show', [
             'annonce' => $annonce,
             'comments' => $comments,
             'photos' => $photos,
+            'visitSlots' => $visitSlots,
             'id' => $id
         ]);
     }
