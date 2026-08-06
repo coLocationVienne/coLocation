@@ -10,55 +10,57 @@ global $userDAO, $messageDAO;
 if (!isset($userDAO)) { $userDAO = $GLOBALS['userDAO'] ?? null; }
 if (!isset($messageDAO)) { $messageDAO = $GLOBALS['messageDAO'] ?? null; }
 
-function getUserAvatar($user_id, $userDAO) {
-    if (!$userDAO || !is_int($user_id) || $user_id <= 0) {
-        return [
-            'src' => '',
-            'initials' => 'U',
-            'has_photo' => false
-        ];
-    }
-    
-    try {
-        $user = $userDAO->getById($user_id);
-        
-        if ($user && !empty($user->getPhotoProfil())) {
-            $photo_path = Config::url("pages/be/" . $user->getPhotoProfil());
-            $server_path = $_SERVER['DOCUMENT_ROOT'] . Config::url("pages/be/" . $user->getPhotoProfil());
-            if (file_exists($server_path)) {
-                return [
-                    'src' => $photo_path,
-                    'initials' => '',
-                    'has_photo' => true
-                ];
-            }
+if (!function_exists('getUserAvatar')) {
+    function getUserAvatar($user_id, $userDAO) {
+        if (!$userDAO || !is_int($user_id) || $user_id <= 0) {
+            return [
+                'src' => '',
+                'initials' => 'U',
+                'has_photo' => false
+            ];
         }
         
-        $initials = '';
-        if ($user) {
-            if (!empty($user->getPrenom()) && !empty($user->getNom())) {
-                $initials = strtoupper(substr($user->getPrenom(), 0, 1) . substr($user->getNom(), 0, 1));
-            } elseif (!empty($user->getPrenom())) {
-                $initials = strtoupper(substr($user->getPrenom(), 0, 2));
+        try {
+            $user = $userDAO->getById($user_id);
+            
+            if ($user && !empty($user->getPhotoProfil())) {
+                $photo_path = Config::url("pages/be/" . $user->getPhotoProfil());
+                $server_path = $_SERVER['DOCUMENT_ROOT'] . Config::url("pages/be/" . $user->getPhotoProfil());
+                if (file_exists($server_path)) {
+                    return [
+                        'src' => $photo_path,
+                        'initials' => '',
+                        'has_photo' => true
+                    ];
+                }
+            }
+            
+            $initials = '';
+            if ($user) {
+                if (!empty($user->getPrenom()) && !empty($user->getNom())) {
+                    $initials = strtoupper(substr($user->getPrenom(), 0, 1) . substr($user->getNom(), 0, 1));
+                } elseif (!empty($user->getPrenom())) {
+                    $initials = strtoupper(substr($user->getPrenom(), 0, 2));
+                } else {
+                    $initials = 'U';
+                }
             } else {
                 $initials = 'U';
             }
-        } else {
-            $initials = 'U';
+            
+            return [
+                'src' => '',
+                'initials' => $initials,
+                'has_photo' => false
+            ];
+        } catch (Exception $e) {
+            error_log("Error in getUserAvatar: " . $e->getMessage());
+            return [
+                'src' => '',
+                'initials' => 'U',
+                'has_photo' => false
+            ];
         }
-        
-        return [
-            'src' => '',
-            'initials' => $initials,
-            'has_photo' => false
-        ];
-    } catch (Exception $e) {
-        error_log("Error in getUserAvatar: " . $e->getMessage());
-        return [
-            'src' => '',
-            'initials' => 'U',
-            'has_photo' => false
-        ];
     }
 }
 
