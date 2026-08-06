@@ -103,57 +103,43 @@ if ($url === '' || $url === 'home') {
 } elseif (file_exists(__DIR__ . '/pages/' . $url)) {
     require_once __DIR__ . '/pages/' . $url;
     exit;
-    } elseif ($url === 'visit/dashboard') {
-        $controller = new VisitController();
-        $controller->dashboard();
-    } elseif ($url === 'visit/slot/add') {
-        $controller = new VisitController();
-        $controller->addSlot();
-    } elseif ($url === 'visit/request') {
-        $controller = new VisitController();
-        $controller->requestVisit();
-    } elseif ($url === 'visit/respond') {
-        $controller = new VisitController();
-        $controller->respondToVisit();
-    } elseif ($url === 'visit/cancel') {
-        $controller = new VisitController();
-        $controller->cancelVisit();
-    } elseif ($url === 'annonce/addList') {
+} elseif ($url === 'visit/dashboard') {
+    $controller = new VisitController();
+    $controller->dashboard();
+} elseif ($url === 'visit/slot/add') {
+    $controller = new VisitController();
+    $controller->addSlot();
+} elseif ($url === 'visit/request') {
+    $controller = new VisitController();
+    $controller->requestVisit();
+} elseif ($url === 'visit/respond') {
+    $controller = new VisitController();
+    $controller->respondToVisit();
+} elseif ($url === 'visit/cancel') {
+    $controller = new VisitController();
+    $controller->cancelVisit();
+} elseif ($url === 'favoris/index') {
     $controller = new ListeFavorisController();
-    $controller->addList();
-}
-
-elseif ($url === 'addList/create') {
+    $controller->index();
+} elseif ($url === 'favoris/create') {
     $controller = new ListeFavorisController();
     $controller->create();
-}
-
-elseif (strpos($url, 'addList/delete') === 0) {
-    $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+} elseif ($url === 'favoris/showListe') {
+    $id = isset($_GET['id']) ? $_GET['id'] : 0;
+    $controller = new ListeFavorisController();
+    $controller->showListe($id);
+} elseif ($url === 'favoris/delete') {
+    $id = isset($_GET['id']) ? $_GET['id'] : 0;
     $controller = new ListeFavorisController();
     $controller->delete($id);
-}
-
-elseif ($url === 'addList/getAnnoncesJson') {
-    $controller = new ListeFavorisController();
-    $controller->getAnnoncesJson();
-}
-
-elseif ($url === 'ListeFavoris/removeAnnonceAjax') {
-    $controller = new ListeFavorisController();
-    $controller->removeAnnonceAjax();
-}
-
-elseif ($url === 'addList/addAnnonce') {
+} elseif ($url === 'favoris/addAnnonce') {
     $controller = new ListeFavorisController();
     $controller->addAnnonce();
-}elseif ($url === 'annonce/addAnnonce') {
+} elseif ($url === 'favoris/removeAnnonce') {
     $controller = new ListeFavorisController();
-    $controller->addAnnonce();
+    $controller->removeAnnonce();
+} else {
+    header("HTTP/1.0 404 Not Found");
+    $controller = new HomeController();
+    $controller->notFound($url);
 }
-
-else {
-        header("HTTP/1.0 404 Not Found");
-        $controller = new HomeController();
-        $controller->notFound($url);
-    }

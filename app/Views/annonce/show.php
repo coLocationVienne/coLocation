@@ -46,41 +46,43 @@ include __DIR__ . "/../partials/header.php";
         color: white;
         font-weight: 600;
     }
-    .btn-favorite-overlay {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        z-index: 100;
-        background: rgba(255, 255, 255, 0.9);
-        border: none;
-        border-radius: 50%;
-        width: 45px;
-        height: 45px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #6c757d; /* Gris par défaut */
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        transition: all 0.2s ease;
-        font-size: 1.2rem;
-    }
-    .btn-favorite-overlay:hover {
-        transform: scale(1.1);
-        background: #fff;
-        color: #dc3545; /* Devient rouge au survol */
-    }
 </style>
 
 <div class="container mt-5 pt-5">
+    <?php if (isset($_GET['success'])): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?php 
+                if ($_GET['success'] === 'annonce_added_to_list') echo "L'annonce a été ajoutée à vos favoris avec succès.";
+                if ($_GET['success'] === 'comment_added') echo "Votre commentaire a été publié.";
+            ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['error'])): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?php 
+                if ($_GET['error'] === 'invalid_token') echo "Jeton de sécurité invalide.";
+                if ($_GET['error'] === 'add_to_list_failed') echo "Échec de l'ajout aux favoris.";
+                if ($_GET['error'] === 'new_list_creation_failed') echo "Échec de la création de la nouvelle liste.";
+                if ($_GET['error'] === 'invalid_list_or_annonce') echo "Liste ou annonce invalide.";
+            ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['info'])): ?>
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <?php 
+                if ($_GET['info'] === 'annonce_already_in_list') echo "Cette annonce est déjà dans la liste sélectionnée.";
+            ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
     <div class="row">
         <div class="col-md-8">
-            <div class="card mb-4 shadow-sm position-relative">
-                <?php if (!empty($_SESSION['isLoggedin'])): ?>
-                    <button type="button" class="btn-favorite-overlay" id="btnOpenFavoriteModal" title="Ajouter aux favoris">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                <?php endif; ?>
-
+            <div class="card mb-4 shadow-sm">
                 <?php if (count($photos) > 1): ?>
                     <!-- Bootstrap Image Carousel -->
                     <div id="annonceCarousel" class="carousel slide" data-bs-ride="carousel">
@@ -217,8 +219,15 @@ include __DIR__ . "/../partials/header.php";
                 </div>
             </div>
 
-
-
+            <?php if (!empty($_SESSION['isLoggedin'])): ?>
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body text-center">
+                        <button type="button" class="btn btn-primary btn-lg w-100" data-bs-toggle="modal" data-bs-target="#addToListeModal">
+                            <i class="fas fa-heart me-2"></i> Ajouter aux favoris
+                        </button>
+                    </div>
+                </div>
+            <?php endif; ?>
 
         </div>
 
@@ -336,45 +345,9 @@ function updateLightbox() {
 // Support keyboard navigation
 document.addEventListener('keydown', function(e) {
     const modal = document.getElementById('imageLightbox');
-    if (modal && modal.classList.contains('show')) {
+    if (modal.classList.contains('show')) {
         if (e.key === 'ArrowLeft') changeImage(-1);
         if (e.key === 'ArrowRight') changeImage(1);
-    }
-});
-
-// JS pour ouvrir la modale de favoris
-document.addEventListener('DOMContentLoaded', function() {
-    const btnFavorite = document.getElementById('btnOpenFavoriteModal');
-    const modalEl = document.getElementById('addToListeModal');
-    
-    if (btnFavorite && modalEl) {
-        btnFavorite.addEventListener('click', function() {
-            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-                const myModal = new bootstrap.Modal(modalEl);
-                myModal.show();
-            } else {
-                modalEl.style.display = 'block';
-                modalEl.classList.add('show');
-                document.body.classList.add('modal-open');
-                
-        
-                const backdrop = document.createElement('div');
-                backdrop.className = 'modal-backdrop fade show';
-                backdrop.id = 'manual-backdrop';
-                document.body.appendChild(backdrop);
-                
-                const closeBtns = modalEl.querySelectorAll('[data-bs-dismiss="modal"]');
-                closeBtns.forEach(btn => {
-                    btn.onclick = function() {
-                        modalEl.style.display = 'none';
-                        modalEl.classList.remove('show');
-                        document.body.classList.remove('modal-open');
-                        const b = document.getElementById('manual-backdrop');
-                        if (b) b.remove();
-                    };
-                });
-            }
-        });
     }
 });
 </script>
@@ -386,8 +359,8 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="modal-header">
                 <h5 class="modal-title" id="addToListeModalLabel">Ajouter à mes favoris</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            <form action="<?php echo Config::url('annonce/addAnnonce'); ?>" method="POST">
-    
+            </div>
+            <form action="<?php echo Config::url('favoris/addAnnonce'); ?>" method="POST">
                 <div class="modal-body">
                     <?php echo Token::field(); ?>
                     <input type="hidden" name="id_annonce" value="<?php echo $annonce->getId(); ?>">
@@ -405,11 +378,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <label for="id_liste" class="form-label">Choisir une liste existante :</label>
                             <select name="id_liste" id="id_liste" class="form-select">
                                 <?php foreach ($mesListes as $liste): ?>
-
                                     <option value="<?php echo $liste->getIdListeFavoris(); ?>"><?php echo htmlspecialchars($liste->getTitreListe()); ?></option>
-
-                                
-
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -419,7 +388,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="mb-3">
                         <label for="new_liste_nom" class="form-label">Créer une nouvelle liste :</label>
                         <input type="text" name="new_liste_nom" id="new_liste_nom" class="form-control" placeholder="Nom de la nouvelle liste (ex: Colocs avec jardin)">
-
                     </div>
                     <small class="text-muted">Si vous choisissez une liste existante ET que vous entrez un nom pour une nouvelle liste, la nouvelle liste sera prioritaire.</small>
                 </div>

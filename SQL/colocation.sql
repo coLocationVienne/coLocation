@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
--- Hôte : 127.0.0.1
--- Généré le : lun. 03 août 2026 à 16:13
--- Version du serveur : 10.4.32-MariaDB
--- Version de PHP : 8.2.12
+-- Hôte : db
+-- Généré le : jeu. 06 août 2026 à 07:07
+-- Version du serveur : 8.0.46
+-- Version de PHP : 8.3.32
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -29,8 +29,8 @@ use colocation;
 --
 
 CREATE TABLE `age_recherche` (
-  `id_age` int(11) NOT NULL,
-  `tranche_age` varchar(50) NOT NULL
+  `id_age` int NOT NULL,
+  `tranche_age` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -51,23 +51,23 @@ INSERT INTO `age_recherche` (`id_age`, `tranche_age`) VALUES
 --
 
 CREATE TABLE `annonce` (
-  `id_annonce` int(11) NOT NULL,
-  `titre` varchar(50) NOT NULL,
-  `adresse_1` varchar(255) NOT NULL,
-  `adresse_2` varchar(255) DEFAULT NULL,
-  `adresse_3` varchar(255) DEFAULT NULL,
-  `adresse_4` varchar(255) DEFAULT NULL,
-  `ville` varchar(50) NOT NULL,
-  `code_postal` int(11) NOT NULL,
+  `id_annonce` int NOT NULL,
+  `titre` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `adresse_1` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `adresse_2` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `adresse_3` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `adresse_4` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ville` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `code_postal` int NOT NULL,
   `loyer_location_chez_habitant` decimal(10,2) NOT NULL,
-  `description` text NOT NULL,
+  `description` text COLLATE utf8mb4_general_ci NOT NULL,
   `surface_logement` decimal(10,2) NOT NULL,
   `surface_chambres` decimal(10,2) NOT NULL,
-  `nombre_chambre` int(11) NOT NULL,
+  `nombre_chambre` int NOT NULL,
   `date_expiration` date DEFAULT NULL,
   `date_publication` date NOT NULL,
   `date_modification` date NOT NULL,
-  `carte_coordonnee_GPS` varchar(40) DEFAULT NULL,
+  `carte_coordonnee_GPS` varchar(40) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `date_cloture` date DEFAULT NULL,
   `loyer_colocation` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -98,8 +98,8 @@ INSERT INTO `annonce` (`id_annonce`, `titre`, `adresse_1`, `adresse_2`, `adresse
 --
 
 CREATE TABLE `annonce_age` (
-  `id_annonce` int(11) NOT NULL,
-  `id_age` int(11) NOT NULL
+  `id_annonce` int NOT NULL,
+  `id_age` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -119,13 +119,13 @@ INSERT INTO `annonce_age` (`id_annonce`, `id_age`) VALUES
 --
 
 CREATE TABLE `annonce_avis` (
-  `id_avis` int(11) NOT NULL,
+  `id_avis` int NOT NULL,
   `note` decimal(5,2) DEFAULT NULL,
   `date_` date NOT NULL,
-  `commentaire` text NOT NULL,
-  `id_annonce` int(11) DEFAULT NULL,
-  `id_utilisateur` int(11) NOT NULL,
-  `id_utilisateur_1` int(11) NOT NULL
+  `commentaire` text COLLATE utf8mb4_general_ci NOT NULL,
+  `id_annonce` int DEFAULT NULL,
+  `id_utilisateur` int NOT NULL,
+  `id_utilisateur_1` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -147,8 +147,8 @@ INSERT INTO `annonce_avis` (`id_avis`, `note`, `date_`, `commentaire`, `id_annon
 --
 
 CREATE TABLE `annonce_mode_vie` (
-  `id_annonce` int(11) NOT NULL,
-  `id_mode_vie` int(11) NOT NULL
+  `id_annonce` int NOT NULL,
+  `id_mode_vie` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -157,26 +157,26 @@ CREATE TABLE `annonce_mode_vie` (
 
 INSERT INTO `annonce_mode_vie` (`id_annonce`, `id_mode_vie`) VALUES
 (1, 1),
-(1, 3),
-(2, 4),
-(2, 5),
 (4, 1),
-(4, 5),
-(5, 2),
-(5, 5),
-(6, 4),
-(6, 7),
-(7, 5),
 (8, 1),
-(8, 5),
-(8, 7),
 (9, 1),
-(9, 7),
 (14, 1),
-(14, 3),
-(14, 5),
 (15, 1),
+(5, 2),
+(1, 3),
+(14, 3),
+(2, 4),
+(6, 4),
+(2, 5),
+(4, 5),
+(5, 5),
+(7, 5),
+(8, 5),
+(14, 5),
 (15, 5),
+(6, 7),
+(8, 7),
+(9, 7),
 (15, 7);
 
 -- --------------------------------------------------------
@@ -186,8 +186,8 @@ INSERT INTO `annonce_mode_vie` (`id_annonce`, `id_mode_vie`) VALUES
 --
 
 CREATE TABLE `annonce_photo` (
-  `id_annonce` int(11) NOT NULL,
-  `id_photo` int(11) NOT NULL
+  `id_annonce` int NOT NULL,
+  `id_photo` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -219,8 +219,8 @@ INSERT INTO `annonce_photo` (`id_annonce`, `id_photo`) VALUES
 --
 
 CREATE TABLE `annonce_regime_alimentaire` (
-  `id_annonce` int(11) NOT NULL,
-  `id_regime_alimentaire` int(11) NOT NULL
+  `id_annonce` int NOT NULL,
+  `id_regime_alimentaire` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -229,15 +229,15 @@ CREATE TABLE `annonce_regime_alimentaire` (
 
 INSERT INTO `annonce_regime_alimentaire` (`id_annonce`, `id_regime_alimentaire`) VALUES
 (1, 1),
-(1, 2),
 (4, 1),
-(4, 2),
 (5, 1),
 (6, 1),
 (7, 1),
 (8, 1),
-(9, 5),
 (14, 1),
+(1, 2),
+(4, 2),
+(9, 5),
 (14, 5),
 (15, 6);
 
@@ -248,8 +248,8 @@ INSERT INTO `annonce_regime_alimentaire` (`id_annonce`, `id_regime_alimentaire`)
 --
 
 CREATE TABLE `annonce_utilisateur` (
-  `id_utilisateur` int(11) NOT NULL,
-  `id_annonce` int(11) NOT NULL
+  `id_utilisateur` int NOT NULL,
+  `id_annonce` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -257,14 +257,14 @@ CREATE TABLE `annonce_utilisateur` (
 --
 
 INSERT INTO `annonce_utilisateur` (`id_utilisateur`, `id_annonce`) VALUES
+(2, 1),
+(2, 2),
 (1, 4),
+(3, 5),
 (1, 6),
 (1, 7),
 (1, 8),
 (1, 9),
-(2, 1),
-(2, 2),
-(3, 5),
 (7, 11),
 (7, 12),
 (10, 14),
@@ -277,12 +277,12 @@ INSERT INTO `annonce_utilisateur` (`id_utilisateur`, `id_annonce`) VALUES
 --
 
 CREATE TABLE `creneau_visite` (
-  `id_creneauVisite` int(11) NOT NULL,
+  `id_creneauVisite` int NOT NULL,
   `date_visite` date NOT NULL,
   `heure_debut` time NOT NULL,
   `heure_fin` time NOT NULL,
-  `nb_personne_max` int(11) NOT NULL,
-  `id_annonce` int(11) DEFAULT NULL
+  `nb_personne_max` int NOT NULL,
+  `id_annonce` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -292,11 +292,11 @@ CREATE TABLE `creneau_visite` (
 --
 
 CREATE TABLE `envoi_message` (
-  `id_utilisateur` int(11) DEFAULT NULL,
-  `id_utilisateur_1` int(11) DEFAULT NULL,
-  `id_annonce` int(11) DEFAULT NULL,
+  `id_utilisateur` int DEFAULT NULL,
+  `id_utilisateur_1` int DEFAULT NULL,
+  `id_annonce` int DEFAULT NULL,
   `date_` date NOT NULL,
-  `contenu` varchar(250) NOT NULL
+  `contenu` varchar(250) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -330,10 +330,17 @@ INSERT INTO `envoi_message` (`id_utilisateur`, `id_utilisateur_1`, `id_annonce`,
 --
 
 CREATE TABLE `favoris` (
-  `id_favoris` int(11) NOT NULL,
-  `id_listeFavoris` int(11) DEFAULT NULL,
-  `id_annonce` int(11) DEFAULT NULL
+  `id_favoris` int NOT NULL,
+  `id_listeFavoris` int DEFAULT NULL,
+  `id_annonce` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `favoris`
+--
+
+INSERT INTO `favoris` (`id_favoris`, `id_listeFavoris`, `id_annonce`) VALUES
+(1, 1, 15);
 
 -- --------------------------------------------------------
 
@@ -342,10 +349,17 @@ CREATE TABLE `favoris` (
 --
 
 CREATE TABLE `liste_favoris` (
-  `id_listeFavoris` int(11) NOT NULL,
-  `titre_liste` varchar(50) NOT NULL,
-  `id_utilisateur` int(11) DEFAULT NULL
+  `id_listeFavoris` int NOT NULL,
+  `titre_liste` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `id_utilisateur` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `liste_favoris`
+--
+
+INSERT INTO `liste_favoris` (`id_listeFavoris`, `titre_liste`, `id_utilisateur`) VALUES
+(1, 'jardin', 10);
 
 -- --------------------------------------------------------
 
@@ -354,8 +368,8 @@ CREATE TABLE `liste_favoris` (
 --
 
 CREATE TABLE `mode_vie` (
-  `id_mode_vie` int(11) NOT NULL,
-  `mode_avis` varchar(50) DEFAULT NULL
+  `id_mode_vie` int NOT NULL,
+  `mode_avis` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -378,8 +392,8 @@ INSERT INTO `mode_vie` (`id_mode_vie`, `mode_avis`) VALUES
 --
 
 CREATE TABLE `photo` (
-  `id_photo` int(11) NOT NULL,
-  `url` varchar(250) NOT NULL
+  `id_photo` int NOT NULL,
+  `url` varchar(250) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -412,8 +426,8 @@ INSERT INTO `photo` (`id_photo`, `url`) VALUES
 --
 
 CREATE TABLE `regime_alimentaire` (
-  `id_regime_alimentaire` int(11) NOT NULL,
-  `regime_alimentaire` varchar(50) NOT NULL
+  `id_regime_alimentaire` int NOT NULL,
+  `regime_alimentaire` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -435,8 +449,8 @@ INSERT INTO `regime_alimentaire` (`id_regime_alimentaire`, `regime_alimentaire`)
 --
 
 CREATE TABLE `role` (
-  `id_role` int(11) NOT NULL,
-  `role` varchar(50) NOT NULL
+  `id_role` int NOT NULL,
+  `role` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -455,12 +469,12 @@ INSERT INTO `role` (`id_role`, `role`) VALUES
 --
 
 CREATE TABLE `signalement` (
-  `id_signalement` int(11) NOT NULL,
-  `statue` varchar(50) NOT NULL,
-  `motif` varchar(50) NOT NULL,
-  `commentaire` text NOT NULL,
-  `id_annonce` int(11) DEFAULT NULL,
-  `id_utilisateur` int(11) DEFAULT NULL
+  `id_signalement` int NOT NULL,
+  `statue` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `motif` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `commentaire` text COLLATE utf8mb4_general_ci NOT NULL,
+  `id_annonce` int DEFAULT NULL,
+  `id_utilisateur` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -470,21 +484,21 @@ CREATE TABLE `signalement` (
 --
 
 CREATE TABLE `utilisateur` (
-  `id_utilisateur` int(11) NOT NULL,
-  `nom` varchar(40) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `mot_de_passe` varchar(100) NOT NULL,
-  `situation_professionnel` varchar(40) NOT NULL,
+  `id_utilisateur` int NOT NULL,
+  `nom` varchar(40) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `mot_de_passe` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `situation_professionnel` varchar(40) COLLATE utf8mb4_general_ci NOT NULL,
   `garant` tinyint(1) NOT NULL,
   `retraite` decimal(10,2) NOT NULL,
   `caisse_allocation_familial` decimal(10,2) NOT NULL,
   `date_naissance` date NOT NULL,
-  `photo_profil` varchar(250) NOT NULL,
+  `photo_profil` varchar(250) COLLATE utf8mb4_general_ci NOT NULL,
   `salaire_mensuel_net` decimal(10,2) NOT NULL,
-  `prenom` varchar(40) NOT NULL,
-  `revenu_fiscal` varchar(50) NOT NULL,
-  `id_role` int(11) NOT NULL,
-  `type_compte` enum('colocataire','propriétaire') DEFAULT 'colocataire',
+  `prenom` varchar(40) COLLATE utf8mb4_general_ci NOT NULL,
+  `revenu_fiscal` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `id_role` int NOT NULL,
+  `type_compte` enum('colocataire','propriétaire') COLLATE utf8mb4_general_ci DEFAULT 'colocataire',
   `last_activity` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -492,15 +506,15 @@ CREATE TABLE `utilisateur` (
 -- Déchargement des données de la table `utilisateur`
 --
 
-INSERT INTO `utilisateur` (`id_utilisateur`, `nom`, `email`, `mot_de_passe`, `situation_professionnel`, `garant`, `retraite`, `caisse_allocation_familial`, `date_naissance`, `photo_profil`, `salaire_mensuel_net`, `prenom`, `revenu_fiscal`, `id_role`, `type_compte`) VALUES
-(1, 'Dupont', 'jean.dupont@email.com', '$2y$10$jPyT2RHjQDbVPRzs7nNW2OhS9N9Wf9Nocvmtxmo23cfs04fVApPNi', 'Administrateur', 1, 0.00, 0.00, '1985-03-15', 'uploads/profile_photos/user_1_1783414945.jpg', 999.99, 'Jean', '45000', 1, 'colocataire'),
-(2, 'Martin', 'sophie.martin@email.com', 'proprio123', 'Propriétaire', 1, 999.99, 200.00, '1978-07-22', 'photos/profil/sophie_martin.jpg', 999.99, 'Sophie', '38000€', 2, 'colocataire'),
-(3, 'Petit', 'thomas.petit@email.com', '$2y$10$C7JeXhHsvdPHc9PF9a0P3eLFEc1BCF0SE1LJe5atLTzgmXRmgYosa', 'Étudiant', 1, 0.00, 150.00, '1998-11-05', 'photos/profil/thomas_petit.jpg', 999.99, 'Thomas', '15000', 3, 'colocataire'),
-(4, 'Bernard', 'julie.bernard@email.com', '$2y$10$NHG15nBQizpCPewNnqZfJONkW8ZmFINwJuoFWzKGBR9YHUr6lHUDu', 'Salarié', 0, 0.00, 0.00, '1995-04-18', 'photos/profil/julie_bernard.jpg', 999.99, 'Julie', '22000', 3, 'colocataire'),
-(7, 'test', 'test@test.com', '$2y$10$FDJ.nEIAp9SNMuCtWd0jGeMWTpAzjA6DyOfREpWvSlnJ7flDGNY8O', 'Étudiant', 1, 0.00, 0.00, '2026-07-01', '', 500.00, 'test', '888', 1, 'colocataire'),
-(8, 'non', 'non@non.no', '$2y$10$037.PyC14.MKHB1YCxgHZ.c2qdmhYHghRh5Lc3QPl0Uhac5xcjNVO', 'Étudiant', 1, 0.00, 0.00, '2026-07-02', '', 233.00, 'non', '3333', 3, 'colocataire'),
-(9, 'safi', 'sroheed@gmail.com', '$2y$10$3/DCjH0CJMtItkcDFU/R9O2UC49BNBDzzxvrTu/pFga/6MULuYK3C', 'Salarié', 0, 0.00, 0.00, '2026-07-02', 'uploads/profile_photos/user_9_1783514015.jpg', 112.00, 'rohid', '888', 3, 'colocataire'),
-(10, 'said', 'issintyasaid@gmail.com', '$2y$10$VF.6NgLI.2TDOwQNW/5rgur4TsOZ5OKuZXtkL5FSUo.siI2ZDcRry', 'Salarié', 1, 0.00, 0.00, '2006-01-20', '', 555.00, 'issintya', '333', 3, 'colocataire');
+INSERT INTO `utilisateur` (`id_utilisateur`, `nom`, `email`, `mot_de_passe`, `situation_professionnel`, `garant`, `retraite`, `caisse_allocation_familial`, `date_naissance`, `photo_profil`, `salaire_mensuel_net`, `prenom`, `revenu_fiscal`, `id_role`, `type_compte`, `last_activity`) VALUES
+(1, 'Dupont', 'jean.dupont@email.com', '$2y$10$jPyT2RHjQDbVPRzs7nNW2OhS9N9Wf9Nocvmtxmo23cfs04fVApPNi', 'Administrateur', 1, 0.00, 0.00, '1985-03-15', 'uploads/profile_photos/user_1_1783414945.jpg', 999.99, 'Jean', '45000', 1, 'colocataire', NULL),
+(2, 'Martin', 'sophie.martin@email.com', 'proprio123', 'Propriétaire', 1, 999.99, 200.00, '1978-07-22', 'photos/profil/sophie_martin.jpg', 999.99, 'Sophie', '38000€', 2, 'colocataire', NULL),
+(3, 'Petit', 'thomas.petit@email.com', '$2y$10$C7JeXhHsvdPHc9PF9a0P3eLFEc1BCF0SE1LJe5atLTzgmXRmgYosa', 'Étudiant', 1, 0.00, 150.00, '1998-11-05', 'photos/profil/thomas_petit.jpg', 999.99, 'Thomas', '15000', 3, 'colocataire', NULL),
+(4, 'Bernard', 'julie.bernard@email.com', '$2y$10$NHG15nBQizpCPewNnqZfJONkW8ZmFINwJuoFWzKGBR9YHUr6lHUDu', 'Salarié', 0, 0.00, 0.00, '1995-04-18', 'photos/profil/julie_bernard.jpg', 999.99, 'Julie', '22000', 3, 'colocataire', NULL),
+(7, 'test', 'test@test.com', '$2y$10$FDJ.nEIAp9SNMuCtWd0jGeMWTpAzjA6DyOfREpWvSlnJ7flDGNY8O', 'Étudiant', 1, 0.00, 0.00, '2026-07-01', '', 500.00, 'test', '888', 1, 'colocataire', NULL),
+(8, 'non', 'non@non.no', '$2y$10$037.PyC14.MKHB1YCxgHZ.c2qdmhYHghRh5Lc3QPl0Uhac5xcjNVO', 'Étudiant', 1, 0.00, 0.00, '2026-07-02', '', 233.00, 'non', '3333', 3, 'colocataire', NULL),
+(9, 'safi', 'sroheed@gmail.com', '$2y$10$3/DCjH0CJMtItkcDFU/R9O2UC49BNBDzzxvrTu/pFga/6MULuYK3C', 'Salarié', 0, 0.00, 0.00, '2026-07-02', 'uploads/profile_photos/user_9_1783514015.jpg', 112.00, 'rohid', '888', 3, 'colocataire', NULL),
+(10, 'said', 'issintyasaid@gmail.com', '$2y$10$VF.6NgLI.2TDOwQNW/5rgur4TsOZ5OKuZXtkL5FSUo.siI2ZDcRry', 'Salarié', 1, 0.00, 0.00, '2006-01-20', '', 555.00, 'issintya', '333', 3, 'colocataire', '2026-08-06 07:03:33');
 
 -- --------------------------------------------------------
 
@@ -509,14 +523,14 @@ INSERT INTO `utilisateur` (`id_utilisateur`, `nom`, `email`, `mot_de_passe`, `si
 --
 
 CREATE TABLE `visite` (
-  `id_visite` int(11) NOT NULL,
-  `id_creneauVisite` int(11) NOT NULL,
-  `id_utilisateur` int(11) NOT NULL,
-  `statut` enum('en_attente', 'confirme', 'refuse', 'annule') DEFAULT 'en_attente',
-  `date_demande` timestamp DEFAULT CURRENT_TIMESTAMP,
-  `message` text,
+  `id_visite` int NOT NULL,
+  `id_creneauVisite` int NOT NULL,
+  `id_utilisateur` int NOT NULL,
+  `statut` enum('en_attente','confirme','refuse','annule') COLLATE utf8mb4_general_ci DEFAULT 'en_attente',
+  `date_demande` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `message` text COLLATE utf8mb4_general_ci,
   `date_annulation` timestamp NULL DEFAULT NULL,
-  `rappel_envoye` tinyint(1) DEFAULT 0
+  `rappel_envoye` tinyint(1) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -608,10 +622,6 @@ ALTER TABLE `favoris`
 ALTER TABLE `liste_favoris`
   ADD PRIMARY KEY (`id_listeFavoris`),
   ADD KEY `fk_listeFavoris_utilisateur` (`id_utilisateur`);
- 
-
- ALTER TABLE liste_favoris ADD date_creation date NOT NULL;
-
 
 --
 -- Index pour la table `mode_vie`
@@ -668,79 +678,79 @@ ALTER TABLE `visite`
 -- AUTO_INCREMENT pour la table `age_recherche`
 --
 ALTER TABLE `age_recherche`
-  MODIFY `id_age` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_age` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pour la table `annonce`
 --
 ALTER TABLE `annonce`
-  MODIFY `id_annonce` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_annonce` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT pour la table `annonce_avis`
 --
 ALTER TABLE `annonce_avis`
-  MODIFY `id_avis` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_avis` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT pour la table `creneau_visite`
 --
 ALTER TABLE `creneau_visite`
-  MODIFY `id_creneauVisite` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_creneauVisite` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `favoris`
 --
 ALTER TABLE `favoris`
-  MODIFY `id_favoris` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_favoris` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `liste_favoris`
 --
 ALTER TABLE `liste_favoris`
-  MODIFY `id_listeFavoris` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_listeFavoris` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `mode_vie`
 --
 ALTER TABLE `mode_vie`
-  MODIFY `id_mode_vie` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_mode_vie` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT pour la table `photo`
 --
 ALTER TABLE `photo`
-  MODIFY `id_photo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id_photo` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT pour la table `regime_alimentaire`
 --
 ALTER TABLE `regime_alimentaire`
-  MODIFY `id_regime_alimentaire` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_regime_alimentaire` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT pour la table `role`
 --
 ALTER TABLE `role`
-  MODIFY `id_role` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_role` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT pour la table `signalement`
 --
 ALTER TABLE `signalement`
-  MODIFY `id_signalement` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_signalement` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id_utilisateur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_utilisateur` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT pour la table `visite`
 --
 ALTER TABLE `visite`
-  MODIFY `id_visite` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_visite` int NOT NULL AUTO_INCREMENT;
 
 --
 -- Contraintes pour les tables déchargées
@@ -840,4 +850,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-

@@ -24,10 +24,8 @@ if (!defined('COLOCATION_INIT_LOADED')) {
         $GLOBALS['commentDAO'] = new \App\Models\CommentDAO();
         $GLOBALS['visitSlotDAO'] = new \App\Models\VisitSlotDAO();
         $GLOBALS['visitDAO'] = new \App\Models\VisitDAO();
-        
-        // Initialisation des nouveaux DAOs pour les favoris
         $GLOBALS['listeFavorisDAO'] = new \App\Models\ListeFavorisDAO();
-      
+        $GLOBALS['listeFavorisAnnonceDAO'] = new \App\Models\ListeFavorisAnnonceDAO();
         
         $userDAO = $GLOBALS['userDAO'];
         $messageDAO = $GLOBALS['messageDAO'];
@@ -35,15 +33,13 @@ if (!defined('COLOCATION_INIT_LOADED')) {
         $commentDAO = $GLOBALS['commentDAO'];
         $visitSlotDAO = $GLOBALS['visitSlotDAO'];
         $visitDAO = $GLOBALS['visitDAO'];
+        $listeFavorisDAO = $GLOBALS['listeFavorisDAO'];
+        $listeFavorisAnnonceDAO = $GLOBALS['listeFavorisAnnonceDAO'];
 
         // Update last activity for logged in user
         if (!empty($_SESSION['isLoggedin']) && !empty($_SESSION['user_id'])) {
             $userDAO->updateLastActivity((int)$_SESSION['user_id']);
         }
-        
-        // Variables locales pour les favoris
-        $listeFavorisDAO = $GLOBALS['listeFavorisDAO'];
-      
         
     } catch (Exception $e) {
         error_log("Initialization error: " . $e->getMessage());
@@ -53,13 +49,8 @@ if (!defined('COLOCATION_INIT_LOADED')) {
     $messageDAO = $GLOBALS['messageDAO'] ?? null;
     $annonceDAO = $GLOBALS['annonceDAO'] ?? null;
     $commentDAO = $GLOBALS['commentDAO'] ?? null;
-
     $visitSlotDAO = $GLOBALS['visitSlotDAO'] ?? null;
     $visitDAO = $GLOBALS['visitDAO'] ?? null;
-
-    
-    // Récupération des favoris si déjà chargés
     $listeFavorisDAO = $GLOBALS['listeFavorisDAO'] ?? null;
-    
-
+    $listeFavorisAnnonceDAO = $GLOBALS['listeFavorisAnnonceDAO'] ?? null;
 }
