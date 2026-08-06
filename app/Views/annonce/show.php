@@ -49,6 +49,37 @@ include __DIR__ . "/../partials/header.php";
 </style>
 
 <div class="container mt-5 pt-5">
+    <?php if (isset($_GET['success'])): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?php 
+                if ($_GET['success'] === 'annonce_added_to_list') echo "L'annonce a été ajoutée à vos favoris avec succès.";
+                if ($_GET['success'] === 'comment_added') echo "Votre commentaire a été publié.";
+            ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['error'])): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?php 
+                if ($_GET['error'] === 'invalid_token') echo "Jeton de sécurité invalide.";
+                if ($_GET['error'] === 'add_to_list_failed') echo "Échec de l'ajout aux favoris.";
+                if ($_GET['error'] === 'new_list_creation_failed') echo "Échec de la création de la nouvelle liste.";
+                if ($_GET['error'] === 'invalid_list_or_annonce') echo "Liste ou annonce invalide.";
+            ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['info'])): ?>
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <?php 
+                if ($_GET['info'] === 'annonce_already_in_list') echo "Cette annonce est déjà dans la liste sélectionnée.";
+            ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
     <div class="row">
         <div class="col-md-8">
             <div class="card mb-4 shadow-sm">
@@ -347,7 +378,7 @@ document.addEventListener('keydown', function(e) {
                             <label for="id_liste" class="form-label">Choisir une liste existante :</label>
                             <select name="id_liste" id="id_liste" class="form-select">
                                 <?php foreach ($mesListes as $liste): ?>
-                                    <option value="<?php echo $liste->getIdListe(); ?>"><?php echo htmlspecialchars($liste->getNomListe()); ?></option>
+                                    <option value="<?php echo $liste->getIdListeFavoris(); ?>"><?php echo htmlspecialchars($liste->getTitreListe()); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>

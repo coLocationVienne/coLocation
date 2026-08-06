@@ -58,7 +58,6 @@ class ListeFavorisController extends Controller {
                 exit();
             }
         }
-        // If GET request, render a form or redirect to index with form
         header("Location: " . Config::url("favoris/index"));
         exit();
     }
@@ -126,18 +125,31 @@ class ListeFavorisController extends Controller {
         }
 
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $idAnnonce = (int)($_POST["id_annonce"] ?? 0);
+            
             if (!Token::check($_POST["token"] ?? "")) {
-                $idAnnonce = (int)($_POST["id_annonce"] ?? 0);
                 header("Location: " . Config::url("annonce/show") . "?id=$idAnnonce&error=invalid_token");
                 exit();
             }
 
             global $listeFavorisAnnonceDAO, $listeFavorisDAO;
-            $idAnnonce = (int)($_POST["id_annonce"] ?? 0);
             $idListe = (int)($_POST["id_liste"] ?? 0);
+            $newListeNom = trim($_POST["new_liste_nom"] ?? "");
             $userId = $_SESSION["user_id"];
 
-            // Verify the list belongs to the user
+            if (!empty($newListeNom)) {
+                $newListe = new ListeFavoris([
+                    "titre_liste" => $newListeNom,
+                    "id_utilisateur" => $userId,
+                ]);
+                if ($listeFavorisDAO->save($newListe)) {
+                    $idListe = (int)$listeFavorisDAO->getDb()->lastInsertId();
+                } else {
+                    header("Location: " . Config::url("annonce/show") . "?id=$idAnnonce&error=new_list_creation_failed");
+                    exit();
+                }
+            }
+
             $liste = $listeFavorisDAO->getListeByIdAndUserId($idListe, $userId);
 
             if ($liste && $idAnnonce > 0) {
@@ -158,7 +170,7 @@ class ListeFavorisController extends Controller {
                 exit();
             }
         }
-        header("Location: " . Config::url("/")); // Redirect to home or appropriate page
+        header("Location: " . Config::url("/"));
         exit();
     }
 
@@ -169,19 +181,16 @@ class ListeFavorisController extends Controller {
         }
 
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $idListe = (int)($_POST["id_liste"] ?? 0);
             if (!Token::check($_POST["token"] ?? "")) {
-                $idAnnonce = (int)($_POST["id_annonce"] ?? 0);
-                $idListe = (int)($_POST["id_liste"] ?? 0);
                 header("Location: " . Config::url("favoris/showListe") . "?id=$idListe&error=invalid_token");
                 exit();
             }
 
             global $listeFavorisAnnonceDAO, $listeFavorisDAO;
             $idAnnonce = (int)($_POST["id_annonce"] ?? 0);
-            $idListe = (int)($_POST["id_liste"] ?? 0);
             $userId = $_SESSION["user_id"];
 
-            // Verify the list belongs to the user
             $liste = $listeFavorisDAO->getListeByIdAndUserId($idListe, $userId);
 
             if ($liste && $idAnnonce > 0) {

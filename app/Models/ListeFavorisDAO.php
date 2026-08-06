@@ -7,7 +7,7 @@ use App\Models\ListeFavoris;
 
 class ListeFavorisDAO extends DAO {
     public function __construct() {
-        parent::__construct('liste_favoris', 'id_liste');
+        parent::__construct('liste_favoris', 'id_listeFavoris');
     }
 
     protected function hydrate(array $row): ListeFavoris {
@@ -17,8 +17,8 @@ class ListeFavorisDAO extends DAO {
     protected function dehydrate(object $listeFavoris): array {
         /** @var ListeFavoris $listeFavoris */
         return [
-            'id_liste' => $listeFavoris->getIdListe(),
-            'titre_liste' => $listeFavoris->getNomListe(),
+            'id_listeFavoris' => $listeFavoris->getIdListeFavoris(),
+            'titre_liste' => $listeFavoris->getTitreListe(),
             'id_utilisateur' => $listeFavoris->getIdUtilisateur(),
         ];
     }
@@ -38,7 +38,7 @@ class ListeFavorisDAO extends DAO {
     }
 
     public function getListeByIdAndUserId(int $listeId, int $userId): ?ListeFavoris {
-        $query = "SELECT * FROM " . $this->table_name . " WHERE id_liste = :id_liste AND id_utilisateur = :id_utilisateur";
+        $query = "SELECT * FROM " . $this->table_name . " WHERE id_listeFavoris = :id_liste AND id_utilisateur = :id_utilisateur";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id_liste', $listeId, \PDO::PARAM_INT);
         $stmt->bindParam(':id_utilisateur', $userId, \PDO::PARAM_INT);
