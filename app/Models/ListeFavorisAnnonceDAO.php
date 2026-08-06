@@ -20,9 +20,15 @@ class ListeFavorisAnnonceDAO extends DAO {
     }
 
     public function getAnnoncesByListeId(int $listeId, int $userId): array {
-        $query = "SELECT a.* FROM annonce a 
+        $query = "SELECT a.*, p.url as photo_url FROM annonce a 
                   JOIN favoris f ON a.id_annonce = f.id_annonce 
                   JOIN liste_favoris lf ON f.id_listeFavoris = lf.id_listeFavoris 
+                  LEFT JOIN (
+                      SELECT id_annonce, MIN(id_photo) as first_photo_id
+                      FROM annonce_photo
+                      GROUP BY id_annonce
+                  ) ap_first ON a.id_annonce = ap_first.id_annonce
+                  LEFT JOIN photo p ON ap_first.first_photo_id = p.id_photo
                   WHERE lf.id_listeFavoris = :liste_id AND lf.id_utilisateur = :user_id";
         
         $stmt = $this->db->prepare($query);

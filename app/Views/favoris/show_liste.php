@@ -49,7 +49,11 @@ include __DIR__ . "/../partials/header.php";
                 <div class="col-md-4">
                     <div class="card h-100 shadow-sm">
                         <div class="position-relative">
-                            <img src="https://via.placeholder.com/400x200?text=Aperçu" class="card-img-top" alt="Aperçu" style="height: 200px; object-fit: cover;">
+                            <?php 
+                                $photoUrl = $annonce->getPhoto();
+                                $displayPhoto = $photoUrl ? (strpos($photoUrl, 'http') === 0 ? $photoUrl : Config::url($photoUrl)) : "https://via.placeholder.com/400x200?text=Pas+de+photo";
+                            ?>
+                            <img src="<?php echo $displayPhoto; ?>" class="card-img-top" alt="<?php echo htmlspecialchars($annonce->getTitre()); ?>" style="height: 200px; object-fit: cover;">
                             <form action="<?php echo Config::url('favoris/removeAnnonce'); ?>" method="POST" class="position-absolute top-0 end-0 m-2">
                                 <?php echo Token::field(); ?>
                                 <input type="hidden" name="id_annonce" value="<?php echo $annonce->getId(); ?>">
@@ -76,4 +80,4 @@ include __DIR__ . "/../partials/header.php";
     </div>
 </div>
 
-<?php include __DIR__ . "/../partials/footer.php"; ?>
+<?php include __DIR__ . "/../partials/header.php"; ?>
