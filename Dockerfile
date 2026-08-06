@@ -35,8 +35,15 @@ RUN rm -rf vendor && composer install --no-dev --optimize-autoloader
 # Enable Apache modules
 RUN a2enmod rewrite
 
-# Configure Apache virtual host (optional, if needed)
-# COPY docker/000-default.conf /etc/apache2/sites-available/000-default.conf
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Set the entrypoint
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+# Default command
+CMD ["apache2-foreground"]
 
 # Expose port 80
 EXPOSE 80
