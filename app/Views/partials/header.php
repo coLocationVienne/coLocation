@@ -135,7 +135,9 @@ if (!empty($_SESSION['isLoggedin']) && isset($_SESSION['user_id'])) {
               </a>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                 <li><a class="dropdown-item" href="<?php echo Config::url('pages/profile_utilisateur.php'); ?>">Mon profil</a></li>
-                <li><a class="dropdown-item" href="<?php echo Config::url('pages/page_annonce.php'); ?>">Mes annonces</a></li>
+	                <li><a class="dropdown-item" href="<?php echo Config::url('pages/page_annonce.php'); ?>">Mes annonces</a></li>
+	                <li><a class="dropdown-item" href="<?php echo Config::url('visit/dashboard'); ?>">Mes visites</a></li>
+	                <li><a class="dropdown-item" href="<?php echo Config::url('favoris/index'); ?>">Mes favoris</a></li>
                 <li>
                   <a class="dropdown-item d-flex justify-content-between align-items-center" href="<?php echo Config::url('pages/messages.php'); ?>">
                     Messages

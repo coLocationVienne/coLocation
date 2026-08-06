@@ -115,6 +115,9 @@ $annonces = $annonceDAO->getAllAnouncesByUserId($userId);
                                 <a href="<?php echo Config::url("annonce/show?id="). $a->getId(); ?>" class="btn btn-sm btn-light border" title="Voir l'aperçu">
                                     <i class="fas fa-external-link-alt text-info"></i>
                                 </a>
+                                <button type="button" class="btn btn-sm btn-light border" title="Gérer les visites" data-bs-toggle="modal" data-bs-target="#visitModal<?php echo $a->getId(); ?>">
+                                    <i class="fas fa-calendar-check text-success"></i>
+                                </button>
                                 <form action="<?php echo Config::url('annonce/delete'); ?>" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer cette annonce ?');" class="d-inline">
                                     <?php echo \App\Core\Token::field(); ?>
                                     <input type="hidden" name="id_annonce" value="<?php echo $a->getId(); ?>">
@@ -128,6 +131,67 @@ $annonces = $annonceDAO->getAllAnouncesByUserId($userId);
                 </div>
             <?php endforeach; ?>
         </div>
+
+        <?php foreach ($annonces as $a): ?>
+            <!-- Visit Management Modal -->
+            <div class="modal fade" id="visitModal<?php echo $a->getId(); ?>" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Créneaux de visite - <?php echo htmlspecialchars($a->getTitre()); ?></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <h6>Ajouter un créneau</h6>
+                            <form action="<?php echo Config::url('visit/slot/add'); ?>" method="POST" class="mb-4">
+                                <?php echo \App\Core\Token::field(); ?>
+                                <input type="hidden" name="id_annonce" value="<?php echo $a->getId(); ?>">
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <label class="form-label small">Date</label>
+                                        <input type="date" name="date_visite" class="form-control form-control-sm" required>
+                                    </div>
+                                    <div class="col-3">
+                                        <label class="form-label small">Début</label>
+                                        <input type="time" name="heure_debut" class="form-control form-control-sm" required>
+                                    </div>
+                                    <div class="col-3">
+                                        <label class="form-label small">Fin</label>
+                                        <input type="time" name="heure_fin" class="form-control form-control-sm" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small">Capacité max (personnes)</label>
+                                    <input type="number" name="nb_personne_max" class="form-control form-control-sm" value="1" min="1" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm w-100">Enregistrer le créneau</button>
+                            </form>
+                            
+                            <hr>
+                            <h6>Créneaux existants</h6>
+                            <?php 
+                                $slots = $visitSlotDAO->getByAnnonce($a->getId());
+                                if (empty($slots)):
+                            ?>
+                                <p class="text-muted small">Aucun créneau défini.</p>
+                            <?php else: ?>
+                                <ul class="list-group list-group-flush">
+                                    <?php foreach ($slots as $s): ?>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                            <div>
+                                                <strong><?php echo date('d/m/Y', strtotime($s->getDateVisite())); ?></strong><br>
+                                                <small class="text-muted"><?php echo $s->getHeureDebut(); ?> - <?php echo $s->getHeureFin(); ?> (Max: <?php echo $s->getNbPersonneMax(); ?>)</small>
+                                            </div>
+                                            <!-- Add delete button if needed -->
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
         
         <div id="noMatchMessage" class="text-center py-5 d-none">
             <i class="fas fa-search fa-2x text-muted mb-2"></i>
