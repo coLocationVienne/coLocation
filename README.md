@@ -66,3 +66,5 @@ The application is now environment-aware. Key settings are managed in `docker-co
 
 ---
 *Developed as a modern, standalone solution for coLocation.*
+
+<!-- Triggering GitHub Actions for testing -->
