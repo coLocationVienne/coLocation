@@ -1,10 +1,43 @@
-<?php 
+<?php
 use App\Core\Config;
-include __DIR__ . "/../partials/header.php"; 
-?>
 
+$visitStatusMessages = [
+    'request_sent' => 'Votre demande de visite a été envoyée.',
+    'visit_confirme' => 'La visite a été confirmée.',
+    'visit_refuse' => 'La demande de visite a été refusée.',
+    'visit_canceled' => 'La visite a été annulée.'
+];
+$visitErrorMessages = [
+    'unauthorized' => "Vous n'êtes pas autorisé à effectuer cette action.",
+    'update_failed' => 'Impossible de mettre à jour la visite. Veuillez réessayer.',
+    'cancellation_too_late' => "Une visite ne peut pas être annulée moins de 24 heures avant le rendez-vous.",
+    'cancel_failed' => "Impossible d'annuler la visite. Veuillez réessayer."
+];
+
+$alertClass = null;
+$alertMessage = null;
+$status = $_GET['status'] ?? '';
+$error = $_GET['error'] ?? '';
+
+if (is_string($status) && isset($visitStatusMessages[$status])) {
+    $alertClass = 'success';
+    $alertMessage = $visitStatusMessages[$status];
+} elseif (is_string($error) && isset($visitErrorMessages[$error])) {
+    $alertClass = 'danger';
+    $alertMessage = $visitErrorMessages[$error];
+}
+
+include __DIR__ . "/../partials/header.php";
+?>
 <div class="container mt-5 pt-5">
     <h2 class="mb-4">Mes Rendez-vous de Visite</h2>
+
+    <?php if ($alertMessage !== null): ?>
+        <div class="alert alert-<?php echo $alertClass; ?> alert-dismissible fade show" role="alert">
+            <?php echo htmlspecialchars($alertMessage, ENT_QUOTES, 'UTF-8'); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+        </div>
+    <?php endif; ?>
 
     <!-- Nav tabs -->
     <ul class="nav nav-tabs mb-4" id="visitTabs" role="tablist">

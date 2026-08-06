@@ -31,7 +31,7 @@ if ($db === 'colocation_test') {
         $pdo->exec("USE `colocation_test`");
         
         // Check if tables exist by checking for a few core tables
-        $stmt = $pdo->query("SHOW TABLES LIKE 'annonce_photo'");
+        $stmt = $pdo->query("SHOW TABLES LIKE 'visite'");
         if (!$stmt->fetch()) {
             $sqlFile = __DIR__ . '/../SQL/colocation.sql';
             if (file_exists($sqlFile)) {
@@ -40,6 +40,10 @@ if ($db === 'colocation_test') {
                 // Remove comments and split into individual statements
                 $sql = preg_replace('/--.*$/m', '', $sql);
                 $sql = preg_replace('/\/\*.*?\*\//s', '', $sql);
+                
+                // Remove USE and CREATE DATABASE statements to avoid switching to production DB
+                $sql = preg_replace('/^USE\s+.*;/mi', '', $sql);
+                $sql = preg_replace('/^CREATE\s+DATABASE\s+.*;/mi', '', $sql);
                 
                 // More robust splitting for standard SQL files
                 // Split by semicolon followed by newline to avoid breaking on HTML entities or semicolons in strings

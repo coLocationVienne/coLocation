@@ -6,6 +6,6 @@
         </testsuite>
     </testsuites>
     <php>
-        <env name="MYSQL_DATABASE" value="colocation_test"/>
+        <env name="MYSQL_DATABASE" value="colocation_test" force="true"/>
     </php>
 </phpunit>
