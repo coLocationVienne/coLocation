@@ -30,8 +30,8 @@ if ($db === 'colocation_test') {
         $pdo->exec("CREATE DATABASE IF NOT EXISTS `colocation_test` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
         $pdo->exec("USE `colocation_test`");
         
-        // Check if tables exist by checking for one core table
-        $stmt = $pdo->query("SHOW TABLES LIKE 'annonce'");
+        // Check if tables exist by checking for a few core tables
+        $stmt = $pdo->query("SHOW TABLES LIKE 'annonce_photo'");
         if (!$stmt->fetch()) {
             $sqlFile = __DIR__ . '/../SQL/colocation.sql';
             if (file_exists($sqlFile)) {
@@ -42,7 +42,9 @@ if ($db === 'colocation_test') {
                 $sql = preg_replace('/\/\*.*?\*\//s', '', $sql);
                 
                 // More robust splitting for standard SQL files
-                $statements = array_filter(array_map('trim', explode(';', $sql)));
+                // Split by semicolon followed by newline to avoid breaking on HTML entities or semicolons in strings
+                $statements = preg_split("/;\s*$/m", $sql);
+                $statements = array_filter(array_map('trim', $statements));
                 
                 foreach ($statements as $query) {
                     if (!empty($query)) {
