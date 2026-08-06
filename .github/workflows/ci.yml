@@ -34,7 +34,7 @@ jobs:
       run: docker compose exec -T app composer install --no-interaction --prefer-dist
 
     - name: Create Test Database
-      run: docker compose exec -T db mysql -h 127.0.0.1 -uroot -proot_password -e "CREATE DATABASE IF NOT EXISTS colocation_test;"
+      run: docker compose exec -T db mysql -h db -uroot -proot_password -e "CREATE DATABASE IF NOT EXISTS colocation_test;"
 
     - name: Run PHPUnit inside container
       run: docker compose exec -T app ./vendor/bin/phpunit --testdox
