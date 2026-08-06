@@ -49,6 +49,37 @@ include __DIR__ . "/../partials/header.php";
 </style>
 
 <div class="container mt-5 pt-5">
+    <?php if (isset($_GET['success'])): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?php 
+                if ($_GET['success'] === 'annonce_added_to_list') echo "L'annonce a été ajoutée à vos favoris avec succès.";
+                if ($_GET['success'] === 'comment_added') echo "Votre commentaire a été publié.";
+            ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['error'])): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?php 
+                if ($_GET['error'] === 'invalid_token') echo "Jeton de sécurité invalide.";
+                if ($_GET['error'] === 'add_to_list_failed') echo "Échec de l'ajout aux favoris.";
+                if ($_GET['error'] === 'new_list_creation_failed') echo "Échec de la création de la nouvelle liste.";
+                if ($_GET['error'] === 'invalid_list_or_annonce') echo "Liste ou annonce invalide.";
+            ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['info'])): ?>
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <?php 
+                if ($_GET['info'] === 'annonce_already_in_list') echo "Cette annonce est déjà dans la liste sélectionnée.";
+            ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
     <div class="row">
         <div class="col-md-8">
             <div class="card mb-4 shadow-sm">
@@ -187,9 +218,20 @@ include __DIR__ . "/../partials/header.php";
                     <?php endif; ?>
                 </div>
             </div>
+
+            <?php if (!empty($_SESSION['isLoggedin'])): ?>
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body text-center">
+                        <button type="button" class="btn btn-primary btn-lg w-100" data-bs-toggle="modal" data-bs-target="#addToListeModal">
+                            <i class="fas fa-heart me-2"></i> Ajouter aux favoris
+                        </button>
+                    </div>
+                </div>
+            <?php endif; ?>
+
         </div>
 
-        <!-- Sidebar -->
+      
         <div class="col-md-4">
             <div class="card shadow-sm sticky-top" style="top: 100px; border-top: 4px solid #0d6efd;">
                 <div class="card-body p-4">
@@ -247,7 +289,7 @@ include __DIR__ . "/../partials/header.php";
     </div>
 </div>
 
-<!-- Gallery Lightbox Modal -->
+
 <div class="modal fade" id="imageLightbox" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content transparent-modal">
@@ -309,5 +351,53 @@ document.addEventListener('keydown', function(e) {
     }
 });
 </script>
+
+<!-- Add to Liste Modal -->
+<div class="modal fade" id="addToListeModal" tabindex="-1" aria-labelledby="addToListeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addToListeModalLabel">Ajouter à mes favoris</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="<?php echo Config::url('favoris/addAnnonce'); ?>" method="POST">
+                <div class="modal-body">
+                    <?php echo Token::field(); ?>
+                    <input type="hidden" name="id_annonce" value="<?php echo $annonce->getId(); ?>">
+
+                    <?php 
+                        global $listeFavorisDAO;
+                        $mesListes = [];
+                        if (!empty($_SESSION['isLoggedin'])) {
+                            $mesListes = $listeFavorisDAO->getListesByUserId($_SESSION['user_id']);
+                        }
+                    ?>
+
+                    <?php if (!empty($mesListes)): ?>
+                        <div class="mb-3">
+                            <label for="id_liste" class="form-label">Choisir une liste existante :</label>
+                            <select name="id_liste" id="id_liste" class="form-select">
+                                <?php foreach ($mesListes as $liste): ?>
+                                    <option value="<?php echo $liste->getIdListeFavoris(); ?>"><?php echo htmlspecialchars($liste->getTitreListe()); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="text-center my-3">- OU -</div>
+                    <?php endif; ?>
+
+                    <div class="mb-3">
+                        <label for="new_liste_nom" class="form-label">Créer une nouvelle liste :</label>
+                        <input type="text" name="new_liste_nom" id="new_liste_nom" class="form-control" placeholder="Nom de la nouvelle liste (ex: Colocs avec jardin)">
+                    </div>
+                    <small class="text-muted">Si vous choisissez une liste existante ET que vous entrez un nom pour une nouvelle liste, la nouvelle liste sera prioritaire.</small>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <?php include __DIR__ . "/../partials/footer.php"; ?>
