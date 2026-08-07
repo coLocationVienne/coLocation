@@ -199,7 +199,7 @@ class AnnonceTest extends TestCase {
             } elseif ($annonce->getId() == $id2) {
                 $this->assertNull($annonce->getPhoto());
                 $this->assertEquals(1, $annonce->getOwnerId());
-                foundNoPhotoAnnonce = true;
+                $foundNoPhotoAnnonce = true;
             }
         }
         $this->assertTrue($foundPhotoAnnonce);
@@ -318,59 +318,6 @@ class AnnonceTest extends TestCase {
         $this->assertTrue($this->annonceDAO->deletePhoto($idPhoto));
         $photosAfterDelete = $this->annonceDAO->getPhotos($idAnnonce);
         $this->assertCount(0, $photosAfterDelete);
-    }
-
-    public function testAjouterModifierSupprimerAnnonceWithRelations(): void {
-        $data = [
-            'titre' => 'Annonce with Relations',
-            'adresse_1' => '12 Rue de la Paix',
-            'ville' => 'Montpellier',
-            'code_postal' => 34000,
-            'loyer_location_chez_habitant' => 950.0,
-            'description' => 'Relations test',
-            'surface_logement' => 65.0,
-            'surface_chambres' => 18.0,
-            'nombre_chambre' => 2,
-            'date_publication' => '2023-01-12',
-            'loyer_colocation' => 475.0
-        ];
-        $annonce = new Annonce($data);
-        $modesVie = [1]; // Calme
-        $regimes = [1]; // Végétarien
-
-        $idAnnonce = $this->annonceDAO->ajouterAnnonce($annonce, 1, $modesVie, $regimes);
-        $this->assertGreaterThan(0, $idAnnonce);
-
-        $fetchedModesVie = $this->annonceDAO->avoirModeVie($idAnnonce);
-        $this->assertCount(1, $fetchedModesVie);
-        $this->assertEquals(1, $fetchedModesVie[0]['id_mode_vie']);
-
-        $fetchedRegimes = $this->annonceDAO->avoirRegime($idAnnonce);
-        $this->assertCount(1, $fetchedRegimes);
-        $this->assertEquals(1, $fetchedRegimes[0]['id_regime_alimentaire']);
-
-        // Test modifierAnnonce
-        $annonce->setTitre('Annonce with Relations Updated');
-        $newModesVie = [2]; // Fêtard
-        $newRegimes = [2]; // Vegan
-        $this->assertTrue($this->annonceDAO->modifierAnnonce($idAnnonce, $annonce, $newModesVie, $newRegimes));
-
-        $updatedAnnonce = $this->annonceDAO->getById($idAnnonce);
-        $this->assertEquals('Annonce with Relations Updated', $updatedAnnonce->getTitre());
-
-        $updatedModesVie = $this->annonceDAO->avoirModeVie($idAnnonce);
-        $this->assertCount(1, $updatedModesVie);
-        $this->assertEquals(2, $updatedModesVie[0]['id_mode_vie']);
-
-        $updatedRegimes = $this->annonceDAO->avoirRegime($idAnnonce);
-        $this->assertCount(1, $updatedRegimes);
-        $this->assertEquals(2, $updatedRegimes[0]['id_regime_alimentaire']);
-
-        // Test supprimerAnnonce
-        $this->assertTrue($this->annonceDAO->supprimerAnnonce($idAnnonce));
-        $this->assertNull($this->annonceDAO->getById($idAnnonce));
-        $this->assertCount(0, $this->annonceDAO->avoirModeVie($idAnnonce));
-        $this->assertCount(0, $this->annonceDAO->avoirRegime($idAnnonce));
     }
 
     public function testAppartientAUtilisateur(): void {

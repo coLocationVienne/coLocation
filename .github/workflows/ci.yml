@@ -1,17 +1,37 @@
 name: CI/CD
-
 on:
   push:
+    branches: [ develop, main ]
   pull_request:
+    branches: [ develop, main ]
   workflow_dispatch:
 
 jobs:
   tests:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+
+    - name: Cache Composer dependencies
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-
+
+    - name: Installer PHP (for caching/setup)
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: pdo, pdo_mysql, zip, mbstring
+        coverage: none
+
+    - name: Install dependencies (if not cached)
+      env:
+        COMPOSER_MEMORY_LIMIT: -1
+      run: composer install --no-interaction --prefer-dist --no-progress
 
     - name: Start Docker Compose
       run: docker compose up -d --build
@@ -27,9 +47,6 @@ jobs:
           echo "Waiting... ($i/60)"
           sleep 2
         done
-
-    - name: Install Composer inside container
-      run: docker compose exec -T app composer install --no-interaction --prefer-dist
 
     - name: Run PHPUnit inside container
       run: docker compose exec -T app ./vendor/bin/phpunit --testdox
