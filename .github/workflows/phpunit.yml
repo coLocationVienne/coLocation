@@ -72,6 +72,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
       - name: Démarrer Docker
         run: docker compose up -d --build
 
@@ -86,11 +94,6 @@ jobs:
             echo "Attente... ($i/60)"
             sleep 2
           done
-
-      - name: Installer Composer dans le conteneur
-        env:
-          COMPOSER_MEMORY_LIMIT: -1
-        run: docker compose exec -T app composer install --no-interaction --prefer-dist --no-progress
 
       - name: Lancer les tests d'intégration
         run: docker compose exec -T app ./vendor/bin/phpunit --testdox
