@@ -3,6 +3,7 @@
 namespace App\Tests;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Group;
 use App\Models\Visit;
 use App\Models\VisitDAO;
 use App\Models\VisitSlot;
@@ -11,10 +12,8 @@ use App\Models\Annonce;
 use App\Models\AnnonceDAO;
 use App\Core\Database;
 
-/**
- * @group integration
- * @group database
- */
+#[Group('integration')]
+#[Group('database')]
 class PlanificationIntegrationTest extends TestCase {
     private VisitDAO $visitDAO;
     private VisitSlotDAO $visitSlotDAO;

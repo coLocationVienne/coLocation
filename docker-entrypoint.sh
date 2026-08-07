@@ -1,6 +1,9 @@
 #!/bin/sh
 set -e
 
+# Ensure git considers the working directory safe (fixes dubious ownership in mounted/container environments)
+git config --global --add safe.directory /var/www/html || true
+
 # Install composer dependencies if composer.json exists and vendor is missing
 if [ -f "composer.json" ]; then
     if [ ! -d "vendor" ]; then
