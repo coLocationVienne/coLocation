@@ -2,9 +2,8 @@ name: CI/CD
 
 on:
   push:
-    branches: [ main, develop ]
   pull_request:
-    branches: [ main, develop ]
+  workflow_dispatch:
 
 jobs:
   tests:
@@ -20,7 +19,6 @@ jobs:
     - name: Wait for MySQL
       run: |
         echo "Waiting for MySQL to be healthy..."
-        # Wait for the healthcheck defined in docker-compose.yml
         for i in {1..60}; do
           if [ "$(docker inspect --format='{{.State.Health.Status}}' colocation_db)" == "healthy" ]; then
             echo "MySQL is healthy!"
