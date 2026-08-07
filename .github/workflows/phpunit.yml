@@ -35,11 +35,21 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          extensions: pdo, pdo_mysql
+          extensions: pdo, pdo_mysql, zip, mbstring
           coverage: none
 
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
       - name: Installer les dépendances
-        run: composer install --no-interaction --prefer-dist
+        env:
+          COMPOSER_MEMORY_LIMIT: -1
+        run: composer install --no-interaction --prefer-dist --no-progress
 
       - name: Initialiser la base de données
         run: mysql -h 127.0.0.1 -uroot -proot_password colocation < SQL/colocation.sql
@@ -78,7 +88,9 @@ jobs:
           done
 
       - name: Installer Composer dans le conteneur
-        run: docker compose exec -T app composer install --no-interaction --prefer-dist
+        env:
+          COMPOSER_MEMORY_LIMIT: -1
+        run: docker compose exec -T app composer install --no-interaction --prefer-dist --no-progress
 
       - name: Lancer les tests d'intégration
         run: docker compose exec -T app ./vendor/bin/phpunit --testdox
