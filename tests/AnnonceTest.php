@@ -124,8 +124,7 @@ class AnnonceTest extends TestCase {
         $this->assertTrue($this->annonceDAO->update($annonce));
 
         $fetchedAnnonce = $this->annonceDAO->getById($id);
-        $this->assertEquals('Annonce Updated', $fetchedAnnonce->getTitre());
-    }
+        $this->assertEquals('Annonce Updated', $fetchedAnnonce->getTitre());}
 
     public function testDelete(): void {
         $data = [
