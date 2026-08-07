@@ -18,8 +18,9 @@ RUN apt-get update && apt-get install -y \
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(nproc) gd pdo_mysql zip mbstring exif
 
-# Install Composer
+# Install Composer and Git safe directory config
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN git config --system --add safe.directory /var/www/html
 
 # Set working directory
 WORKDIR /var/www/html

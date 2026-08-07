@@ -5,7 +5,7 @@ namespace App\Tests;
 use PHPUnit\Framework\TestCase;
 use App\Models\VisitSlot;
 
-class VisitSlotTest extends TestCase {
+class VisitSlotMgmtTest extends TestCase {
     private array $slotData;
 
     protected function setUp(): void {
