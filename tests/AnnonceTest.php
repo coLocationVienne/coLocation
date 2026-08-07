@@ -1,14 +1,13 @@
 <?php
 namespace App\Tests;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Group;
 use App\Models\Annonce;
 use App\Models\AnnonceDAO;
 use App\Core\Database;
 
-/**
- * @group integration
- * @group database
- */
+#[Group('integration')]
+#[Group('database')]
 class AnnonceTest extends TestCase {
     private AnnonceDAO $annonceDAO;
     private \PDO $pdo;
