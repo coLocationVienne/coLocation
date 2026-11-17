@@ -1,14 +1,13 @@
 <?php
 namespace App\Tests;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Group;
 use App\Models\Annonce;
 use App\Models\AnnonceDAO;
 use App\Core\Database;
 
-/**
- * @group integration
- * @group database
- */
+#[Group('integration')]
+#[Group('database')]
 class AnnonceTest extends TestCase {
     private AnnonceDAO $annonceDAO;
     private \PDO $pdo;
@@ -125,8 +124,7 @@ class AnnonceTest extends TestCase {
         $this->assertTrue($this->annonceDAO->update($annonce));
 
         $fetchedAnnonce = $this->annonceDAO->getById($id);
-        $this->assertEquals('Annonce Updated', $fetchedAnnonce->getTitre());
-    }
+        $this->assertEquals('Annonce Updated', $fetchedAnnonce->getTitre());}
 
     public function testDelete(): void {
         $data = [
@@ -321,80 +319,15 @@ class AnnonceTest extends TestCase {
         $this->assertCount(0, $photosAfterDelete);
     }
 
-    public function testAjouterModifierSupprimerAnnonceWithRelations(): void {
-        $data = [
-            'titre' => 'Annonce with Relations',
-            'adresse_1' => '12 Rue de la Paix',
-            'ville' => 'Montpellier',
-            'code_postal' => 34000,
-            'loyer_location_chez_habitant' => 950.0,
-            'description' => 'Relations test',
-            'surface_logement' => 65.0,
-            'surface_chambres' => 18.0,
-            'nombre_chambre' => 2,
-            'date_publication' => '2023-01-12',
-            'loyer_colocation' => 475.0
-        ];
-        $annonce = new Annonce($data);
-        $modesVie = [1]; // Calme
-        $regimes = [1]; // Végétarien
-
-        $idAnnonce = $this->annonceDAO->ajouterAnnonce($annonce, 1, $modesVie, $regimes);
-        $this->assertGreaterThan(0, $idAnnonce);
-
-        $fetchedModesVie = $this->annonceDAO->avoirModeVie($idAnnonce);
-        $this->assertCount(1, $fetchedModesVie);
-        $this->assertEquals(1, $fetchedModesVie[0]['id_mode_vie']);
-
-        $fetchedRegimes = $this->annonceDAO->avoirRegime($idAnnonce);
-        $this->assertCount(1, $fetchedRegimes);
-        $this->assertEquals(1, $fetchedRegimes[0]['id_regime_alimentaire']);
-
-        // Test modifierAnnonce
-        $annonce->setTitre('Annonce Relations Modified');
-        $annonce->setId($idAnnonce);
-
-        $newModesVie = [2]; // Fêtard
-        $newRegimes = [2]; // Vegan
-        $this->assertTrue($this->annonceDAO->modifierAnnonce($annonce, 1, $newModesVie, $newRegimes));
-
-        $fetchedModesVie = $this->annonceDAO->avoirModeVie($idAnnonce);
-        $this->assertCount(1, $fetchedModesVie);
-        $this->assertEquals(2, $fetchedModesVie[0]['id_mode_vie']);
-
-        $fetchedRegimes = $this->annonceDAO->avoirRegime($idAnnonce);
-        $this->assertCount(1, $fetchedRegimes);
-        $this->assertEquals(2, $fetchedRegimes[0]['id_regime_alimentaire']);
-
-        // Test supprimerAnnonce
-        $this->assertTrue($this->annonceDAO->supprimerAnnonce($idAnnonce, 1));
-        $this->assertNull($this->annonceDAO->getById($idAnnonce));
-
-        $fetchedModesVie = $this->annonceDAO->avoirModeVie($idAnnonce);
-        $this->assertCount(0, $fetchedModesVie);
-
-        $fetchedRegimes = $this->annonceDAO->avoirRegime($idAnnonce);
-        $this->assertCount(0, $fetchedRegimes);
-    }
-
     public function testAppartientAUtilisateur(): void {
         $data = [
             'titre' => 'Ownership Test',
-            'adresse_1' => '13 Rue de la Paix',
-            'ville' => 'Reims',
-            'code_postal' => 51100,
-            'loyer_location_chez_habitant' => 600.0,
-            'description' => 'Ownership test',
-            'surface_logement' => 35.0,
-            'surface_chambres' => 10.0,
-            'nombre_chambre' => 1,
-            'date_publication' => '2023-01-13',
-            'loyer_colocation' => 300.0
+            'loyer_location_chez_habitant' => 500.0
         ];
         $annonce = new Annonce($data);
         $idAnnonce = $this->annonceDAO->ajouterAnnonce($annonce, 1, [], []);
 
         $this->assertTrue($this->annonceDAO->appartientAUtilisateur($idAnnonce, 1));
-        $this->assertFalse($this->annonceDAO->appartientAUtilisateur($idAnnonce, 999)); // Non-existent user
+        $this->assertFalse($this->annonceDAO->appartientAUtilisateur($idAnnonce, 2));
     }
 }

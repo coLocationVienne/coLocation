@@ -18,8 +18,9 @@ RUN apt-get update && apt-get install -y \
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(nproc) gd pdo_mysql zip mbstring exif
 
-# Install Composer
+# Install Composer and Git safe directory config
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN git config --system --add safe.directory /var/www/html
 
 # Set working directory
 WORKDIR /var/www/html
@@ -34,8 +35,15 @@ RUN rm -rf vendor && composer install --no-dev --optimize-autoloader
 # Enable Apache modules
 RUN a2enmod rewrite
 
-# Configure Apache virtual host (optional, if needed)
-# COPY docker/000-default.conf /etc/apache2/sites-available/000-default.conf
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Set the entrypoint
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+
+# Default command
+CMD ["apache2-foreground"]
 
 # Expose port 80
 EXPOSE 80

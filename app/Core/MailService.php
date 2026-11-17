@@ -35,7 +35,9 @@ class MailService {
             $mail->isHTML(true);
             $mail->Subject = "Nouveau message concernant votre annonce : $annonceTitle";
             
-            $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . Config::url('pages/messages.php');
+            $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+            $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
+            $url = "$protocol://$host" . Config::url('pages/messages.php');
             
             $mail->Body = "
                 <h2>Bonjour $toName,</h2>
