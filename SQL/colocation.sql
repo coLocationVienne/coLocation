@@ -345,7 +345,8 @@ CREATE TABLE `favoris` (
 CREATE TABLE `liste_favoris` (
   `id_listeFavoris` int(11) NOT NULL,
   `titre_liste` varchar(50) NOT NULL,
-  `id_utilisateur` int(11) DEFAULT NULL
+  `id_utilisateur` int(11) DEFAULT NULL,
+  `date_creation` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------

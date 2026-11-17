@@ -6,11 +6,13 @@ class ListeFavoris {
     private ?int $id_listeFavoris;
     private string $titre_liste;
     private ?int $id_utilisateur;
+    private string $date_creation;
 
     public function __construct(array $data){
         $this->id_listeFavoris = isset($data['id_listeFavoris']) ? (int)$data['id_listeFavoris'] : null;
         $this->titre_liste = $data['titre_liste'] ?? '';
         $this->id_utilisateur = isset($data['id_utilisateur']) ? (int)$data['id_utilisateur'] : null;
+        $this->date_creation = !empty($data['date_creation']) ? $data['date_creation'] : date('Y-m-d');
     }
 
     // Getters
@@ -26,6 +28,10 @@ class ListeFavoris {
         return $this->id_utilisateur;
     }
 
+    public function getDateCreation(): string {
+        return $this->date_creation;
+    }
+
     // Setters
     public function setIdListeFavoris(?int $id_listeFavoris): self {
         $this->id_listeFavoris = $id_listeFavoris;
@@ -39,6 +45,11 @@ class ListeFavoris {
 
     public function setIdUtilisateur(?int $id_utilisateur): self {
         $this->id_utilisateur = $id_utilisateur;
+        return $this;
+    }
+
+    public function setDateCreation(string $date_creation): self {
+        $this->date_creation = $date_creation;
         return $this;
     }
 }
