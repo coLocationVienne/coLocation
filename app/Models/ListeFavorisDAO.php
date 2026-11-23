@@ -20,6 +20,7 @@ class ListeFavorisDAO extends DAO {
             'id_listeFavoris' => $listeFavoris->getIdListeFavoris(),
             'titre_liste' => $listeFavoris->getTitreListe(),
             'id_utilisateur' => $listeFavoris->getIdUtilisateur(),
+            'date_creation' => $listeFavoris->getDateCreation(),
         ];
     }
 
