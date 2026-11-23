@@ -211,7 +211,11 @@ INSERT INTO `annonce_photo` (`id_annonce`, `id_photo`) VALUES
 (12, 16),
 (14, 18),
 (14, 19),
-(15, 20);
+(15, 20),
+(3, 23),
+(8, 24),
+(9, 25),
+(11, 26);
 
 -- --------------------------------------------------------
 
@@ -411,23 +415,27 @@ CREATE TABLE `photo` (
 --
 
 INSERT INTO `photo` (`id_photo`, `url`) VALUES
-(1, 'photos/annonce12/6a552320dce4c.jpg'),
-(2, 'photos/annonce12/6a552320dce4c.jpg'),
-(3, 'photos/annonce12/6a552320dce4c.jpg'),
-(4, 'photos/annonce12/6a552320dce4c.jpg'),
-(5, 'photos/annonce12/6a552320dce4c.jpg'),
-(6, 'photos/annonce12/6a552320dce4c.jpg'),
-(7, 'photos/annonce12/6a552320dce4c.jpg'),
-(8, 'photos/annonce12/6a552320dce4c.jpg'),
-(9, 'photos/annonce12/6a552320dce4c.jpg'),
-(10, 'photos/annonce12/6a552320dce4c.jpg'),
-(11, 'photos/annonce12/6a552320dce4c.jpg'),
-(15, 'photos/annonce12/6a5666db6c869.jpg'),
-(16, 'photos/annonce12/6a5667a5557e1.jpeg'),
+(1, 'photos/demo-appartements/deborah-cortelazzi-gREquCUXQLI.jpg'),
+(2, 'photos/demo-appartements/patrick-perkins-3wylDrjxH-E.jpg'),
+(3, 'photos/demo-appartements/naomi-hebert-MP0bgaS_d1c.jpg'),
+(4, 'photos/demo-appartements/frames-for-your-heart-FqqiAvJejto.jpg'),
+(5, 'photos/demo-appartements/frames-for-your-heart-FqqiAvJejto.jpg'),
+(6, 'photos/demo-appartements/minh-pham-OtXADkUh3-I.jpg'),
+(7, 'photos/demo-appartements/naomi-hebert-MP0bgaS_d1c.jpg'),
+(8, 'photos/demo-appartements/patrick-perkins-3wylDrjxH-E.jpg'),
+(9, 'photos/demo-appartements/minh-pham-OtXADkUh3-I.jpg'),
+(10, 'photos/demo-appartements/francesca-tosolini-tHkJAMcO3QE.jpg'),
+(11, 'photos/demo-appartements/deborah-cortelazzi-gREquCUXQLI.jpg'),
+(15, 'photos/demo-appartements/frames-for-your-heart-FqqiAvJejto.jpg'),
+(16, 'photos/demo-appartements/naomi-hebert-MP0bgaS_d1c.jpg'),
 (17, 'photos/annonce_6a606fcbea1b2.jpg'),
-(18, 'photos/annonce_6a61b3e583d97.jpg'),
-(19, 'photos/annonce_6a61b3f484482.jpg'),
-(20, 'photos/annonce_6a6211ae1abe3.jpg');
+(18, 'photos/demo-appartements/patrick-perkins-3wylDrjxH-E.jpg'),
+(19, 'photos/demo-appartements/minh-pham-OtXADkUh3-I.jpg'),
+(20, 'photos/demo-appartements/francesca-tosolini-tHkJAMcO3QE.jpg'),
+(23, 'photos/demo-appartements/kam-idris-_HqHX3LBN18.jpg'),
+(24, 'photos/demo-appartements/patrick-perkins-3wylDrjxH-E.jpg'),
+(25, 'photos/demo-appartements/naomi-hebert-MP0bgaS_d1c.jpg'),
+(26, 'photos/demo-appartements/deborah-cortelazzi-gREquCUXQLI.jpg');
 
 -- --------------------------------------------------------
 

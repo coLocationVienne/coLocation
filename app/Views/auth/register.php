@@ -73,7 +73,7 @@ $registerErrorMessages = [
             <div class="register-grid">
                 <div class="form-group">
                     <label for="salaire_mensuel_net">Salaire mensuel net</label>
-                    <input type="number" id="salaire_mensuel_net" name="salaire_mensuel_net" min="0" max="999.99" step="0.01" placeholder="0.00">
+                    <input type="number" id="salaire_mensuel_net" name="salaire_mensuel_net" min="0" max="9999.99" step="0.01" placeholder="0.00">
                 </div>
 
                 <div class="form-group">

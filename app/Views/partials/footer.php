@@ -1,32 +1,16 @@
-
-<footer class="d-flex justify-content-between ft">
-  <nav class="navbar navbar-expand-lg">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Colocation Vienne</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="#">aide</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Confidentialité</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">presse</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">instagram</a>
-        </li>
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <nav class="site-footer__navigation" aria-label="Liens de pied de page">
+      <a class="site-footer__brand" href="<?php echo \App\Core\Config::url('home'); ?>">Colocation Vienne</a>
+      <ul class="site-footer__links">
+        <li><a href="#">Aide</a></li>
+        <li><a href="#">Confidentialité</a></li>
+        <li><a href="#">Presse</a></li>
+        <li><a href="#">Instagram</a></li>
       </ul>
-    </div>
+    </nav>
+    <p class="site-footer__copyright">© <?php echo date('Y'); ?> Colocation Vienne. Tous droits réservés.</p>
   </div>
-</nav>
-
-<p>© 2026 Colocation Vienne. Tous droits réservés.</p>
-
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

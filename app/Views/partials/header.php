@@ -85,13 +85,13 @@ if (!empty($_SESSION['isLoggedin']) && isset($_SESSION['user_id'])) {
     <meta name="Author" content="Issintia Said, Rohid SAFI, Lawrence">
     <title>Colocation</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="<?php echo Config::asset('style/style.css'); ?>">
+    <link rel="stylesheet" href="<?php echo Config::asset('style/style.css') . '?v=' . filemtime(__DIR__ . '/../../../assets/style/style.css'); ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="site-layout">
    <nav class="navbar navbar-expand-lg fixed-top bg-body-tertiary">
      <div class="container-fluid">
       <a class="navbar-brand" href="<?php echo Config::url('home'); ?>">Colocation Vienne</a>
